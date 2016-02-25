@@ -1,0 +1,15 @@
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!-- These settings headers are only used on tablets. -->
+
+    <header
+        android:fragment="com.paperclickers.SettingsActivity$GeneralPreferenceFragment"
+        android:title="@string/pref_header_general" />
+    <header
+        android:fragment="com.paperclickers.SettingsActivity$AnswerLogPreferenceFragment"
+        android:title="@string/pref_header_answers_log" />
+    <header
+        android:fragment="com.paperclickers.SettingsActivity$PrintCodesPreferenceFragment"
+        android:title="@string/pref_header_print_codes" />
+
+</preference-headers>

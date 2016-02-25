@@ -1,0 +1,29 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+	<PreferenceCategory 
+	     android:title="@string/pref_header_answers_log">
+	     
+	    <Preference 
+	        android:title="@string/pref_title_share_answers_log"  
+	        android:key="share_answers_log">
+	    
+	    	<intent 
+		        android:action="com.paperclickers.intent.action.SHARE_ANSWERS_LOG"
+		        android:targetPackage="com.paperclickers"
+		        android:targetClass="com.paperclickers.SettingsActivity" />
+	        
+	    </Preference>
+	    
+	    <Preference 
+	        android:title="@string/pref_title_clear_answers_log" 
+	        android:key="clear_answers_log">
+	    	
+	    	<intent 
+		        android:action="com.paperclickers.intent.action.DELETE_ANSWERS_LOG"
+		        android:targetPackage="com.paperclickers"
+		        android:targetClass="com.paperclickers.SettingsActivity" />
+	        
+	    </Preference>
+	    
+    </PreferenceCategory>
+</PreferenceScreen>

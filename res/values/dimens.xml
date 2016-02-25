@@ -1,0 +1,66 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+      
+    
+    <!-- Start Activity Dimens -->
+    <dimen name="icon_margin_left">12dp</dimen>
+    <dimen name="icon_margin_top">25dp</dimen>
+    <dimen name="att_margin_left">25dp</dimen>
+    <dimen name="title_margin_top">40dp</dimen>
+    <dimen name="title_margin_left">15dp</dimen>
+    <dimen name="title_text_size">22sp</dimen>
+    <dimen name="txtSelect_margin_top">140dp</dimen>
+    <dimen name="txtSelect_text_size">18sp</dimen>
+	<dimen name="buttonStart_width">150dp</dimen>
+	<dimen name="buttonStart_margin_top">50dp</dimen>
+	<dimen name="buttonStart_text_size">18sp</dimen>
+    
+    <!-- Question Activity Dimens -->
+    <dimen name="editText_width">50dp</dimen>
+    <dimen name="editText_margin_top">10dp</dimen>
+	
+	<!-- Camera Activity Dimens -->
+	<dimen name="buttonContainer_width">55dp</dimen>
+	<dimen name="buttonCapture_margin_left">5dp</dimen>
+	<dimen name="buttonCapture_margin_right">5dp</dimen>
+    
+	
+	<!-- GridView Activity Dimens -->
+	<dimen name="buttonDone_margin_left">5dp</dimen>
+	<dimen name="buttonDone_margin_right">5dp</dimen>
+	<dimen name="buttonDone_margin_bottom">20dp</dimen>
+	
+	<!-- Rowgrid Activity Dimens -->
+	<dimen name="img_answer_width">60dp</dimen>
+	<dimen name="img_answer_height">60dp</dimen>
+	<dimen name="img_answer_margin_top">5dp</dimen>
+	<dimen name="img_text_margin_bottom">6dp</dimen>
+	<dimen name="answerText_size">20sp</dimen>
+	
+	
+	<!-- PieChart Activity Dimens -->
+	<dimen name="answer_text_margin_top">25dp</dimen><dimen name="txt_total_margin_top">20dp</dimen>
+	<dimen name="txt_total_margin_right">10dp</dimen>
+	<dimen name="txt_total_text_size">18sp</dimen>
+	<dimen name="buttonLayout_margin_top">10dp</dimen>
+	<dimen name="buttonLayout_margin_bottom">20dp</dimen>
+	<dimen name="margin_between_button">15dp</dimen>
+	<dimen name="button_finish_width">160dp</dimen><dimen name="button_finish_margin_bottom">20dp</dimen>
+	<dimen name="button_finish_text_size">18sp</dimen>
+	<dimen name="button_finish_margin_rigth">10dp</dimen>
+	<dimen name="home_margin_left">10dp</dimen>
+    <dimen name="home_margin_top">10dp</dimen>
+    <dimen name="answer_icon_size">40dp</dimen>
+    <dimen name="grid_view_buttons_size">45dp</dimen>
+    <dimen name="grid_view_buttons_margin">10dp</dimen>
+    <dimen name="grid_view_icons_margin">20dp</dimen><dimen name="settings_icon_size">50dp</dimen>
+    
+    
+    
+    <dimen name="grid_view_answers_margin">5dp</dimen>
+    <dimen name="debug_code_frequencies_horizontal_margin">50dp</dimen>
+	
+</resources>

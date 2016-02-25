@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+ Paperclickers - Affordable solution for classroom response system.
+ 
+ Copyright (C) 2015 Jomara Bindá <jbinda@dca.fee.unicamp.br>
+ Copyright (C) 2015-2016 Eduardo Valle Jr <dovalle@dca.fee.unicamp.br>
+ Copyright (C) 2015-2016 Eduardo Seiti de Oliveira <eduseiti@dca.fee.unicamp.br>
+  
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2
+ of the License, or (at your option) any later version.
+    
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+    
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <FrameLayout
+        android:id="@+id/camera_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/txt_hint1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/icon_margin_left"
+        android:layout_marginTop="@dimen/icon_margin_top"
+        android:textColor="@android:color/white"
+        android:textSize="24sp" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/txt_hint2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/icon_margin_top"
+        android:layout_marginRight="@dimen/icon_margin_left"
+        android:text="@string/hint2"
+        android:textColor="@android:color/white"
+        android:textSize="24sp" >
+    </TextView>
+    
+    <TextView
+        android:id="@+id/txt_freqDebug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/debug_code_frequencies_horizontal_margin"
+        android:layout_marginRight="@dimen/debug_code_frequencies_horizontal_margin"
+        android:text="@string/frequencies_debug"
+        android:textColor="@android:color/white"
+        android:textSize="10sp" >
+
+    </TextView>
+
+</RelativeLayout>

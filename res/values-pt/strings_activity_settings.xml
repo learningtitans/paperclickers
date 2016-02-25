@@ -1,0 +1,67 @@
+<resources>
+
+    <string name="title_activity_settings">Configurações</string>
+
+    <!-- Strings related to Settings -->
+
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">Gerais</string>
+    <string name="pref_title_number_of_students">Número de alunos</string>
+    <string name="pref_default_number_of_students">40</string>
+    
+    <string name="pref_title_validation_threshold">[dev] Limite de validação</string>
+    <string name="pref_default_validation_threshold">32</string>
+    
+    <string name="pref_header_answers_log">Registro de respostas</string>
+    <string name="pref_title_clear_answers_log">Apagar registro de respostas</string>
+    <string name="pref_title_share_answers_log">Compartilhar registro de respostas</string>
+    
+    
+
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_print_codes">Imprimir códigos dos alunos</string>
+    <string name="pref_title_print_codes_page_format">Tamanho de página</string>
+
+    <string-array name="pref_print_codes_page_format_titles">
+        <item>A4</item>
+        <item>Carta</item>
+    </string-array>
+    <string-array name="pref_print_codes_page_format_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+    
+
+    <!-- Example settings for Notifications -->
+    
+    
+    <string name="pref_title_print_codes_per_page">Número de códigos por página</string>
+    <string-array name="pref_print_codes_per_page_titles">
+        <item >1 por página</item>
+        <item >2 por página</item>
+        <item >4 por página</item>
+    </string-array>
+    <string-array name="pref_print_codes_per_page_values">
+        <item >1</item>
+        <item >2</item>
+        <item >4</item>
+    </string-array>
+    <string name="pref_title_recto_verso_print_sequence">Frente/verso</string>
+    <string-array name="pref_print_recto_verso_print_sequence_titles">
+        <item >Minha impressora imprime frente/verso automaticamente</item>
+        <item >Preciso imprimir frente/verso manualmente</item>
+    </string-array>
+    <string-array name="pref_print_recto_verso_print_sequence_values">
+        <item >0</item>
+        <item >1</item>
+    </string-array><string name="pref_title_share_printed_codes">Imprimir e compartilhar códigos</string>
+    <string name="share_answers_log_using">Compartilhar registro de respostas usando</string>
+    <string name="no_answers_log">Não existe registro de respostas</string>
+    <string name="delete_answers_log_dialog_title">Confirme apagamento</string>
+    <string name="delete_answers_log_dialog_text">Apagar registro de respostas?</string>
+    <string name="share_topcodes_using">Compartilhar TopCodes usando</string>
+    <string name="invalid_students_number">Número de alunos deve estar entre 1 e 99</string>
+
+</resources>

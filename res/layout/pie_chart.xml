@@ -1,0 +1,90 @@
+<!-- 
+ Paperclickers - Affordable solution for classroom response system.
+ 
+ Copyright (C) 2015 Jomara Bindá <jbinda@dca.fee.unicamp.br>
+ Copyright (C) 2015-2016 Eduardo Valle Jr <dovalle@dca.fee.unicamp.br>
+ Copyright (C) 2015-2016 Eduardo Seiti de Oliveira <eduseiti@dca.fee.unicamp.br>
+  
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2
+ of the License, or (at your option) any later version.
+    
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+    
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light" >
+
+    <RelativeLayout
+        android:id="@+id/buttonContainer"
+        android:layout_width="@dimen/buttonContainer_width"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="#d4d1d1" >
+
+        <Button
+            android:id="@+id/button_back"
+            style="@android:attr/buttonBarButtonStyle"
+            android:layout_width="@dimen/grid_view_buttons_size"
+            android:layout_height="@dimen/grid_view_buttons_size"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/grid_view_buttons_margin"
+            android:background="@drawable/sel_button_back"
+            android:visibility="visible" />        
+        
+    </RelativeLayout>
+    
+    <TextView
+        android:id="@+id/txtTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/txt_total_margin_right"
+        android:layout_marginTop="@dimen/txt_total_margin_top"
+        android:singleLine="false"
+        android:text="@string/pie_chart_answers"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/txt_total_text_size" />
+
+	<Button
+	    android:id="@+id/button_finish"
+	    android:layout_width="@dimen/button_finish_width"
+	    android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"	    
+        android:layout_marginRight="@dimen/txt_total_margin_right"
+        android:layout_marginBottom="@dimen/txt_total_margin_top"
+	    android:text="@string/done_button"
+	    android:textColor="@drawable/press_button_text_color"
+	    android:textSize="@dimen/button_finish_text_size"
+	    android:fontFamily="sans-serif-medium"
+        android:background="@drawable/press_button"  />
+    
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_toRightOf="@id/buttonContainer"
+        android:layout_toLeftOf="@id/button_finish" >
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/chart1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</RelativeLayout>

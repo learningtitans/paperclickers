@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+ Paperclickers - Affordable solution for classroom response system.
+ 
+ Copyright (C) 2015 Jomara Bindá <jbinda@dca.fee.unicamp.br>
+ Copyright (C) 2015-2016 Eduardo Valle Jr <dovalle@dca.fee.unicamp.br>
+ Copyright (C) 2015-2016 Eduardo Seiti de Oliveira <eduseiti@dca.fee.unicamp.br>
+  
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2
+ of the License, or (at your option) any later version.
+    
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+    
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal" >
+
+    <RelativeLayout
+        android:id="@+id/buttonContainerPlus"
+        android:layout_width="@dimen/buttonContainer_width"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="#d4d1d1" >
+
+        <Button
+            android:id="@+id/button_back"
+            style="@android:attr/buttonBarButtonStyle"
+            android:layout_width="@dimen/grid_view_buttons_size"
+            android:layout_height="@dimen/grid_view_buttons_size"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/grid_view_buttons_margin"
+            android:background="@drawable/sel_button_back"
+            android:visibility="visible" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_below="@+id/button_back"
+		    android:layout_above="@+id/button_pie_chart"
+            android:layout_marginTop="@dimen/grid_view_icons_margin"
+            android:layout_marginBottom="@dimen/grid_view_icons_margin"		    
+		    android:orientation="vertical" 
+		    android:gravity="center">
+
+             <ImageView
+	            android:id="@+id/imgAnswer_padding_1"
+	            android:layout_width="1dp"
+	            android:layout_height="1dp"
+	            android:layout_weight="0.8" />
+            
+	        <ImageView
+	            android:id="@+id/imgAnswer_a"
+	            android:layout_width="@dimen/answer_icon_size"
+	            android:layout_height="@dimen/answer_icon_size"
+	            android:layout_weight="1"
+	            android:src="@drawable/icon_a" />
+	        
+	        <ImageView
+	            android:id="@+id/imgAnswer_b"
+	            android:layout_width="@dimen/answer_icon_size"
+	            android:layout_height="@dimen/answer_icon_size"
+	            android:layout_weight="1"
+	            android:src="@drawable/icon_b" />
+	
+	        <ImageView
+	            android:id="@+id/imgAnswer_c"
+	            android:layout_width="@dimen/answer_icon_size"
+	            android:layout_height="@dimen/answer_icon_size"
+	            android:layout_weight="1"
+	            android:src="@drawable/icon_c" />
+	
+	        <ImageView
+	            android:id="@+id/imgAnswer_d"
+	            android:layout_width="@dimen/answer_icon_size"
+	            android:layout_height="@dimen/answer_icon_size"
+	            android:layout_weight="1"
+	            android:src="@drawable/icon_d" />
+	        
+	        <ImageView
+	            android:id="@+id/imgAnswer_padding_2"
+	            android:layout_width="1dp"
+	            android:layout_height="1dp"
+	            android:layout_weight="0.8" />
+            
+        </LinearLayout>
+        
+        
+        
+        <Button
+            android:id="@+id/button_pie_chart"
+            style="@android:attr/buttonBarButtonStyle"
+            android:layout_width="@dimen/grid_view_buttons_size"
+            android:layout_height="@dimen/grid_view_buttons_size"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/grid_view_buttons_margin"
+            android:background="@drawable/sel_button_graph" />
+
+    </RelativeLayout>
+
+    <GridView
+        android:id="@+id/gridView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/buttonContainerPlus"
+        android:columnWidth="@dimen/img_answer_width"
+        android:verticalSpacing="@dimen/grid_view_answers_margin"
+        android:horizontalSpacing="@dimen/grid_view_answers_margin"
+        android:gravity="center"
+        android:numColumns="auto_fit"
+        android:stretchMode="columnWidth" 
+        android:listSelector="#00000000" >
+    </GridView>    
+    
+</RelativeLayout>

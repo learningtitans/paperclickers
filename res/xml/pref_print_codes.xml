@@ -1,0 +1,52 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/pref_header_print_codes">
+	    <!--
+	         NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
+	         dismiss it.
+	    -->
+	    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+	    <ListPreference
+	        android:defaultValue="0"
+	        android:entries="@array/pref_print_codes_page_format_titles"
+	        android:entryValues="@array/pref_print_codes_page_format_values"
+	        android:key="print_codes_page_format"
+	        android:negativeButtonText="@null"
+	        android:positiveButtonText="@null"
+	        android:title="@string/pref_title_print_codes_page_format" />
+	
+	    <!--
+	         This preference simply launches an intent when selected. Use this UI sparingly, per
+	         design guidelines.
+	    -->
+	    <ListPreference 
+	        android:key="print_codes_per_page" 
+	        android:title="@string/pref_title_print_codes_per_page" 
+	        android:entries="@array/pref_print_codes_per_page_titles" 
+	        android:entryValues="@array/pref_print_codes_per_page_values" 
+	        android:negativeButtonText="@null"
+	        android:positiveButtonText="@null"
+	        android:defaultValue="1"/>
+	
+	    <ListPreference 
+	        android:key="print_recto_verso_sequence" 
+	        android:title="@string/pref_title_recto_verso_print_sequence" 
+	        android:entryValues="@array/pref_print_recto_verso_print_sequence_values" 
+	        android:entries="@array/pref_print_recto_verso_print_sequence_titles" 
+	        android:negativeButtonText="@null"
+	        android:positiveButtonText="@null"
+	        android:defaultValue="0"/>
+	
+	    <Preference 
+	        android:title="@string/pref_title_share_printed_codes" 
+	        android:key="share_printed_codes">
+	        <intent 
+		        android:action="com.paperclickers.intent.action.PRINT_CODES"
+		        android:targetPackage="com.paperclickers"
+		        android:targetClass="com.paperclickers.SettingsActivity" />
+	        
+	    </Preference>
+	        
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -1,0 +1,67 @@
+<resources>
+
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+    <string name="pref_title_number_of_students">Number of students</string>
+    <string name="pref_default_number_of_students">40</string>
+    <string name="pref_title_validation_threshold">[dev] Validation threshold</string>
+    <string name="pref_default_validation_threshold">32</string>
+    <string name="pref_header_answers_log">Answers log</string>
+    <string name="pref_title_clear_answers_log">Clear answers log</string>
+    <string name="pref_title_share_answers_log">Share answers log</string>
+    
+    
+
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_print_codes">Print students\' codes</string>
+    <string name="pref_title_print_codes_page_format">Page format</string>
+
+    <string-array name="pref_print_codes_page_format_titles">
+        <item>A4</item>
+        <item>US letter</item>
+    </string-array>
+    <string-array name="pref_print_codes_page_format_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+    
+
+    <!-- Example settings for Notifications -->
+    
+    
+    <string name="pref_title_print_codes_per_page">Number of codes per page</string>
+    <string-array name="pref_print_codes_per_page_titles">
+        <item >1 per page</item>
+        <item >2 per page</item>
+        <item >4 per page</item>
+    </string-array>
+    <string-array name="pref_print_codes_per_page_values">
+        <item >1</item>
+        <item >2</item>
+        <item >4</item>
+    </string-array>
+    <string name="pref_title_recto_verso_print_sequence">Recto/verso</string>
+    <string-array name="pref_print_recto_verso_print_sequence_titles">
+        <item >My printer does recto/verso automatically</item>
+        <item >I have to do recto/verso manually</item>
+    </string-array>
+    <string-array name="pref_print_recto_verso_print_sequence_values">
+        <item >0</item>
+        <item >1</item>
+    </string-array><string name="pref_title_share_printed_codes">Print or share codes</string>
+    <string name="share_answers_log_using">Share answers log using</string>
+    <string name="no_answers_log">There is no answers log yet</string>
+    <string name="delete_answers_log_dialog_title">Confirm deletion</string>
+    <string name="delete_answers_log_dialog_text">Delete answers log?</string>
+    <string name="share_topcodes_using">Share TopCodes using</string>
+    <string name="invalid_students_number">Number of students must be between 1 and 99</string>
+    
+    
+
+</resources>

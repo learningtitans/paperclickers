@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">paper\u200bclickers</string>
+    <string name="action_settings">Configurações</string>
+    <string name="app_title">paperclickers</string>
+
+    <string name="start_button">início</string>
+    <string name="done_button">nova pergunta</string>
+    
+    <string name="hint1Start">Mova o telefone até todos códigos serem detectados: </string>
+    <string name="hint1End">detectados</string>
+    <string name="hint2">Mantenha toque na tela para terminar</string>
+
+    <string name="frequencies_debug">[dev] Frequência dos códigos detectados irá aparecer aqui</string>
+    
+    <string name="title_activity_about">Sobre paperclickers</string>
+
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
+    
+    <string name="error_saving_pdf">Erro granvando pdf dos códigos dos estudantes.</string>
+    <string name="error_saving_log">Error gravando log de respostas.</string>
+    <string name="file_saved">salvo.</string>
+
+    <string name="pie_chart_answers">respostas</string>
+
+</resources>
