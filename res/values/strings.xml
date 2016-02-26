@@ -8,11 +8,12 @@
     <string name="start_button">start</string>
     <string name="done_button">new question</string>
     
-    <string name="hint1Start">Move phone until all codes are scanned: </string>
-    <string name="hint1End"> found</string>
-    <string name="hint2">Touch screen and hold to finish</string>
+    <string name="hint1Start">Scan the room until all codes are detected:\u0020</string>
+    <string name="hint1End">\u0020found</string>
+    <string name="hint2">To finish, touch the screen for two seconds.</string>
 
-    <string name="frequencies_debug">Detected codes frequency will appear here</string><string name="title_activity_about">About paperclickers</string>
+    <string name="frequencies_debug">[dev] Detected codes frequency will appear here</string>
+    <string name="title_activity_about">About paperclickers</string>
  	
     <string name="yes">Yes</string>
     <string name="no">No</string>

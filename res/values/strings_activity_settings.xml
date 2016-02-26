@@ -19,6 +19,7 @@
 
     <!-- Example settings for Data & Sync -->
     <string name="pref_header_print_codes">Print students\' codes</string>
+    <string name="pref_summary_print_codes">Better if printed in heavy paper (120gsm/80lb or higher)</string>
     <string name="pref_title_print_codes_page_format">Page format</string>
 
     <string-array name="pref_print_codes_page_format_titles">
@@ -38,7 +39,7 @@
     <string name="pref_title_print_codes_per_page">Number of codes per page</string>
     <string-array name="pref_print_codes_per_page_titles">
         <item >1 per page</item>
-        <item >2 per page</item>
+        <item >2 per page (recommended)</item>
         <item >4 per page</item>
     </string-array>
     <string-array name="pref_print_codes_per_page_values">

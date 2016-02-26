@@ -517,9 +517,9 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 				}
 				
 				if (AVOID_PARTIAL_READINGS) {
-					mHint1TextView.setText(mHint1StringStart + " " + mValidTopcodesCount + " " + mHint1StringEnd);
+					mHint1TextView.setText(mHint1StringStart + mValidTopcodesCount + mHint1StringEnd);
 				} else {
-					mHint1TextView.setText(mHint1StringStart + " " + mRecognizedTopcodesCount + " " + mHint1StringEnd);						
+					mHint1TextView.setText(mHint1StringStart + mRecognizedTopcodesCount + mHint1StringEnd);						
 				}
 									
 				if (SHOW_CODE_FREQUENCY_DEBUG) {
@@ -566,8 +566,12 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 		
 		hideStatusBar(); 
 
-		mHint1TextView.setText(mHint1StringStart + " " + mRecognizedTopcodesCount + " " + mHint1StringEnd);
-
+        if (AVOID_PARTIAL_READINGS) {
+            mHint1TextView.setText(mHint1StringStart + mValidTopcodesCount + mHint1StringEnd);
+        } else {
+            mHint1TextView.setText(mHint1StringStart + mRecognizedTopcodesCount + mHint1StringEnd);                     
+        }
+            		
 		mStartScanTime = System.currentTimeMillis();
 
 		setCameraPreview();		
@@ -585,6 +589,18 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 		
 		setCamera();
 	}
+	
+	
+	
+    @Override
+    protected void onStop() {
+        super.onStop();
+        
+        log.d(TAG, "===> onStop()");
+        
+        // Make sure the camera is always released, even if the activity hasn't being shown yet
+        releaseCamera();
+    }
 	
 	
 	

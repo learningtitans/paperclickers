@@ -8,9 +8,9 @@
     <string name="start_button">início</string>
     <string name="done_button">nova pergunta</string>
     
-    <string name="hint1Start">Mova o telefone até todos códigos serem detectados: </string>
-    <string name="hint1End">detectados</string>
-    <string name="hint2">Mantenha toque na tela para terminar</string>
+    <string name="hint1Start">Percorra a sala até detectar todos os códigos:\n</string>
+    <string name="hint1End">\u0020encontrados</string>
+    <string name="hint2">Para terminar, pressione a tela por dois segundos.</string>
 
     <string name="frequencies_debug">[dev] Frequência dos códigos detectados irá aparecer aqui</string>
     
