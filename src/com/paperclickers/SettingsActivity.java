@@ -121,18 +121,19 @@ public class SettingsActivity extends PreferenceActivity {
 	static float LETTER_PS_WIDTH  = LETTER_WIDTH * PS_POINT_PER_POL;
 	static float LETTER_PS_HEIGHT = LETTER_HEIGHT * PS_POINT_PER_POL;
 	
-	static float REFERENCE_TEXT = 15;
+	static float REFERENCE_TEXT = 10;
 	
-	static float ONE_PER_PAGE_TEXT        = 30;
+	static float ONE_PER_PAGE_TEXT        = 10;
 	static float ONE_PER_PAGE_TEXT_MARGIN = 5f;
 	
-	static float TWO_PER_PAGE_TEXT        = 30;
+	static float TWO_PER_PAGE_TEXT        = 10;
 	static float TWO_PER_PAGE_TEXT_MARGIN = 3f;
 
-	static float FOUR_PER_PAGE_TEXT        = 20;
+	static float FOUR_PER_PAGE_TEXT        = 10;
 	static float FOUR_PER_PAGE_TEXT_MARGIN = 2f;
 	
-	static float TOP_CODE_SCALE = 0.9f;
+	static float TOP_CODE_SCALE = 0.8f;
+	static float TOUCH_AREA_WIDTH_FACTOR = 0.4f;
 	
 	static String TOPCODES_FILE_PATH       = "/PaperClickers";
 	
@@ -753,14 +754,12 @@ public class SettingsActivity extends PreferenceActivity {
 		
 		paint.setColor(Color.BLACK);
 		paint.setTextSize(textSize);
-		paint.setTextAlign(Align.CENTER);	
+		paint.setTextAlign(Align.CENTER);
 		
 		whichCanvas.drawText(String.valueOf(topCodeTranslation), centerX, centerY + textSize / 2, paint);
-
-		float difference = centerY - centerX;
 		
-		float centerDistance = width / 4;
-		
+	    float difference = centerY - centerX;   
+		float centerDistance = width / 6;
 		
 		whichCanvas.drawText("A", centerX, centerY - centerDistance, paint);
 
