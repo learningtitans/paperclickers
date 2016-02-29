@@ -239,7 +239,9 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 	
     	if (mTouchStart != -1) {
         	if (System.currentTimeMillis() - mTouchStart > 1000) {
-				mVibrator.vibrate(50);
+				if (mVibrator != null) {
+				    mVibrator.vibrate(50);
+				}
 				
 				mTouchStart = -1;
 				
