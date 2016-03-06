@@ -24,6 +24,7 @@ package com.paperclickers;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
+import android.app.ActionBar.LayoutParams;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -46,7 +47,14 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 import android.support.v4.app.NavUtils;
 
@@ -135,13 +143,14 @@ public class SettingsActivity extends PreferenceActivity {
 	static float TOP_CODE_SCALE = 0.8f;
 	static float TOUCH_AREA_WIDTH_FACTOR = 0.4f;
 	
-	static String TOPCODES_FILE_PATH       = "/PaperClickers";
+	static String TOPCODES_FILE_PATH       = "/Download";
 	
-	static String TOPCODES_SINGLE_FILENAME = "topCodes.pdf";
+	static String TOPCODES_SINGLE_FILENAME = "paperclickers_topCodes.pdf";
 	
-	static String TOPCODES_RECTO_FILENAME  = "topCodesRecto.pdf";
-	static String TOPCODES_VERSO_FILENAME  = "topCodesVerso.pdf";
+	static String TOPCODES_RECTO_FILENAME  = "paperclickers_topCodes_recto.pdf";
+	static String TOPCODES_VERSO_FILENAME  = "paperclickers_topCodes_verso.pdf";
 	
+	static String PAPERCLICKERS_GITHUB_TOPCODES = "https://github.com/learningtitans/paperclickers/tree/master/topcodes";
 	
 	/**
 	 * Determines whether to always show the simplified settings UI, where
@@ -202,6 +211,12 @@ public class SettingsActivity extends PreferenceActivity {
 			bindPreferenceSummaryToValue(findPreference("print_codes_page_format"));
 			bindPreferenceSummaryToValue(findPreference("print_codes_per_page"));
 			bindPreferenceSummaryToValue(findPreference("print_recto_verso_sequence"));
+			
+			if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.KITKAT) {
+			    findPreference("print_codes_page_format").setEnabled(false);
+			    findPreference("print_codes_per_page").setEnabled(false);
+			    findPreference("print_recto_verso_sequence").setEnabled(false);
+			}
 		}
 	}
 
@@ -382,107 +397,126 @@ public class SettingsActivity extends PreferenceActivity {
 	 */
 	private void printAndShareCodes() {
 		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		
-		String studentsStr = prefs.getString("students_number", "10");
-		int studentsNum    = Integer.parseInt(studentsStr);
-		
-		if (studentsNum > validTopCodes.length) {
-			studentsNum = validTopCodes.length;
-		}
-		
-		String codesPerPageStr = prefs.getString("print_codes_per_page", "1");
-		int codesPerPage       = Integer.parseInt(codesPerPageStr);
-		
-		String pageFormatStr = prefs.getString("print_codes_page_format", "0");
-		int pageFormat       = Integer.parseInt(pageFormatStr);
-		
-		String rectoVersoSequenceStr = prefs.getString("print_recto_verso_sequence", "0");
-		int rectoVersoSequence       = Integer.parseInt(rectoVersoSequenceStr);
-		
-		
-		// Allocate PDF documents according to the recto/verso printing sequence
-		
-		PdfDocument document = new PdfDocument();
-		PdfDocument verso    = null;
-		
-		if (rectoVersoSequence == 1) {
-			verso = new PdfDocument();
-		}
-		
-		
-		// Create the PDF page format according to the page format dimensions
-		
-		int height;
-		int width;
-		
-		if (pageFormat == 0) {
-
-			height = (int) A4_PS_HEIGHT;
-			width  = (int) A4_PS_WIDTH;	
-	
-		} else {
-
-			height = (int) LETTER_PS_HEIGHT;
-			width  = (int) LETTER_PS_WIDTH;
-		}		
-		
-		
-		PageInfo pageInfo = 
-		    new PageInfo.Builder(width, height, (int) Math.ceil(studentsNum / codesPerPage)).create();
-		
-		
-		switch(codesPerPage) {
-		case 1:
-			printCodes1PerPage(studentsNum, document, verso, pageInfo);
-			
-			break;
-		case 2:
-			printCodes2PerPage(studentsNum, document, verso, pageInfo);
-			
-			break;
-		case 4:
-			printCodes4PerPage(studentsNum, document, verso, pageInfo);
-			
-			break;
-		}
-		
-		Uri savedFileUri;
-		Intent shareIntent = new Intent();
-		
-		if (verso == null) {
-			savedFileUri = saveTopCodesFile(document, TOPCODES_SINGLE_FILENAME);
-			
-			if (savedFileUri != null) {
-				shareIntent.setAction(Intent.ACTION_SEND);
-				
-				shareIntent.putExtra(Intent.EXTRA_STREAM, savedFileUri);
-				shareIntent.setType("text/plain");
-			}
-		} else {
-			savedFileUri = saveTopCodesFile(document, TOPCODES_RECTO_FILENAME);
-			
-			if (savedFileUri != null) {
-				ArrayList<Uri> files = new ArrayList<Uri>();
-				
-				shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
-				
-				files.add(savedFileUri);
-				
-				savedFileUri = saveTopCodesFile(verso, TOPCODES_VERSO_FILENAME);
-				
-				if (savedFileUri != null) {
-					files.add(savedFileUri);
-										
-					shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
-					shareIntent.setType("text/plain");
-				}
-			}
-		}
-		
-		if (savedFileUri != null) {
-			startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.share_topcodes_using)));				
-		}
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.KITKAT) {
+            
+            AlertDialog.Builder alert = new AlertDialog.Builder(this); 
+            alert.setTitle(R.string.cannot_generate_PDF);
+            alert.setMessage(R.string.visit_project_page_for_topcodes);
+            alert.setPositiveButton(R.string.go_github, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    
+                    dialog.dismiss();
+                    
+                    Intent openTopcodesIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(PAPERCLICKERS_GITHUB_TOPCODES));
+                    startActivity(openTopcodesIntent);
+                }
+            });
+            alert.show();
+            
+        } else {  
+    		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    		
+    		String studentsStr = prefs.getString("students_number", "10");
+    		int studentsNum    = Integer.parseInt(studentsStr);
+    		
+    		if (studentsNum > validTopCodes.length) {
+    			studentsNum = validTopCodes.length;
+    		}
+    		
+    		String codesPerPageStr = prefs.getString("print_codes_per_page", "1");
+    		int codesPerPage       = Integer.parseInt(codesPerPageStr);
+    		
+    		String pageFormatStr = prefs.getString("print_codes_page_format", "0");
+    		int pageFormat       = Integer.parseInt(pageFormatStr);
+    		
+    		String rectoVersoSequenceStr = prefs.getString("print_recto_verso_sequence", "0");
+    		int rectoVersoSequence       = Integer.parseInt(rectoVersoSequenceStr);
+    		
+    		
+    		// Allocate PDF documents according to the recto/verso printing sequence
+    		
+    		PdfDocument document = new PdfDocument();
+    		PdfDocument verso    = null;
+    		
+    		if (rectoVersoSequence == 1) {
+    			verso = new PdfDocument();
+    		}
+    		
+    		
+    		// Create the PDF page format according to the page format dimensions
+    		
+    		int height;
+    		int width;
+    		
+    		if (pageFormat == 0) {
+    
+    			height = (int) A4_PS_HEIGHT;
+    			width  = (int) A4_PS_WIDTH;	
+    	
+    		} else {
+    
+    			height = (int) LETTER_PS_HEIGHT;
+    			width  = (int) LETTER_PS_WIDTH;
+    		}		
+    		
+    		
+    		PageInfo pageInfo = 
+    		    new PageInfo.Builder(width, height, (int) Math.ceil(studentsNum / codesPerPage)).create();
+    		
+    		
+    		switch(codesPerPage) {
+    		case 1:
+    			printCodes1PerPage(studentsNum, document, verso, pageInfo);
+    			
+    			break;
+    		case 2:
+    			printCodes2PerPage(studentsNum, document, verso, pageInfo);
+    			
+    			break;
+    		case 4:
+    			printCodes4PerPage(studentsNum, document, verso, pageInfo);
+    			
+    			break;
+    		}
+    		
+    		Uri savedFileUri;
+    		Intent shareIntent = new Intent();
+    		
+    		if (verso == null) {
+    			savedFileUri = saveTopCodesFile(document, TOPCODES_SINGLE_FILENAME);
+    			
+    			if (savedFileUri != null) {
+    				shareIntent.setAction(Intent.ACTION_SEND);
+    				
+    				shareIntent.putExtra(Intent.EXTRA_STREAM, savedFileUri);
+                    shareIntent.setType("application/pdf");
+    			}
+    		} else {
+    			savedFileUri = saveTopCodesFile(document, TOPCODES_RECTO_FILENAME);
+    			
+    			if (savedFileUri != null) {
+    				ArrayList<Uri> files = new ArrayList<Uri>();
+    				
+    				shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
+    				
+    				files.add(savedFileUri);
+    				
+    				savedFileUri = saveTopCodesFile(verso, TOPCODES_VERSO_FILENAME);
+    				
+    				if (savedFileUri != null) {
+    					files.add(savedFileUri);
+    										
+    					shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
+                        shareIntent.setType("application/pdf");
+    				}
+    			}
+    		}
+    		
+    		if (savedFileUri != null) {
+    			startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.share_topcodes_using)));				
+    		}
+        }
 	}
 	
 	
@@ -577,10 +611,7 @@ public class SettingsActivity extends PreferenceActivity {
 						   height * 3 / 4 - difference, width / 2 + difference, 
 						   height / 2, width, 
 						   REFERENCE_TEXT, TWO_PER_PAGE_TEXT_MARGIN);				
-			}
-			
-			whichCanvas.restore();
-			
+			}			
 			
 			docRecto.finishPage(page);
 			
@@ -615,9 +646,7 @@ public class SettingsActivity extends PreferenceActivity {
 			} else {
 				currentCode++;
 			}
-			
-			whichCanvas.restore();
-			
+						
 			docVerso.finishPage(page);
 		}
 	}
@@ -799,7 +828,7 @@ public class SettingsActivity extends PreferenceActivity {
 			// Create the stream pointing at the file location
 		
 			File topCodesFile = new File(Environment.getExternalStorageDirectory()
-			         				 + "/PaperClickers", fileName);
+			         				 + TOPCODES_FILE_PATH, fileName);
 			
 			fOut = new FileOutputStream(topCodesFile);
 			
@@ -933,5 +962,11 @@ public class SettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference("print_codes_page_format"));
 		bindPreferenceSummaryToValue(findPreference("print_codes_per_page"));
 		bindPreferenceSummaryToValue(findPreference("print_recto_verso_sequence"));
+		
+		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.KITKAT) {
+		    findPreference("print_codes_page_format").setEnabled(false);
+		    findPreference("print_codes_per_page").setEnabled(false);
+		    findPreference("print_recto_verso_sequence").setEnabled(false);
+		}
 	}
 }

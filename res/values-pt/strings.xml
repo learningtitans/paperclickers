@@ -24,5 +24,9 @@
     <string name="file_saved">salvo.</string>
 
     <string name="pie_chart_answers">respostas</string>
+    
+    <string name="cannot_generate_PDF">Não é possível gerar códigos</string>
+    <string name="visit_project_page_for_topcodes">Geração dos TopCodes requer versão Android 4.4 ou superior.\n\nVisite o GitHub do projeto para obter os códigos dos alunos.</string>
+    <string name="go_github">Ir para GitHub</string>    
 
 </resources>
