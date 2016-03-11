@@ -24,7 +24,11 @@
  *
  *
  *
- * This version was slightly changed to include additional comments.
+ * This version received the following changes:
+ * - changing the draw() method to not use Canvas.drawArc() which was not
+ *   working properly on Android M; using Canvas.Path instead.
+ * - including additional comments.
+ * 
  * The original source can be found at :
  * 		http://users.eecs.northwestern.edu/~mhorn/topcodes/
 */
@@ -34,6 +38,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Paint.Style;
+import android.graphics.Path;
 
 /**
  * TopCodes (Tangible Object Placement Codes) are black-and-white circular
@@ -103,19 +109,19 @@ public class TopCode {
 
 	
 	
-	public int hashCode() {
-		return this.code;
-	}
-	
-	
-	
-	public boolean equals(Object obj) {
-		if (obj instanceof TopCode) {
-			return ((TopCode) obj).getCode() == this.getCode();
-		} else {
-			return false;
-		}
-	}
+//	public int hashCode() {
+//		return this.code;
+//	}
+//	
+//	
+//	
+//	public boolean equals(Object obj) {
+//		if (obj instanceof TopCode) {
+//			return ((TopCode) obj).getCode() == this.getCode();
+//		} else {
+//			return false;
+//		}
+//	}
 	
 	
 	
@@ -484,23 +490,33 @@ public class TopCode {
 	 */
 	public void draw(Canvas g) {
 
-		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		Paint paint = new Paint();
 
 		int bits = this.code;
 		float sweep = 360.0f / SECTORS;
 		float a = (-orientation * 180 / PI);
 		float r = WIDTH * 0.5f * unit;
 
-		paint.setColor(Color.WHITE);
-		g.drawCircle(x, y, r, paint);
-
+        paint.setStyle(Style.FILL_AND_STROKE);
+		
 		RectF oval = new RectF(x - r, y - r, x + r, y + r);
+		Path data  = new Path();
+		
+		paint.setColor(Color.BLACK);
+		
+		
 		for (int i = 0; i < SECTORS; i++) {
-			paint.setColor(((bits & 0x1) > 0) ? Color.WHITE : Color.BLACK);
-			g.drawArc(oval, i * sweep + a, sweep + 0.1f, true, paint);
-			bits >>= 1;
+	        if ((bits & 0x1) == 0) {
+	            data.arcTo(oval, i* sweep + a, sweep + 0.1f);
+	            data.lineTo(x, y);
+	        }
+	       
+	        bits >>= 1;
 		}
-
+		
+        data.close();
+		g.drawPath(data, paint); 
+		
 		paint.setColor(Color.WHITE);
 		g.drawCircle(x, y, r - unit, paint);
 
