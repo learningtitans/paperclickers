@@ -106,25 +106,6 @@ public class TopCode {
 		this();
 		this.code = code;
 	}
-
-	
-	
-//	public int hashCode() {
-//		return this.code;
-//	}
-//	
-//	
-//	
-//	public boolean equals(Object obj) {
-//		if (obj instanceof TopCode) {
-//			return ((TopCode) obj).getCode() == this.getCode();
-//		} else {
-//			return false;
-//		}
-//	}
-	
-	
-	
 	
 	/**
 	 * Returns the ID number for this symbol. Calling the decode() function will

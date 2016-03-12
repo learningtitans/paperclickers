@@ -321,7 +321,7 @@ public class SettingsActivity extends PreferenceActivity {
         		
         		shareIntent.setAction(Intent.ACTION_SEND);
         		shareIntent.putExtra(Intent.EXTRA_STREAM, com.paperclickers.result.AnswersLog.getAnswersLogUri());
-        		shareIntent.setType("text/plain");
+        		shareIntent.setType("text/csv");
         		
         		startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.share_answers_log_using)));
         		
