@@ -31,8 +31,11 @@ import com.paperclickers.fiducial.TopCode;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.DisplayMetrics;
 import android.util.SparseArray;
@@ -41,6 +44,10 @@ import android.view.SurfaceView;
 public class DrawView extends SurfaceView {
 
 	final static String TAG = "DrawView";
+
+	// Use this constant to enable drawing the topcodes validation countdown during camera scan
+	// Enabling this disables the CameraMain.ONLY_PREVIEW_VALIDATED_CODES feature
+	final static boolean DRAW_VALIDATION_COUNTDOWN = true;
 	
 	private SparseArray<TopcodeValidator> mValidatorsList;
 	
@@ -55,6 +62,8 @@ public class DrawView extends SurfaceView {
 	private Paint mPaintB;
 	private Paint mPaintC;
 	private Paint mPaintD;
+	
+	private boolean mShowingValidation;
 
 	
 	
@@ -82,7 +91,12 @@ public class DrawView extends SurfaceView {
 	
 	
 	
-	public DrawView(Context context, SparseArray<TopcodeValidator> whichValidatorsList, int width, int height) {
+	public DrawView(Context context, 
+	                SparseArray<TopcodeValidator> whichValidatorsList, 
+	                int width, 
+	                int height,
+	                boolean showingValidation) {
+	    
 		super(context);
 		init();
 		setWillNotDraw(false);
@@ -93,6 +107,8 @@ public class DrawView extends SurfaceView {
 		
 		mWidth  = width;
 		mHeight = height;
+		
+		mShowingValidation = showingValidation;
 	}	
 	
 	
@@ -137,13 +153,23 @@ public class DrawView extends SurfaceView {
 		super.onDraw(canvas);
 		
 		if (mValidTopcodesList != null) {
-				
+  
+            Rect textBounds = new Rect();
+		    
 			for (TopCode topCode : mValidTopcodesList) {
 
 				TopcodeValidator whichValidator = mValidatorsList.get(topCode.getCode());
 				
-				int bestAnswer = whichValidator.getBestValidAnswer();
-								
+				int bestAnswer = PaperclickersScanner.ID_NO_ANSWER;
+				
+				if (DRAW_VALIDATION_COUNTDOWN && mShowingValidation) {
+				    bestAnswer = whichValidator.getLastDetectedAnswer();
+				} else {
+				    if (whichValidator != null) {
+				        bestAnswer = whichValidator.getBestValidAnswer();
+				    }
+				}
+    								
 				if (bestAnswer != PaperclickersScanner.ID_NO_ANSWER) {
 				
 					float codeX = topCode.getCenterX();
@@ -156,26 +182,58 @@ public class DrawView extends SurfaceView {
 		            
 		            codeDiameter = codeDiameter * canvas.getWidth() / mWidth * 0.5f;
 		            
+		            Paint textPaint = null;
+		            
 		            switch(bestAnswer) {
 		            case PaperclickersScanner.ID_ANSWER_A:
 		            	drawTriangle(canvas, codeX, codeY, codeDiameter, mPaintA);
+		            	
+		            	textPaint = mPaintA;
 		            	
 		            	break;
 		            	
 		            case PaperclickersScanner.ID_ANSWER_B:
 		            	drawRectangle(canvas, codeX, codeY, codeDiameter * 0.8f, codeDiameter, false, mPaintB);
 		            	
+                        textPaint = mPaintB;
+                        
 		            	break;
 		            	
 		            case PaperclickersScanner.ID_ANSWER_C:
 		            	canvas.drawCircle(codeX, codeY, codeDiameter, mPaintC);
 		            	
+                        textPaint = mPaintC;
+                        
 		            	break;
 		            	
 		            case PaperclickersScanner.ID_ANSWER_D:
 		            	drawRectangle(canvas, codeX, codeY, codeDiameter, codeDiameter, true, mPaintD);
 		            	
+                        textPaint = mPaintD;
+                        
 		            	break;
+		            }
+		            
+		            if (DRAW_VALIDATION_COUNTDOWN && mShowingValidation) {
+		                
+		                String answerCountdown = null;
+		                
+		                if (whichValidator.isAnswerValid(bestAnswer)) {
+		                    answerCountdown = "\u2713";
+		                } else {
+		                    answerCountdown = String.valueOf(whichValidator.getCurrentValidationThrehshold() - whichValidator.getAnswerValidationCounter(bestAnswer));
+		                }
+		                    
+		                textPaint.setTextSize(40);
+		                textPaint.setTextAlign(Align.CENTER);
+		                
+		                textPaint.getTextBounds(answerCountdown, 0, 1, textBounds);
+
+		                if (textBounds.height() > codeDiameter) {
+		                    textPaint.setTextSize(20);
+		                }
+		                
+		                canvas.drawText(answerCountdown, codeX, codeY + codeDiameter / 3, textPaint);
 		            }
 				}
 			}

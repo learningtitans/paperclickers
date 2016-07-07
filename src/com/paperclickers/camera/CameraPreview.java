@@ -66,8 +66,12 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 	
 	
 	public void focusCamera() {
+	    
 		if (mCamera != null) {
-			if (mCamera.getParameters().getFocusMode().equals(Camera.Parameters.FOCUS_MODE_AUTO)) {
+
+		    Camera.Parameters parameters = mCamera.getParameters();
+	        
+			if (parameters.getFocusMode().equals(Camera.Parameters.FOCUS_MODE_AUTO)) {
 				log.d(TAG, "!!!!! AUTOFOCUS !!!!!");
 				
 				mCamera.autoFocus(null);
@@ -161,8 +165,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             mCamera.setPreviewCallback((PreviewCallback) mContext);
             mCamera.setPreviewDisplay(mSurfaceHolder);
             mCamera.startPreview();
-            
-            focusCamera();
             
             mCameraListener.updateChangedCameraSize(optimalSize.width, optimalSize.height);
             

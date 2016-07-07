@@ -37,7 +37,7 @@ public class TopcodeValidator {
 	
 	// Use this constant to enable the topcode validation using the most frequent answer criteria, in
 	// Opposition to the last valid answer criteria
-	final static boolean VALID_BY_FREQUENCY          = CameraMain.AVOID_PARTIAL_READINGS & false;
+	final static boolean VALID_BY_FREQUENCY = CameraMain.AVOID_PARTIAL_READINGS & false;
 	
 	// Use this constant to enable the moving validation threshold, which is increased according to the
 	// scan time
@@ -47,18 +47,32 @@ public class TopcodeValidator {
 	final static int MAXIMUM_VALIDATION_THRESHOLD = 100;
 	
 	final static int VALIDATION_THRESHOLD_INCREASE_STEP = 32;
+	
+	final static int INVALID_DUPLICATED_ANSWER = -1;
     
-    // Response codes for "checkContinuousDetection()" method
+    // Response codes for "checkContinousDetection()" method
     final static int TURNED_VALID        = -2;
     final static int VALID_ALREADY       = -1;
-    final static int CONTINUOS_DETECTION = 0;
-    final static int MISSED_CYCLES       = 1;
-    final static int CHANGED_ANSWER      = 2;   
+    final static int IGNORED_DUPLICATE   = 0;
+    final static int CONTINUOS_DETECTION = 1;
+    final static int MISSED_CYCLES       = 2;
+    final static int CHANGED_ANSWER      = 3;   
     
+    // Absolute number of cycles this topcode has been detected, by valid answer
 	private int[] mFrequency;
+	
+	// Number of continuous detection the given answers has been detected for this topcode; resets every time
+	// the topcode is not detected in the given cycle or the answer changes.
+	// Used to defined the answer validation for this topcode, based on the continuous detection threshold.
 	private int[] mNumberOfContinuousDetection;
+	
+	// Greatest number of continuous detection the given answer has been detected for this topcode;
 	private int[] mLongestNumberOfContinuousDetection;
-	private long[] mLastDetectedScanCycle;
+	
+	// Last scan cycle in which this answer has been detected for the given topcode
+	private int[] mLastDetectedScanCycle;
+	
+	// Indicates this answer is valid for this topcode
 	private boolean[] mValidTopcode; 
 	
 	private int mPreviousTranslatedAnswer;
@@ -70,7 +84,7 @@ public class TopcodeValidator {
 
 	
 	
-	int checkContinousDetection(long currentScanCycle, int translatedAnswer, TopCode whichTopcode) {
+	int checkContinousDetection(int currentScanCycle, int translatedAnswer, TopCode whichTopcode) {
 		
 		int result = CONTINUOS_DETECTION;
 
@@ -81,14 +95,29 @@ public class TopcodeValidator {
 				if (mPreviousTranslatedAnswer != translatedAnswer) {
 	
 					// New orientation; restart validation process
-					
-					result = CHANGED_ANSWER;
-					
-					log.d(TAG, String.format("Code changed answer: %d to %d", mPreviousTranslatedAnswer, translatedAnswer));
-					
-					mPreviousTranslatedAnswer = translatedAnswer;
+	
+				    // But first, check if the current code has already been detect in this same scan cycle - make
+				    // detection robust against duplicated codes
+
+				    if ((mPreviousTranslatedAnswer != PaperclickersScanner.ID_NO_ANSWER) && 
+				        (mLastDetectedScanCycle[mPreviousTranslatedAnswer] == currentScanCycle)) {
+				        
+				        mNumberOfContinuousDetection[translatedAnswer] = INVALID_DUPLICATED_ANSWER;
+				        
+				        result = IGNORED_DUPLICATE;
+				        
+	                    log.d(TAG, String.format("Duplicated code detected (cycle %d); answers: %d (1st - considered) to %d (2nd - discarded)", 
+	                          currentScanCycle, mPreviousTranslatedAnswer, translatedAnswer));                    
+				    } else {				    
+				        result = CHANGED_ANSWER;
+
+				        log.d(TAG, String.format("Code changed answer: %d to %d", mPreviousTranslatedAnswer, translatedAnswer));                    
+				    }
 					
 				} else if (currentScanCycle == mLastDetectedScanCycle[translatedAnswer] + 1) {
+				    
+				    // this is a continuous detection for this answer on this topcode
+				    
 					if (++mNumberOfContinuousDetection[translatedAnswer] >= mCurrentValidationThreshold) {
 						if (!isValid()) {
 							result = TURNED_VALID;
@@ -117,6 +146,9 @@ public class TopcodeValidator {
 					mNumberOfContinuousDetection[translatedAnswer] = 0;				
 				}
 			} else {
+			    
+			    // This answer is already valid for this topcode; just update the continuous detection counters
+			    
 				if (currentScanCycle == mLastDetectedScanCycle[translatedAnswer] + 1) {
 					++mNumberOfContinuousDetection[translatedAnswer];
 				} else {
@@ -131,11 +163,13 @@ public class TopcodeValidator {
 				
 				result = VALID_ALREADY;
 			}
-		} else {
-			mPreviousTranslatedAnswer = translatedAnswer;
 		}
 		
-		mLastDetectedScanCycle[translatedAnswer] = currentScanCycle;
+		if (result != IGNORED_DUPLICATE) {
+    		mLastDetectedScanCycle[translatedAnswer] = currentScanCycle;
+    		
+    		mPreviousTranslatedAnswer = translatedAnswer;
+		}
 		
 		return result;
 	}
@@ -150,11 +184,17 @@ public class TopcodeValidator {
 	
 	
 	
+    int getAnswerValidationCounter(int whichAnswer) {
+        return mNumberOfContinuousDetection[whichAnswer];
+    }
+    
+    
+
 	int getBestValidAnswer() {
 		
 		int bestAnswer = PaperclickersScanner.ID_NO_ANSWER;
 		int bestAnswerFrequency = 0;
-		long bestAnswerLastDetectedScanCycle = -1L;
+		int bestAnswerLastDetectedScanCycle = -1;
 		
 		if (CameraMain.AVOID_PARTIAL_READINGS) {
 			for (int i = 0; i < PaperclickersScanner.NUM_OF_VALID_ANSWERS; i++) {
@@ -181,7 +221,13 @@ public class TopcodeValidator {
 	
 	
 	
-	int getFrequency(int whichAnswer) {
+	int getCurrentValidationThrehshold() {
+	    return mCurrentValidationThreshold;
+	}
+	
+	
+	
+    int getFrequency(int whichAnswer) {
 		return mFrequency[whichAnswer];
 	}
 	
@@ -193,7 +239,13 @@ public class TopcodeValidator {
 	
 	
 	
-	long getLastDetectedScanCycle(int whichAnswer) {
+	int getLastDetectedAnswer() {
+	    return mPreviousTranslatedAnswer;
+	}
+	
+	
+	
+	int getLastDetectedScanCycle(int whichAnswer) {
 		return mLastDetectedScanCycle[whichAnswer];
 	}
 	
@@ -216,6 +268,12 @@ public class TopcodeValidator {
 	}
 
 
+	
+	boolean isAnswerValid(int whichAnswer) {
+	    return mValidTopcode[whichAnswer];
+	}
+	
+	
 
 	boolean isValid() {
 		
@@ -234,7 +292,7 @@ public class TopcodeValidator {
 					
 		mFrequency                   = new int[PaperclickersScanner.NUM_OF_VALID_ANSWERS];
 		mNumberOfContinuousDetection = new int[PaperclickersScanner.NUM_OF_VALID_ANSWERS];
-		mLastDetectedScanCycle       = new long[PaperclickersScanner.NUM_OF_VALID_ANSWERS];
+		mLastDetectedScanCycle       = new int[PaperclickersScanner.NUM_OF_VALID_ANSWERS];
 		mValidTopcode                = new boolean[PaperclickersScanner.NUM_OF_VALID_ANSWERS];
 		
 		if (MOVING_VALIDATION_THRESHOLD) {
@@ -244,7 +302,7 @@ public class TopcodeValidator {
 		for (int i = 0; i < PaperclickersScanner.NUM_OF_VALID_ANSWERS; i++) {
 			mFrequency[i]                   = 0;
 			mNumberOfContinuousDetection[i] = 0;
-			mLastDetectedScanCycle[i]       = -1L;
+			mLastDetectedScanCycle[i]       = -1;
 			mValidTopcode[i]                = false;
 			
 			if (MOVING_VALIDATION_THRESHOLD) {
@@ -256,7 +314,7 @@ public class TopcodeValidator {
 		mHandledTopcode             = whichTopCode;
 		mCurrentValidationThreshold = INITIAL_VALIDATION_THRESHOLD;
 		
-		if (SettingsActivity.VALIDATION_THRESHOLD_OPTION) {
+		if (SettingsActivity.DEVELOPMENT_OPTIONS) {
 	        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(whichContext);
 	        
 	        String validationThresholdStr   = prefs.getString("validation_threshold", String.valueOf(VALIDATION_THRESHOLD_INCREASE_STEP));

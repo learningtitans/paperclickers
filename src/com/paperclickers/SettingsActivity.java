@@ -24,7 +24,6 @@ package com.paperclickers;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
-import android.app.ActionBar.LayoutParams;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -47,14 +46,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.PopupWindow;
 import android.widget.Toast;
 import android.support.v4.app.NavUtils;
 
@@ -86,9 +78,8 @@ public class SettingsActivity extends PreferenceActivity {
 	
 	static String TAG = "SettingsActivity";
 	
-	// Use this constant to enable a development option in settings to change the validation
-	// threshold value
-	public static final boolean VALIDATION_THRESHOLD_OPTION = CameraMain.AVOID_PARTIAL_READINGS & false;
+	// Use this constant to enable a development options in settings
+	public static final boolean DEVELOPMENT_OPTIONS = CameraMain.AVOID_PARTIAL_READINGS & true;
 	
 	// Internal intents for handling execution options
 	public static String PRINT_CODES_INTENT = "com.paperclickers.intent.action.PRINT_CODES";
@@ -112,6 +103,13 @@ public class SettingsActivity extends PreferenceActivity {
 									      613,  617,  651,  653,  659,  661,  665,  675,  677,
 									      681,  713,  793,  805,  809,  841, 1171, 1173, 1189};
 	
+	// Development mode status
+	static boolean mDevelopmentMode = false;
+	
+	static DevelopmentPreferenceFragment mDevelopmentFragment = null;
+	static SettingsActivity mDevelopmentActivity = null;
+	
+
 	
 	// Page specifications for PDF generation
 	
@@ -169,12 +167,35 @@ public class SettingsActivity extends PreferenceActivity {
 			
 			log.d(TAG, "----> AnswerLogPreferenceFragment");
 
-			
 			addPreferencesFromResource(R.xml.pref_answers_log);
 		}
 	}
 
+	
+	
+    public static class DevelopmentPreferenceFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            
+            log.d(TAG, "----> DevelopmentPreferenceFragment");
+            
+            if (DEVELOPMENT_OPTIONS) {
+                
+                mDevelopmentFragment = this;
+                
+                if (mDevelopmentMode) {
+            
+                    addPreferencesFromResource(R.xml.pref_development);
+                    
+                    bindPreferenceSummaryToValue(findPreference("development_validation_threshold"));
+                    bindPreferenceSummaryToValue(findPreference("development_show_validation"));
+                }
+            }
+        }
+    }	
 
+    
 
 	public static class GeneralPreferenceFragment extends PreferenceFragment {
 		@Override
@@ -182,17 +203,10 @@ public class SettingsActivity extends PreferenceActivity {
 			super.onCreate(savedInstanceState);
 			
 			log.d(TAG, "----> GeneralPreferenceFragment");
-			
-			
+
 			addPreferencesFromResource(R.xml.pref_general);
 
 			bindPreferenceSummaryToValue(findPreference("students_number"));
-			
-		     if (VALIDATION_THRESHOLD_OPTION) {
-	            bindPreferenceSummaryToValue(findPreference("validation_threshold"));
-	        } else {
-	            getPreferenceScreen().removePreference(findPreference("validation_threshold"));
-	        }
 		}
 	}
 
@@ -204,7 +218,6 @@ public class SettingsActivity extends PreferenceActivity {
 			super.onCreate(savedInstanceState);
 			
 			log.d(TAG, "----> PrintCodesPreferenceFragment");
-			
 			
 			addPreferencesFromResource(R.xml.pref_print_codes);
 
@@ -241,6 +254,12 @@ public class SettingsActivity extends PreferenceActivity {
 				.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(), ""));
 	}
 
+	
+	
+	public static boolean getDevelopmentMode() {
+	    return mDevelopmentMode;
+	}
+	
 	
 	
 	/**
@@ -370,6 +389,7 @@ public class SettingsActivity extends PreferenceActivity {
 			//
 			// TODO: If Settings has multiple levels, Up should navigate up
 			// that hierarchy.
+		    
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		}
@@ -912,6 +932,40 @@ public class SettingsActivity extends PreferenceActivity {
 	
 	
 	
+	public static void setDevelopmentMode(boolean active) {
+	    
+	    if (mDevelopmentMode != active) {
+	    
+	        mDevelopmentMode = active;
+	    
+            if (DEVELOPMENT_OPTIONS && mDevelopmentMode) {
+                
+                if (mDevelopmentFragment != null) {                
+                
+                    mDevelopmentFragment.addPreferencesFromResource(R.xml.pref_development);
+                    
+                    bindPreferenceSummaryToValue(mDevelopmentFragment.findPreference("development_validation_threshold"));
+                    bindPreferenceSummaryToValue(mDevelopmentFragment.findPreference("development_show_validation"));
+                } else if (mDevelopmentActivity != null) {
+                    mDevelopmentActivity.addPreferencesFromResource(R.xml.pref_development);
+                    
+                    bindPreferenceSummaryToValue(mDevelopmentActivity.findPreference("development_validation_threshold"));
+                    bindPreferenceSummaryToValue(mDevelopmentActivity.findPreference("development_show_validation"));                    
+                }
+            } else {
+                if (mDevelopmentFragment != null) {
+                    mDevelopmentFragment.getPreferenceScreen().removePreference(mDevelopmentFragment.findPreference("development_validation_threshold"));
+                    mDevelopmentFragment.getPreferenceScreen().removePreference(mDevelopmentFragment.findPreference("development_show_validation"));
+                } else if (mDevelopmentActivity != null) {
+                    mDevelopmentActivity.getPreferenceScreen().removePreference(mDevelopmentActivity.findPreference("development_validation_threshold"));
+                    mDevelopmentActivity.getPreferenceScreen().removePreference(mDevelopmentActivity.findPreference("development_show_validation"));                    
+                }
+            }	    
+	    }
+	}
+	
+	
+	
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
 	 */
@@ -935,6 +989,9 @@ public class SettingsActivity extends PreferenceActivity {
 	 * shown.
 	 */
 	private void setupSimplePreferencesScreen() {
+	    
+	    log.d(TAG, "setupSimplePreferencesScreen");
+	    
 		if (!isSimplePreferences(this)) {
 			return;
 		}
@@ -947,18 +1004,11 @@ public class SettingsActivity extends PreferenceActivity {
 		addPreferencesFromResource(R.xml.pref_answers_log);
 
 		addPreferencesFromResource(R.xml.pref_print_codes);
-
+		
 		// Bind the summaries of EditText/List/Dialog/Ringtone preferences to
 		// their values. When their values change, their summaries are updated
 		// to reflect the new value, per the Android Design guidelines.
 		bindPreferenceSummaryToValue(findPreference("students_number"));
-		
-		if (VALIDATION_THRESHOLD_OPTION) {
-		    bindPreferenceSummaryToValue(findPreference("validation_threshold"));
-		} else {
-            getPreferenceScreen().removePreference(findPreference("validation_threshold"));
-		}
-		
 		bindPreferenceSummaryToValue(findPreference("print_codes_page_format"));
 		bindPreferenceSummaryToValue(findPreference("print_codes_per_page"));
 		bindPreferenceSummaryToValue(findPreference("print_recto_verso_sequence"));
@@ -967,6 +1017,19 @@ public class SettingsActivity extends PreferenceActivity {
 		    findPreference("print_codes_page_format").setEnabled(false);
 		    findPreference("print_codes_per_page").setEnabled(false);
 		    findPreference("print_recto_verso_sequence").setEnabled(false);
+		}
+
+		
+		if (DEVELOPMENT_OPTIONS) {
+
+		    mDevelopmentActivity = this;
+            
+		    if (mDevelopmentMode) {
+                addPreferencesFromResource(R.xml.pref_development);
+                
+                bindPreferenceSummaryToValue(findPreference("development_validation_threshold"));
+                bindPreferenceSummaryToValue(findPreference("development_show_validation"));
+		    }
 		}
 	}
 }

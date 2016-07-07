@@ -29,6 +29,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.paperclickers.camera.CameraMain;
 import com.paperclickers.result.AnswersLog;
 import com.paperclickers.R;
@@ -37,6 +40,11 @@ public class MainActivity extends Activity {
 
 	static String TAG = "MainActivity";
 
+	static final int DEVELOPMENT_OPTIONS_ACTIVATION_THRESHOLD = 5;
+	static final int DEVELOPMENT_OPTIONS_ACTIVATION_INTERVAL  = 300;
+	
+	int debugOptionsActivationTapCounter   = 0;
+	long debugOptionsActivationLastTapTime = 0;
 	
 	
 	@Override
@@ -101,5 +109,64 @@ public class MainActivity extends Activity {
 				startActivity(i);
 			}
 		});
+		
+		
+		if (SettingsActivity.DEVELOPMENT_OPTIONS) {
+		    
+    		// Adding listener for Debug mode activation
+		    
+    		TextView appNameText = (TextView) findViewById(R.id.appNameText);
+    		
+    		appNameText.setOnClickListener(new View.OnClickListener() {
+    
+                @Override
+                public void onClick(View v) {
+    
+                    long currentTime = System.currentTimeMillis();
+                    
+                    if (currentTime - debugOptionsActivationLastTapTime < DEVELOPMENT_OPTIONS_ACTIVATION_INTERVAL) {
+                        debugOptionsActivationTapCounter++;
+                        
+                        if (debugOptionsActivationTapCounter >= DEVELOPMENT_OPTIONS_ACTIVATION_THRESHOLD) {
+                            
+                            CharSequence activationText; 
+                            boolean newDevelopmentModeStatus;
+                            
+                            if (SettingsActivity.getDevelopmentMode()) {
+                                activationText = getResources().getText(R.string.development_mode_off);
+                                
+                                newDevelopmentModeStatus = false;
+                            } else {
+                                activationText = getResources().getText(R.string.development_mode_on);
+                                
+                                newDevelopmentModeStatus = true;
+                            }
+                            
+                            Toast.makeText(getApplicationContext(), 
+                                           activationText,
+                                           Toast.LENGTH_SHORT).show();
+                            
+                            SettingsActivity.setDevelopmentMode(newDevelopmentModeStatus);
+                            
+                            debugOptionsActivationTapCounter = 0;
+                        }
+                    } else {
+                        debugOptionsActivationTapCounter = 1;
+                    }
+                    
+                    debugOptionsActivationLastTapTime = currentTime;
+                }
+            });
+		}
 	}
+	
+
+	
+    @Override
+    protected void onResume() {
+        super.onResume();
+        
+        debugOptionsActivationTapCounter  = 0;
+        debugOptionsActivationLastTapTime = 0;
+    }
 }

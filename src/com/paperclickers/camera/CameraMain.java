@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -41,6 +43,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
@@ -86,7 +89,7 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 	final static boolean DROP_EVERY_OTHER_FRAME         = true;
 	
 	// Use this constant to enable previewing only validated codes as an overlay in the camera capture
-	final static boolean ONLY_PREVIEW_VALIDATED_CODES   = true;
+	final static boolean ONLY_PREVIEW_VALIDATED_CODES   = true ;
 	
 	
 	private Camera        mCamera;
@@ -124,6 +127,7 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 	String mHint1StringEnd;
 
 	private boolean mIgnoreCall;
+	private boolean mShowingValidation = false;
 
 	private SparseArray<TopCode> mFinalTopcodes;
     private SparseArray<TopcodeValidator> mFinalTopcodesValidator;
@@ -215,6 +219,36 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 	
 	
 	
+//	private void checkPermissions() {
+//	    
+//    	if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
+//            != PackageManager.PERMISSION_GRANTED) {
+//    
+//        // Should we show an explanation?
+//        if (ActivityCompat.shouldShowRequestPermissionRationale(thisActivity,
+//                Manifest.permission.READ_CONTACTS)) {
+//    
+//            // Show an expanation to the user *asynchronously* -- don't block
+//            // this thread waiting for the user's response! After the user
+//            // sees the explanation, try again to request the permission.
+//    
+//        } else {
+//    
+//            // No explanation needed, we can request the permission.
+//    
+//            ActivityCompat.requestPermissions(thisActivity,
+//                    new String[]{Manifest.permission.READ_CONTACTS},
+//                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+//    
+//            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+//            // app-defined int constant. The callback method gets the
+//            // result of the request.
+//        }
+//    	}
+//	}
+	
+	
+
 	/** A safe way to get an instance of the Camera object. */
 	public static Camera getCameraInstance() {
 		Camera c = null;
@@ -424,10 +458,7 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 			log.e(TAG, e1.toString());
 		}
 		
-		if (topcodes != null) {
-
-			int validTopcodesInThisFrameCount = 0;
-			
+		if (topcodes != null) {			
 			if (topcodes.size() > 0) {
 				
 				// Update the existing topcodes list with the information found, either including new ones or
@@ -453,23 +484,24 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 							if (continuousDetectionResult == TopcodeValidator.CHANGED_ANSWER) {
 								log.d(TAG, String.format("Code %d changed orientation: %f to %f", t.getCode(), validTopcode.getOrientation(), t.getOrientation()));
 								
-							} else if (continuousDetectionResult == TopcodeValidator.TURNED_VALID) {
-                                mValidTopcodesCount++;
-                                validTopcodesInThisFrameCount++;
-                                
+								if (!ONLY_PREVIEW_VALIDATED_CODES || mShowingValidation) {
+								    recognizedValidTopcodes.add(t);
+								}
+							} else if (continuousDetectionResult == TopcodeValidator.TURNED_VALID || 
+							           continuousDetectionResult == TopcodeValidator.VALID_ALREADY) {
+							    
+							    if (continuousDetectionResult == TopcodeValidator.TURNED_VALID) {
+    							
+                                    mValidTopcodesCount++;
+							    }
+
                                 recognizedValidTopcodes.add(t);
-                                
-                            } else if (continuousDetectionResult == TopcodeValidator.VALID_ALREADY) {
-                                validTopcodesInThisFrameCount++;
-                                
-                                if (ONLY_PREVIEW_VALIDATED_CODES) {
-                                    recognizedValidTopcodes.add(t);
-                                }
-                            }
+							} else if (!ONLY_PREVIEW_VALIDATED_CODES || mShowingValidation) {
+							    recognizedValidTopcodes.add(t);
+							}
 						} else {
 							currentValidator.checkContinousDetection(mScanCycle, translatedAnswer, validTopcode);
 							
-                            validTopcodesInThisFrameCount++;                                
                             mValidTopcodesCount++;							
 						}
 						
@@ -537,7 +569,7 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 			
 			// Now that the validators list have already been updated, request drawing in the DrawView
 			
-			if (AVOID_PARTIAL_READINGS && ONLY_PREVIEW_VALIDATED_CODES) {
+			if (AVOID_PARTIAL_READINGS) {
 				mDraw.updateValidTopcodesList(recognizedValidTopcodes);
 			} else {
 				mDraw.updateValidTopcodesList(topcodes);					
@@ -576,6 +608,15 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
             		
 		mStartScanTime = System.currentTimeMillis();
 
+		if (SettingsActivity.DEVELOPMENT_OPTIONS) {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            
+            String validationThresholdStr = prefs.getString("development_show_validation", "1");
+
+            mShowingValidation = validationThresholdStr.equals("1");
+		}
+		
+		setCamera();
 		setCameraPreview();		
 	}
 	
@@ -643,9 +684,9 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 				
 				log.d(TAG, String.format("Size %d x %d", mImageWidth, mImageHeight));
 				
-				cameraParameters.setRecordingHint(true);
 				cameraParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
 				
+				mCamera.setParameters(cameraParameters);				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -661,7 +702,7 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 			mCameraPreview = new CameraPreview(this, mCamera, this);
 			mPreview.addView(mCameraPreview);
 			
-			mDraw = new DrawView(mContext, mFinalTopcodesValidator, mImageWidth, mImageHeight);
+			mDraw = new DrawView(mContext, mFinalTopcodesValidator, mImageWidth, mImageHeight, mShowingValidation);
 			mPreview.addView(mDraw);
 			
 			mCameraPreview.setOnClickListener(new OnClickListener() {
