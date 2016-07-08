@@ -73,7 +73,9 @@ public class TopcodeValidator {
 	private int[] mLastDetectedScanCycle;
 	
 	// Indicates this answer is valid for this topcode
-	private boolean[] mValidTopcode; 
+	private boolean[] mValidTopcode;
+	
+	private int mDuplicateAnswerInLastScanCycle;
 	
 	private int mPreviousTranslatedAnswer;
 	
@@ -91,7 +93,12 @@ public class TopcodeValidator {
 		mHandledTopcode = whichTopcode;
 		
 		if (CameraMain.AVOID_PARTIAL_READINGS) {
-			if (!mValidTopcode[translatedAnswer]) {			
+		    
+            // Resets this duplicate indication for this scan cycle
+            mDuplicateAnswerInLastScanCycle = PaperclickersScanner.ID_NO_ANSWER;
+            		    
+			if (!mValidTopcode[translatedAnswer]) {
+			    
 				if (mPreviousTranslatedAnswer != translatedAnswer) {
 	
 					// New orientation; restart validation process
@@ -106,7 +113,9 @@ public class TopcodeValidator {
 				        
 				        result = IGNORED_DUPLICATE;
 				        
-	                    log.d(TAG, String.format("Duplicated code detected (cycle %d); answers: %d (1st - considered) to %d (2nd - discarded)", 
+				        mDuplicateAnswerInLastScanCycle = translatedAnswer;
+				        
+	                    log.d(TAG, String.format("Duplicated code detected for not validated answer (cycle %d); answers: %d (1st - considered) to %d (2nd - discarded)", 
 	                          currentScanCycle, mPreviousTranslatedAnswer, translatedAnswer));                    
 				    } else {				    
 				        result = CHANGED_ANSWER;
@@ -148,20 +157,36 @@ public class TopcodeValidator {
 			} else {
 			    
 			    // This answer is already valid for this topcode; just update the continuous detection counters
+
+			    // First, just check if this is not a duplicated topcode...
 			    
-				if (currentScanCycle == mLastDetectedScanCycle[translatedAnswer] + 1) {
-					++mNumberOfContinuousDetection[translatedAnswer];
-				} else {
-					mNumberOfContinuousDetection[translatedAnswer] = 0;	
-				}
-				
-				if (MOVING_VALIDATION_THRESHOLD) {
-					if (mLongestNumberOfContinuousDetection[translatedAnswer] < mNumberOfContinuousDetection[translatedAnswer]) {
-						mLongestNumberOfContinuousDetection[translatedAnswer] = mNumberOfContinuousDetection[translatedAnswer];
-					}
-				}			
-				
-				result = VALID_ALREADY;
+                if ((mPreviousTranslatedAnswer != PaperclickersScanner.ID_NO_ANSWER) && 
+                    (mLastDetectedScanCycle[mPreviousTranslatedAnswer] == currentScanCycle)) {
+                    
+                    mNumberOfContinuousDetection[translatedAnswer] = INVALID_DUPLICATED_ANSWER;
+                    
+                    result = IGNORED_DUPLICATE;
+                    
+                    mDuplicateAnswerInLastScanCycle = translatedAnswer;
+                    
+                    log.d(TAG, String.format("Duplicated code detected for validated answer (cycle %d); answers: %d (1st - considered) to %d (2nd - discarded)", 
+                          currentScanCycle, mPreviousTranslatedAnswer, translatedAnswer));                    
+                } else {
+                    if (currentScanCycle == mLastDetectedScanCycle[translatedAnswer] + 1) {
+                
+    					++mNumberOfContinuousDetection[translatedAnswer];
+    				} else {
+    					mNumberOfContinuousDetection[translatedAnswer] = 0;	
+    				}
+    				
+    				if (MOVING_VALIDATION_THRESHOLD) {
+    					if (mLongestNumberOfContinuousDetection[translatedAnswer] < mNumberOfContinuousDetection[translatedAnswer]) {
+    						mLongestNumberOfContinuousDetection[translatedAnswer] = mNumberOfContinuousDetection[translatedAnswer];
+    					}
+    				}			
+    				
+    				result = VALID_ALREADY;
+                }
 			}
 		}
 		
@@ -223,6 +248,12 @@ public class TopcodeValidator {
 	
 	int getCurrentValidationThrehshold() {
 	    return mCurrentValidationThreshold;
+	}
+	
+	
+	
+	int getDuplicatedAnswerInLastScanCycle() {
+	    return mDuplicateAnswerInLastScanCycle;
 	}
 	
 	
@@ -313,6 +344,8 @@ public class TopcodeValidator {
 		mPreviousTranslatedAnswer   = PaperclickersScanner.ID_NO_ANSWER;
 		mHandledTopcode             = whichTopCode;
 		mCurrentValidationThreshold = INITIAL_VALIDATION_THRESHOLD;
+		
+		mDuplicateAnswerInLastScanCycle = PaperclickersScanner.ID_NO_ANSWER;
 		
 		if (SettingsActivity.DEVELOPMENT_OPTIONS) {
 	        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(whichContext);

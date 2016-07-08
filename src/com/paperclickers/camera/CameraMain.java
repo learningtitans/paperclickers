@@ -609,11 +609,15 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 		mStartScanTime = System.currentTimeMillis();
 
 		if (SettingsActivity.DEVELOPMENT_OPTIONS) {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            
-            String validationThresholdStr = prefs.getString("development_show_validation", "1");
-
-            mShowingValidation = validationThresholdStr.equals("1");
+		    if (SettingsActivity.getDevelopmentMode()) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                
+                String validationThresholdStr = prefs.getString("development_show_validation", "1");
+    
+                mShowingValidation = validationThresholdStr.equals("1");
+		    } else {
+		        mShowingValidation = false;
+		    }
 		}
 		
 		setCamera();

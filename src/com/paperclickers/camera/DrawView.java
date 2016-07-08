@@ -25,6 +25,7 @@ package com.paperclickers.camera;
 
 import java.util.List;
 
+import com.paperclickers.log;
 import com.paperclickers.fiducial.PaperclickersScanner;
 import com.paperclickers.fiducial.TopCode;
 
@@ -157,13 +158,27 @@ public class DrawView extends SurfaceView {
             Rect textBounds = new Rect();
 		    
 			for (TopCode topCode : mValidTopcodesList) {
-
+			    
+			    boolean showingDuplicate = false;
+			    
 				TopcodeValidator whichValidator = mValidatorsList.get(topCode.getCode());
 				
 				int bestAnswer = PaperclickersScanner.ID_NO_ANSWER;
 				
 				if (DRAW_VALIDATION_COUNTDOWN && mShowingValidation) {
-				    bestAnswer = whichValidator.getLastDetectedAnswer();
+				    
+				    bestAnswer = whichValidator.getDuplicatedAnswerInLastScanCycle();
+				    
+                    log.d(TAG, String.format("Testing duplicate; duplicated last cycle: %d; current topcode: %d", 
+                          bestAnswer, PaperclickersScanner.translateOrientationToID(topCode.getOrientation()))); 
+				    
+				    if ((bestAnswer != PaperclickersScanner.ID_NO_ANSWER) &&
+				        (bestAnswer == PaperclickersScanner.translateOrientationToID(topCode.getOrientation()))) {
+				        
+				        showingDuplicate = true;
+				    } else {
+				        bestAnswer = whichValidator.getLastDetectedAnswer();
+				    }
 				} else {
 				    if (whichValidator != null) {
 				        bestAnswer = whichValidator.getBestValidAnswer();
@@ -218,7 +233,9 @@ public class DrawView extends SurfaceView {
 		                
 		                String answerCountdown = null;
 		                
-		                if (whichValidator.isAnswerValid(bestAnswer)) {
+		                if (showingDuplicate) {
+		                    answerCountdown ="X";
+		                } else if (whichValidator.isAnswerValid(bestAnswer)) {
 		                    answerCountdown = "\u2713";
 		                } else {
 		                    answerCountdown = String.valueOf(whichValidator.getCurrentValidationThrehshold() - whichValidator.getAnswerValidationCounter(bestAnswer));
