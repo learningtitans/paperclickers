@@ -29,4 +29,6 @@
     <string name="visit_project_page_for_topcodes">Geração dos TopCodes requer versão Android 4.4 ou superior.\n\nVisite o GitHub do projeto para obter os códigos dos alunos.</string>
     <string name="go_github">Ir para GitHub</string>    
 
+    <string name="hold_area">segure aqui</string>
+    
 </resources>

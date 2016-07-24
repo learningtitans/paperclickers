@@ -28,4 +28,6 @@
     <string name="visit_project_page_for_topcodes">TopCodes generation requires Android version 4.4 or above.\n\nVisit project\'s GitHub to get students\' codes.</string>
     <string name="go_github">Go to GitHub</string>
     
+    <string name="hold_area">hold here</string>
+    
 </resources>

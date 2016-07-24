@@ -34,6 +34,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Path;
+import android.graphics.RadialGradient;
+import android.graphics.RectF;
+import android.graphics.Shader;
 import android.graphics.pdf.PdfDocument;
 import android.graphics.pdf.PdfDocument.Page;
 import android.graphics.pdf.PdfDocument.PageInfo;
@@ -80,6 +84,9 @@ public class SettingsActivity extends PreferenceActivity {
 	
 	// Use this constant to enable a development options in settings
 	public static final boolean DEVELOPMENT_OPTIONS = CameraMain.AVOID_PARTIAL_READINGS & true;
+	
+	// Use this constant to enable the holding area print on codes verso
+	public static final boolean SHOW_CODES_HOLD_AREA = true;
 	
 	// Internal intents for handling execution options
 	public static String PRINT_CODES_INTENT = "com.paperclickers.intent.action.PRINT_CODES";
@@ -731,9 +738,6 @@ public class SettingsActivity extends PreferenceActivity {
 			page        = docVerso.startPage(pageInfo);
 			whichCanvas = page.getCanvas();
 			
-			whichCanvas.drawLine(0, height/2, width, height/2, paint);
-			whichCanvas.drawLine(width/2, 0, width/2, height, paint);
-			
 			printVerso(currentCode + 1, validTopCodes[currentCode], whichCanvas, 
 					   width*3/4, height/4, 
 					   width/2, height/2, 
@@ -768,6 +772,10 @@ public class SettingsActivity extends PreferenceActivity {
 			}else {
 				currentCode++;
 			}
+			
+
+            whichCanvas.drawLine(0, height/2, width, height/2, paint);
+            whichCanvas.drawLine(width/2, 0, width/2, height, paint);
 			
 			docVerso.finishPage(page);
 		}
@@ -805,12 +813,94 @@ public class SettingsActivity extends PreferenceActivity {
 		paint.setTextSize(textSize);
 		paint.setTextAlign(Align.CENTER);
 		
+        Paint paintTouchArea = new Paint(Paint.ANTI_ALIAS_FLAG);
+        Paint paintTouchAreaLeft = new Paint(Paint.ANTI_ALIAS_FLAG);
+        Paint paintTouchAreaRight = new Paint(Paint.ANTI_ALIAS_FLAG);
+        
+        String holdHere; 
+        
+		if (SHOW_CODES_HOLD_AREA) {
+    		paintTouchArea.setColor(Color.BLACK);
+            paintTouchArea.setTextSize(textSize);
+            paintTouchArea.setTextAlign(Align.LEFT);
+            
+            paintTouchAreaLeft.setColor(Color.BLACK);
+            paintTouchAreaLeft.setTextSize(textSize);
+            paintTouchAreaLeft.setTextAlign(Align.LEFT);
+
+            paintTouchAreaRight.setColor(Color.BLACK);
+            paintTouchAreaRight.setTextSize(textSize);
+            paintTouchAreaRight.setTextAlign(Align.RIGHT);
+            
+            holdHere = getResources().getText(R.string.hold_area).toString();
+		}
+		
 		whichCanvas.drawText(String.valueOf(topCodeTranslation), centerX, centerY + textSize / 2, paint);
 		
 	    float difference = centerY - centerX;   
+		
+        if (SHOW_CODES_HOLD_AREA) {
+            
+            int colors[] = {Color.GRAY, Color.WHITE};
+            float colorPosition[] = {0.0f, 1.0f}; 
+            Path data = new Path(); 
+            
+            paintTouchArea.setShader(new RadialGradient(centerX - width / 2, centerY - height / 2, width * TOUCH_AREA_WIDTH_FACTOR, colors, colorPosition , Shader.TileMode.CLAMP));
+            
+            data.addArc(new RectF(centerX - width / 2 - width * TOUCH_AREA_WIDTH_FACTOR, centerY - height / 2 - width * TOUCH_AREA_WIDTH_FACTOR, 
+                                  centerX - width / 2 + width * TOUCH_AREA_WIDTH_FACTOR, centerY - height / 2 + width * TOUCH_AREA_WIDTH_FACTOR), 
+                        0f, 90f);
+            data.lineTo(centerX - width / 2, centerY - height / 2);
+            data.close();
+            
+            whichCanvas.drawPath(data, paintTouchArea);
+            
+            paintTouchArea.setShader(new RadialGradient(centerX + width / 2, centerY - height / 2, width * TOUCH_AREA_WIDTH_FACTOR, colors, colorPosition , Shader.TileMode.CLAMP));
+
+            data.reset();
+            
+            data.addArc(new RectF(centerX + width / 2 - (width * TOUCH_AREA_WIDTH_FACTOR), centerY - height / 2 - (width * TOUCH_AREA_WIDTH_FACTOR), 
+                                  centerX + width / 2 + (width * TOUCH_AREA_WIDTH_FACTOR), centerY - height / 2 + (width * TOUCH_AREA_WIDTH_FACTOR)), 
+                        90f, 90f);
+            data.lineTo(centerX + width / 2, centerY - height / 2);
+            data.close();
+            
+            whichCanvas.drawPath(data, paintTouchArea);
+            
+            paintTouchArea.setShader(new RadialGradient(centerX - width / 2, centerY + height / 2, width * TOUCH_AREA_WIDTH_FACTOR, colors, colorPosition , Shader.TileMode.CLAMP));
+            
+            data.reset();
+            
+            data.addArc(new RectF(centerX - width / 2 - width * TOUCH_AREA_WIDTH_FACTOR, centerY + height / 2 - width * TOUCH_AREA_WIDTH_FACTOR, 
+                                  centerX - width / 2 + width * TOUCH_AREA_WIDTH_FACTOR, centerY + height / 2 + width * TOUCH_AREA_WIDTH_FACTOR), 
+                        270f, 90f);
+            data.lineTo(centerX - width / 2, centerY + height / 2);
+            data.close();
+            
+            whichCanvas.drawPath(data, paintTouchArea);
+            
+            paintTouchArea.setShader(new RadialGradient(centerX + width / 2, centerY + height / 2, width * TOUCH_AREA_WIDTH_FACTOR, colors, colorPosition , Shader.TileMode.CLAMP));
+            
+            data.reset();
+            
+            data.addArc(new RectF(centerX + width / 2 - width * TOUCH_AREA_WIDTH_FACTOR, centerY + height / 2 - width * TOUCH_AREA_WIDTH_FACTOR, 
+                                  centerX + width / 2 + width * TOUCH_AREA_WIDTH_FACTOR, centerY + height / 2 + width * TOUCH_AREA_WIDTH_FACTOR), 
+                        180f, 90f);
+            data.lineTo(centerX + width / 2, centerY + height / 2);
+            data.close();
+
+            whichCanvas.drawPath(data, paintTouchArea);
+            
+        }
+	
 		float centerDistance = width / 6;
 		
 		whichCanvas.drawText("A", centerX, centerY - centerDistance, paint);
+
+		if (SHOW_CODES_HOLD_AREA) {
+		    whichCanvas.drawText(holdHere, centerX - width / 2 + 2 * textSize * textMargin, centerY - height / 2 + textSize * textMargin, paintTouchAreaLeft);
+            whichCanvas.drawText(holdHere, centerX + width / 2 - 2 * textSize * textMargin, centerY - height / 2 + textSize * textMargin, paintTouchAreaRight);
+		}
 
 		whichCanvas.save();
 		
@@ -818,13 +908,28 @@ public class SettingsActivity extends PreferenceActivity {
 				
 		whichCanvas.drawText("B", centerY - difference, centerX - centerDistance + difference, paint);	
 
+        if (SHOW_CODES_HOLD_AREA) {
+            whichCanvas.drawText(holdHere, centerY - difference - height / 2 + 2 * textSize * textMargin, centerX + difference - width / 2 + textSize * textMargin, paintTouchAreaLeft);
+            whichCanvas.drawText(holdHere, centerY - difference + height / 2 - 2 * textSize * textMargin, centerX + difference - width / 2 + textSize * textMargin, paintTouchAreaRight);
+        }
+
 		whichCanvas.rotate(90, centerX, centerY);
 		
 		whichCanvas.drawText("C", centerX, centerY - centerDistance, paint);
 
+		if (SHOW_CODES_HOLD_AREA) {
+		    whichCanvas.drawText(holdHere, centerX - width / 2 + 2 * textSize * textMargin, centerY - height / 2 + textSize * textMargin, paintTouchAreaLeft);
+            whichCanvas.drawText(holdHere, centerX + width / 2 - 2 * textSize * textMargin, centerY - height / 2 + textSize * textMargin, paintTouchAreaRight);
+		}
+
 		whichCanvas.rotate(90, centerX, centerY);
 
 		whichCanvas.drawText("D", centerY - difference, centerX - centerDistance + difference, paint);	
+
+        if (SHOW_CODES_HOLD_AREA) {
+            whichCanvas.drawText(holdHere, centerY - difference - height / 2 + 2 * textSize * textMargin, centerX + difference - width / 2 + textSize * textMargin, paintTouchAreaLeft);
+            whichCanvas.drawText(holdHere, centerY - difference + height / 2 - 2 * textSize * textMargin, centerX + difference - width / 2 + textSize * textMargin, paintTouchAreaRight);
+        }
 
 		whichCanvas.restore();
 	}
@@ -1032,4 +1137,5 @@ public class SettingsActivity extends PreferenceActivity {
 		    }
 		}
 	}
+	
 }
