@@ -64,7 +64,19 @@
         android:text="@string/frequencies_debug"
         android:textColor="@android:color/white"
         android:textSize="10sp" >
-
     </TextView>
+    
+    <TextView
+        android:id="@+id/txt_development_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="@dimen/icon_margin_top"
+        android:layout_marginLeft="@dimen/icon_margin_left"
+        android:text="@string/development_current_cycle"
+        android:textColor="@android:color/white"
+        android:textSize="10sp" >
+    </TextView>    
 
 </RelativeLayout>

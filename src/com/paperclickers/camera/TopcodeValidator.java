@@ -246,7 +246,7 @@ public class TopcodeValidator {
 	
 	
 	
-	int getCurrentValidationThrehshold() {
+	static int getCurrentValidationThrehshold() {
 	    return mCurrentValidationThreshold;
 	}
 	

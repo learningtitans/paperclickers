@@ -122,6 +122,10 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 	
 	TextView mHint1TextView;
 	TextView mFreqDebugTextView;
+	TextView mDevelopmentData;
+	
+	String mDevelopmentCurrentCycle;
+	String mDevelopmentCurrentThreshold;
 
 	String mHint1StringStart;
 	String mHint1StringEnd;
@@ -219,36 +223,6 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 	
 	
 	
-//	private void checkPermissions() {
-//	    
-//    	if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
-//            != PackageManager.PERMISSION_GRANTED) {
-//    
-//        // Should we show an explanation?
-//        if (ActivityCompat.shouldShowRequestPermissionRationale(thisActivity,
-//                Manifest.permission.READ_CONTACTS)) {
-//    
-//            // Show an expanation to the user *asynchronously* -- don't block
-//            // this thread waiting for the user's response! After the user
-//            // sees the explanation, try again to request the permission.
-//    
-//        } else {
-//    
-//            // No explanation needed, we can request the permission.
-//    
-//            ActivityCompat.requestPermissions(thisActivity,
-//                    new String[]{Manifest.permission.READ_CONTACTS},
-//                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-//    
-//            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-//            // app-defined int constant. The callback method gets the
-//            // result of the request.
-//        }
-//    	}
-//	}
-	
-	
-
 	/** A safe way to get an instance of the Camera object. */
 	public static Camera getCameraInstance() {
 		Camera c = null;
@@ -391,6 +365,10 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 		mHint1StringEnd    = (String) getResources().getText(R.string.hint1End);
 		mHint1TextView     = (TextView) findViewById(R.id.txt_hint1);
 		mFreqDebugTextView = (TextView) findViewById(R.id.txt_freqDebug);
+		mDevelopmentData   = (TextView) findViewById(R.id.txt_development_data);
+		
+		mDevelopmentCurrentCycle     = (String) getResources().getText(R.string.development_current_cycle);
+		mDevelopmentCurrentThreshold = (String) getResources().getText(R.string.development_current_threshold);
 		
 		if (!SHOW_CODE_FREQUENCY_DEBUG) {
 			mFreqDebugTextView.setVisibility(View.GONE);
@@ -536,9 +514,9 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 								}
 							} else {
 								scanDebug = String.format("Cycle: %d, Code: %d,  orientation: %f, frequency: %d(A), %d(B), %d(C), %d(D)",
-						                  mScanCycle, t.getCode(), t.getOrientation(), 
-						                  currentValidator.getFrequency(PaperclickersScanner.ID_ANSWER_A), currentValidator.getFrequency(PaperclickersScanner.ID_ANSWER_B),
-						                  currentValidator.getFrequency(PaperclickersScanner.ID_ANSWER_C), currentValidator.getFrequency(PaperclickersScanner.ID_ANSWER_D));							
+                						                  mScanCycle, t.getCode(), t.getOrientation(), 
+                						                  currentValidator.getFrequency(PaperclickersScanner.ID_ANSWER_A), currentValidator.getFrequency(PaperclickersScanner.ID_ANSWER_B),
+                						                  currentValidator.getFrequency(PaperclickersScanner.ID_ANSWER_C), currentValidator.getFrequency(PaperclickersScanner.ID_ANSWER_D));							
 							}
 							
 							log.d(TAG, scanDebug);
@@ -564,7 +542,7 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 					}
 					
 					mFreqDebugTextView.setText(Arrays.toString(mFinalTopcodesFrequency));
-				}					
+				}
 			}
 			
 			// Now that the validators list have already been updated, request drawing in the DrawView
@@ -578,7 +556,12 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 			mDraw.postInvalidate();
 		}
 		
-		mEndOnPreviewTime = System.currentTimeMillis();
+        
+        if (mShowingValidation) {
+          mDevelopmentData.setText(String.format("%s %d\n%s %d", mDevelopmentCurrentCycle, mScanCycle, mDevelopmentCurrentThreshold, TopcodeValidator.getCurrentValidationThrehshold()));
+        }
+
+        mEndOnPreviewTime = System.currentTimeMillis();
 		
 		log.d(TAG, String.format("Cycle: %d, overall onPreview time(ms): %d, fiducial time(ms): %d - candidates points found: %d", 
 			  mScanCycle, mEndOnPreviewTime - mStartOnPreviewTime, mEndFiducialTime - mStartFiducialTime, scan.getCandidatesCount()));
@@ -617,6 +600,12 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
                 mShowingValidation = validationThresholdStr.equals("1");
 		    } else {
 		        mShowingValidation = false;
+		    }
+		    
+		    if (mShowingValidation) {
+		        mDevelopmentData.setVisibility(View.VISIBLE);
+		    } else {
+                mDevelopmentData.setVisibility(View.GONE);
 		    }
 		}
 		

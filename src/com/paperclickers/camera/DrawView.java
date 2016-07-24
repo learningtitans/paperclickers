@@ -238,7 +238,7 @@ public class DrawView extends SurfaceView {
 		                } else if (whichValidator.isAnswerValid(bestAnswer)) {
 		                    answerCountdown = "\u2713";
 		                } else {
-		                    answerCountdown = String.valueOf(whichValidator.getCurrentValidationThrehshold() - whichValidator.getAnswerValidationCounter(bestAnswer));
+		                    answerCountdown = String.valueOf(TopcodeValidator.getCurrentValidationThrehshold() - whichValidator.getAnswerValidationCounter(bestAnswer));
 		                }
 		                    
 		                textPaint.setTextSize(40);

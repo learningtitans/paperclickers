@@ -31,4 +31,6 @@
 
     <string name="hold_area">segure aqui</string>
     
+    <string name="development_current_cycle">ciclo:</string>
+    <string name="development_current_threshold">limite:</string>
 </resources>

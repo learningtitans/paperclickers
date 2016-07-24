@@ -30,4 +30,7 @@
     
     <string name="hold_area">hold here</string>
     
+    <string name="development_current_cycle">cycle:</string>
+    <string name="development_current_threshold">threshold:</string>
+    
 </resources>
