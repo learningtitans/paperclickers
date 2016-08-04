@@ -54,7 +54,7 @@
     <string name="pref_header_development">Desenvolvimento</string>
     <string name="pref_title_validation_threshold">Limite de validação</string>
     <string name="pref_default_validation_threshold">32</string>
-    <string name="pref_title_show_topcodes_validation">Mostrar validação dos topcodes</string>
+    <string name="pref_title_show_topcodes_validation">Mostrar validação dos TopCodes</string>
     <string-array name="pref_show_topcodes_validation_titles">
         <item >Não</item>
         <item >Sim</item>
