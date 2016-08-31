@@ -34,6 +34,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.RadialGradient;
 import android.graphics.RectF;
@@ -823,6 +824,7 @@ public class SettingsActivity extends PreferenceActivity {
     		paintTouchArea.setColor(Color.BLACK);
             paintTouchArea.setTextSize(textSize);
             paintTouchArea.setTextAlign(Align.LEFT);
+            paintTouchArea.setStyle(Style.STROKE);
             
             paintTouchAreaLeft.setColor(Color.BLACK);
             paintTouchAreaLeft.setTextSize(textSize);
@@ -845,8 +847,6 @@ public class SettingsActivity extends PreferenceActivity {
             float colorPosition[] = {0.0f, 1.0f}; 
             Path data = new Path(); 
             
-            paintTouchArea.setShader(new RadialGradient(centerX - width / 2, centerY - height / 2, width * TOUCH_AREA_WIDTH_FACTOR, colors, colorPosition , Shader.TileMode.CLAMP));
-            
             data.addArc(new RectF(centerX - width / 2 - width * TOUCH_AREA_WIDTH_FACTOR, centerY - height / 2 - width * TOUCH_AREA_WIDTH_FACTOR, 
                                   centerX - width / 2 + width * TOUCH_AREA_WIDTH_FACTOR, centerY - height / 2 + width * TOUCH_AREA_WIDTH_FACTOR), 
                         0f, 90f);
@@ -855,8 +855,6 @@ public class SettingsActivity extends PreferenceActivity {
             
             whichCanvas.drawPath(data, paintTouchArea);
             
-            paintTouchArea.setShader(new RadialGradient(centerX + width / 2, centerY - height / 2, width * TOUCH_AREA_WIDTH_FACTOR, colors, colorPosition , Shader.TileMode.CLAMP));
-
             data.reset();
             
             data.addArc(new RectF(centerX + width / 2 - (width * TOUCH_AREA_WIDTH_FACTOR), centerY - height / 2 - (width * TOUCH_AREA_WIDTH_FACTOR), 
@@ -867,8 +865,6 @@ public class SettingsActivity extends PreferenceActivity {
             
             whichCanvas.drawPath(data, paintTouchArea);
             
-            paintTouchArea.setShader(new RadialGradient(centerX - width / 2, centerY + height / 2, width * TOUCH_AREA_WIDTH_FACTOR, colors, colorPosition , Shader.TileMode.CLAMP));
-            
             data.reset();
             
             data.addArc(new RectF(centerX - width / 2 - width * TOUCH_AREA_WIDTH_FACTOR, centerY + height / 2 - width * TOUCH_AREA_WIDTH_FACTOR, 
@@ -878,8 +874,6 @@ public class SettingsActivity extends PreferenceActivity {
             data.close();
             
             whichCanvas.drawPath(data, paintTouchArea);
-            
-            paintTouchArea.setShader(new RadialGradient(centerX + width / 2, centerY + height / 2, width * TOUCH_AREA_WIDTH_FACTOR, colors, colorPosition , Shader.TileMode.CLAMP));
             
             data.reset();
             
