@@ -31,8 +31,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -44,7 +45,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
@@ -93,6 +93,7 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 	// Use this constant to enable previewing only validated codes as an overlay in the camera capture
 	final static boolean ONLY_PREVIEW_VALIDATED_CODES   = true ;
 	
+	final static int SCAN_DIMISS_TIMEOUT = 1500;
 	
 	private Camera        mCamera;
 	private CameraPreview mCameraPreview;
@@ -139,6 +140,8 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
     private SparseArray<TopcodeValidator> mFinalTopcodesValidator;
 	private Integer[] mFinalTopcodesFrequency;	
 
+	private Timer scanDismissTimer = null;
+	
 	
 	private void callNextActivity() {
 
@@ -243,12 +246,12 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 
 	
 	
-	private boolean hasDetectedEnd() {
+	private boolean hasDetectedEnd(boolean timeoutOccurred) {
 		
 		boolean hasDetected = false;
 	
     	if (mTouchStart != -1) {
-        	if (System.currentTimeMillis() - mTouchStart > 1000) {
+        	if ((timeoutOccurred) || (System.currentTimeMillis() - mTouchStart > SCAN_DIMISS_TIMEOUT)) {
 				if (mVibrator != null) {
 				    mVibrator.vibrate(50);
 				}
@@ -262,6 +265,11 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 				hasDetected = true;
         	}
     	}
+    	
+        if (scanDismissTimer != null) {
+            scanDismissTimer.cancel();
+            scanDismissTimer = null;
+        }
     	
     	return hasDetected;
 	}
@@ -727,11 +735,20 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 				        	
 				        	mTouchStart = System.currentTimeMillis();
 				        	
+				        	scanDismissTimer = new Timer();
+				        	
+				        	scanDismissTimer.schedule(new TimerTask() {
+				        	    
+				        	    public void run() {
+				        	        hasDetectedEnd(true);
+				        	    }
+				        	}, (long) SCAN_DIMISS_TIMEOUT);
+				        	
 				        	break;
 				        	
 				        case MotionEvent.ACTION_UP:
 				        	
-				        	mUserRequestedEnd = hasDetectedEnd();
+				        	mUserRequestedEnd = hasDetectedEnd(false);
 				        	
 				        	if (!mUserRequestedEnd) {
 				        		mTouchStart = -1;
@@ -743,12 +760,17 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 				        	
 				        case MotionEvent.ACTION_MOVE:
 				        	
-				        	mUserRequestedEnd = hasDetectedEnd();
+				        	mUserRequestedEnd = hasDetectedEnd(false);
 					        	
 				            break;
 				        case MotionEvent.ACTION_CANCEL:
-				            break;
 				        default:
+				            
+                            if (scanDismissTimer != null) {
+                                scanDismissTimer.cancel();
+                                scanDismissTimer = null;
+                            }
+                            				            
 				            break;
 				    }
 					
