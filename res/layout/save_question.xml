@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+<!--    
+    <TextView
+        android:id="@+id/txt_save_question_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="20dp"
+		android:text="@string/save_question_title"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/title_text_size" >
+    </TextView>
+
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignStart="@+id/txt_save_question_title"
+        android:layout_below="@+id/txt_save_question_title"
+        android:layout_above="@+id/button_save"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="20dp"
+        android:ems="10"
+        android:inputType="textMultiLine|textAutoCorrect|textCapSentences" />
+        
+        
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="20dp"
+        android:layout_above="@+id/button_save"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="20dp"
+        android:ems="10"
+        android:gravity="top|clip_vertical"
+        android:inputType="text|textMultiLine|textAutoCorrect|textCapSentences"
+        android:scrollbars="vertical"
+        android:background="#DEDEDE"
+        android:padding="10dp"
+        android:imeOptions="actionDone"/>
+        
+-->    
+    
+    
+    
+    <com.paperclickers.CustomEditText
+        android:id="@+id/questionTag"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="20dp"
+        android:ems="2"
+        android:gravity="top|clip_vertical"
+        android:inputType="text|textImeMultiLine|textAutoCorrect|textCapSentences"
+        android:scrollbars="vertical"
+        android:background="#DEDEDE"
+        android:padding="10dp"
+        android:imeOptions="actionDone|flagNoExtractUi"/>
+
+    <!--
+	<Button
+	    android:id="@+id/button_save"
+	    android:layout_width="@dimen/buttonStart_width"
+	    android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+		android:layout_alignParentBottom="true"
+        android:layout_marginBottom="45dp"
+	    android:background="@drawable/press_button"
+	    android:fontFamily="sans-serif-medium"
+	    android:text="@string/save_question_button"
+	    android:textColor="@drawable/press_button_text_color"
+	    android:textSize="@dimen/buttonStart_text_size" />    
+    -->
+    
+</RelativeLayout>

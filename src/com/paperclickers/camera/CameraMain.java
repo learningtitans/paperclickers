@@ -71,27 +71,27 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 
 	// Use this constant to enable saving the last analyzed image, right after user requesting to
 	// carry on to the Grid View
-	final static boolean SAVE_LAST_IMAGE                = false;
+	final static boolean SAVE_LAST_IMAGE = true;
 
 	// Use this constant to enable showing the class topcodes detection raw (regardless validation) 
 	// frequencies as an overlay in camera capture
-	final static boolean SHOW_CODE_FREQUENCY_DEBUG      = false;
+	final static boolean SHOW_CODE_FREQUENCY_DEBUG = false;
 	
 	// Use this constant to enable the overall topcodes validation mechanism
-	public final static boolean AVOID_PARTIAL_READINGS  = true;
+	public final static boolean AVOID_PARTIAL_READINGS = true;
 	
 	// Use this constant to enable the detailed debug log, showing every topcodes detection and validation
 	// data
 	final static boolean DEBUG_DETECTION_CYCLE_RAW_DATA = false;
 	
 	// Defined by TopcodeValidator constant: refers to the moving validation threshold mechanism
-	final static boolean MOVING_VALIDATION_THRESHOLD    = TopcodeValidator.MOVING_VALIDATION_THRESHOLD;
+	final static boolean MOVING_VALIDATION_THRESHOLD = TopcodeValidator.MOVING_VALIDATION_THRESHOLD;
 	
 	// Use this constant to enable the frame drop
-	final static boolean DROP_EVERY_OTHER_FRAME         = true;
+	final static boolean DROP_EVERY_OTHER_FRAME = true;
 	
 	// Use this constant to enable previewing only validated codes as an overlay in the camera capture
-	final static boolean ONLY_PREVIEW_VALIDATED_CODES   = true ;
+	final static boolean ONLY_PREVIEW_VALIDATED_CODES = true ;
 	
 	final static int SCAN_DIMISS_TIMEOUT = 1500;
 	
@@ -259,6 +259,10 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 				mTouchStart = -1;
 				
 				log.d(TAG, String.format("Last scan time: %d", mEndOnPreviewTime - mStartOnPreviewTime));
+				
+	            if (SAVE_LAST_IMAGE) {
+	                writePGMAfterThreshold("lastfile.pgm", mLuma, mImageWidth, mImageHeight);               
+	            }
 				
 				callNextActivity();
 				
@@ -444,7 +448,7 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 		
 		try {
 			mStartFiducialTime = System.currentTimeMillis();
-			topcodes          = scan.scan(mLuma, mImageWidth, mImageHeight);
+			topcodes           = scan.scan(mLuma, mImageWidth, mImageHeight);
 			mEndFiducialTime   = System.currentTimeMillis();
 			
 			if (SAVE_LAST_IMAGE && mUserRequestedEnd) {
@@ -740,7 +744,7 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 				        	scanDismissTimer.schedule(new TimerTask() {
 				        	    
 				        	    public void run() {
-				        	        hasDetectedEnd(true);
+				        	        mUserRequestedEnd = hasDetectedEnd(true);
 				        	    }
 				        	}, (long) SCAN_DIMISS_TIMEOUT);
 				        	

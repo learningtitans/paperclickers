@@ -5,6 +5,7 @@
     <string name="app_title">paperclickers</string>
 
     <string name="start_button">início</string>
+    <string name="save_question_title">Pergunta para turma</string>
     <string name="done_button">nova pergunta</string>
     
     <string name="hint1Start">Percorra a sala até detectar todos os códigos:\n</string>

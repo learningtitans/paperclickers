@@ -22,8 +22,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.paperclickers"
-    android:versionCode="6"
-    android:versionName="1.1.1" >
+    android:versionCode="7"
+    android:versionName="1.2" >
 
     <uses-sdk
         android:minSdkVersion="17"
@@ -60,9 +60,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".SaveQuestionActivity"
+            android:label="@string/save_question_title"
+            android:launchMode="singleTask"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/ThemeSettings">
+        </activity>
+        
         
         <activity
             android:name=".camera.CameraMain"
+        	android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="landscape"

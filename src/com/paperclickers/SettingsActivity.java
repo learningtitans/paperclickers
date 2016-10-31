@@ -843,8 +843,6 @@ public class SettingsActivity extends PreferenceActivity {
 		
         if (SHOW_CODES_HOLD_AREA) {
             
-            int colors[] = {Color.GRAY, Color.WHITE};
-            float colorPosition[] = {0.0f, 1.0f}; 
             Path data = new Path(); 
             
             data.addArc(new RectF(centerX - width / 2 - width * TOUCH_AREA_WIDTH_FACTOR, centerY - height / 2 - width * TOUCH_AREA_WIDTH_FACTOR, 
@@ -1108,6 +1106,7 @@ public class SettingsActivity extends PreferenceActivity {
 		// their values. When their values change, their summaries are updated
 		// to reflect the new value, per the Android Design guidelines.
 		bindPreferenceSummaryToValue(findPreference("students_number"));
+        bindPreferenceSummaryToValue(findPreference("questions_tagging"));		
 		bindPreferenceSummaryToValue(findPreference("print_codes_page_format"));
 		bindPreferenceSummaryToValue(findPreference("print_codes_per_page"));
 		bindPreferenceSummaryToValue(findPreference("print_recto_verso_sequence"));

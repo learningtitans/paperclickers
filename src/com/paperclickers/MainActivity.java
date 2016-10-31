@@ -25,7 +25,9 @@ package com.paperclickers;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -43,8 +45,10 @@ public class MainActivity extends Activity {
 	static final int DEVELOPMENT_OPTIONS_ACTIVATION_THRESHOLD = 5;
 	static final int DEVELOPMENT_OPTIONS_ACTIVATION_INTERVAL  = 300;
 	
-	int debugOptionsActivationTapCounter   = 0;
-	long debugOptionsActivationLastTapTime = 0;
+	int mDebugOptionsActivationTapCounter   = 0;
+	long mDebugOptionsActivationLastTapTime = 0;
+	
+	boolean mManualQuestionsTagging = false;
 	
 	
 	@Override
@@ -71,7 +75,7 @@ public class MainActivity extends Activity {
 		    log.d(TAG, ">>> New execution sequence; restart sequence number in answer log");
 		}
 		
-		// Adding listener for "About" button
+		// Adding listener for "about" button
 		Button about = (Button) findViewById(R.id.appIcon);
 		about.setOnClickListener(new View.OnClickListener() {
 
@@ -83,7 +87,7 @@ public class MainActivity extends Activity {
 		});
 
 		
-		// Adding listener for "Settings" button
+		// Adding listener for "settings" button
 		Button settingsButton = (Button) findViewById(R.id.settingsIcon);
 		settingsButton.setOnClickListener(new View.OnClickListener() {
 
@@ -97,20 +101,27 @@ public class MainActivity extends Activity {
 		});
 		
 		
-		// Adding listener for "Start" button
+		// Adding listener for "start" button
 		Button startButton = (Button) findViewById(R.id.button_start);
 		startButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 
-				Intent i = new Intent(getApplicationContext(), CameraMain.class);
-
-				startActivity(i);
+			    Intent newActivity;
+			    
+			    if (mManualQuestionsTagging) {
+	                newActivity = new Intent(getApplicationContext(), SaveQuestionActivity.class);
+			    } else {
+			        newActivity = new Intent(getApplicationContext(), CameraMain.class);
+			    }
+				
+				startActivity(newActivity);
 			}
 		});
 		
 		
+        
 		if (SettingsActivity.DEVELOPMENT_OPTIONS) {
 		    
     		// Adding listener for Debug mode activation
@@ -124,10 +135,10 @@ public class MainActivity extends Activity {
     
                     long currentTime = System.currentTimeMillis();
                     
-                    if (currentTime - debugOptionsActivationLastTapTime < DEVELOPMENT_OPTIONS_ACTIVATION_INTERVAL) {
-                        debugOptionsActivationTapCounter++;
+                    if (currentTime - mDebugOptionsActivationLastTapTime < DEVELOPMENT_OPTIONS_ACTIVATION_INTERVAL) {
+                        mDebugOptionsActivationTapCounter++;
                         
-                        if (debugOptionsActivationTapCounter >= DEVELOPMENT_OPTIONS_ACTIVATION_THRESHOLD) {
+                        if (mDebugOptionsActivationTapCounter >= DEVELOPMENT_OPTIONS_ACTIVATION_THRESHOLD) {
                             
                             CharSequence activationText; 
                             boolean newDevelopmentModeStatus;
@@ -148,13 +159,13 @@ public class MainActivity extends Activity {
                             
                             SettingsActivity.setDevelopmentMode(newDevelopmentModeStatus);
                             
-                            debugOptionsActivationTapCounter = 0;
+                            mDebugOptionsActivationTapCounter = 0;
                         }
                     } else {
-                        debugOptionsActivationTapCounter = 1;
+                        mDebugOptionsActivationTapCounter = 1;
                     }
                     
-                    debugOptionsActivationLastTapTime = currentTime;
+                    mDebugOptionsActivationLastTapTime = currentTime;
                 }
             });
 		}
@@ -166,7 +177,13 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         
-        debugOptionsActivationTapCounter  = 0;
-        debugOptionsActivationLastTapTime = 0;
+        mDebugOptionsActivationTapCounter  = 0;
+        mDebugOptionsActivationLastTapTime = 0;
+        
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        
+        String questionsTaggingStr = prefs.getString("questions_tagging", "1");
+
+        mManualQuestionsTagging = questionsTaggingStr.equals("1");
     }
 }
