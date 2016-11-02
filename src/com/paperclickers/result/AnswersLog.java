@@ -36,8 +36,10 @@ import com.paperclickers.R;
 import com.paperclickers.fiducial.PaperclickersScanner;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 public class AnswersLog {
@@ -75,7 +77,15 @@ public class AnswersLog {
         
         answersLog = new StringBuilder();
         
-        answersLog.append(mSessionQuestionsSeqNum + "," + getDateTime());
+        answersLog.append(mSessionQuestionsSeqNum + "," + getDateTime() + ",");
+        
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mActivityContext);
+        
+        if (preferences.getString("questions_tagging", "0").equals("1")) {
+            answersLog.append(preferences.getString("question_tag", ""));
+        } else {
+            answersLog.append(mSessionQuestionsSeqNum);
+        }
 
         for (int i = 0; i < com.paperclickers.SettingsActivity.validTopCodes.length; i++) {
             answersLog.append(",");
@@ -103,7 +113,7 @@ public class AnswersLog {
 
         answersLogHeader = new StringBuilder();
         
-        answersLogHeader.append("SEQ,TIMESTAMP");
+        answersLogHeader.append("SEQ,TIMESTAMP,TAG");
         
         for (int i = 0; i < com.paperclickers.SettingsActivity.validTopCodes.length; i++) {
             answersLogHeader.append("," + (i + 1));

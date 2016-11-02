@@ -182,7 +182,7 @@ public class MainActivity extends Activity {
         
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         
-        String questionsTaggingStr = prefs.getString("questions_tagging", "1");
+        String questionsTaggingStr = prefs.getString("questions_tagging", "0");
 
         mManualQuestionsTagging = questionsTaggingStr.equals("1");
     }

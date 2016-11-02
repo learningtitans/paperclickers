@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;

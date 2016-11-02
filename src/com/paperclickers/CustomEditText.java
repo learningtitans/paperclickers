@@ -24,7 +24,6 @@ package com.paperclickers;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -46,8 +45,6 @@ public class CustomEditText extends EditText {
             mgr.hideSoftInputFromWindow(this.getWindowToken(), 0);
 
             // Just leaving the keyevent here will let it reach the activity...
-            
-            Log.d("Questions", "Can handle...");
         }
         return false;
     }

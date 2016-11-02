@@ -71,7 +71,7 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 
 	// Use this constant to enable saving the last analyzed image, right after user requesting to
 	// carry on to the Grid View
-	final static boolean SAVE_LAST_IMAGE = true;
+	final static boolean SAVE_LAST_IMAGE = false;
 
 	// Use this constant to enable showing the class topcodes detection raw (regardless validation) 
 	// frequencies as an overlay in camera capture

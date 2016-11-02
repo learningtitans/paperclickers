@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -46,6 +47,24 @@ public class SaveQuestionActivity extends Activity {
     TextView       mCharacterCountView;
     int            mCharacterCount = 0;
     CharSequence   mQuestionTag;
+    
+    
+    
+    
+    CharSequence cleanupQuestionTagForCSV(CharSequence enteredTag) {
+        
+        CharSequence cleanedTag;
+                
+        int copyBegin = 0;
+        
+        while ((enteredTag.charAt(copyBegin) == '=') || (enteredTag.charAt(copyBegin) == ' ')) {
+            copyBegin++;
+        }
+        
+        cleanedTag = "\"" + enteredTag.subSequence(copyBegin, enteredTag.length()) + "\"";
+        
+        return cleanedTag;
+    }
     
     
     
@@ -102,7 +121,9 @@ public class SaveQuestionActivity extends Activity {
 		    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 		        boolean handled = false;
 		        
-		        mQuestionTag = mEditText.getText();
+		        mQuestionTag = cleanupQuestionTagForCSV(mEditText.getText());
+		        
+		        PreferenceManager.getDefaultSharedPreferences(SaveQuestionActivity.this).edit().putString("question_tag", mQuestionTag.toString()).commit();
 		        
 		        if (actionId == EditorInfo.IME_ACTION_DONE) {
 		            
