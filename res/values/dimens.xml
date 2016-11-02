@@ -62,5 +62,7 @@
     
     <dimen name="grid_view_answers_margin">5dp</dimen>
     <dimen name="debug_code_frequencies_horizontal_margin">50dp</dimen>
+    
+    <integer name="question_tag_max_length">256</integer>
 	
 </resources>

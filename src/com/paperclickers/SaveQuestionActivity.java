@@ -26,11 +26,15 @@ import com.paperclickers.camera.CameraMain;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -39,6 +43,9 @@ public class SaveQuestionActivity extends Activity {
     static String TAG = "SaveQuestionsActivity";
 
     CustomEditText mEditText;
+    TextView       mCharacterCountView;
+    int            mCharacterCount = 0;
+    CharSequence   mQuestionTag;
     
     
     
@@ -50,6 +57,15 @@ public class SaveQuestionActivity extends Activity {
     
     
     
+    @Override
+    public void onBackPressed() {
+        hideSoftKeyboard();
+        
+        finish();
+    }
+    
+    
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -57,10 +73,36 @@ public class SaveQuestionActivity extends Activity {
 		setContentView(R.layout.save_question);
 		
 		mEditText = (CustomEditText) findViewById(R.id.questionTag);
+		
+		mEditText.setHorizontallyScrolling(false);
+		mEditText.setMaxLines(getResources().getInteger(R.integer.question_tag_max_length));
+		
+		mEditText.addTextChangedListener(new TextWatcher() {
+		    
+            @Override
+            public void afterTextChanged(Editable s) {}
+            
+            @Override    
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+		    
+		    @Override
+		    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                mCharacterCount = s.length();
+
+                if (mCharacterCountView != null) {
+                    mCharacterCountView.setText(String.valueOf(mCharacterCount) + "/" + getResources().getInteger(R.integer.question_tag_max_length));
+                }
+		    }
+		});
+		
 		mEditText.setOnEditorActionListener(new OnEditorActionListener() {
 		    @Override
 		    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 		        boolean handled = false;
+		        
+		        mQuestionTag = mEditText.getText();
 		        
 		        if (actionId == EditorInfo.IME_ACTION_DONE) {
 		            
@@ -72,20 +114,28 @@ public class SaveQuestionActivity extends Activity {
 		            
 	                handled = true;
 		        }
+		        
 		        return handled;
 		    }
 		});
 		
 		showSoftKeyboard();
 	}
-
+	
 	
 	
 	@Override
-	public void onBackPressed() {
-	    hideSoftKeyboard();
+	public boolean onCreateOptionsMenu(Menu menu) {
 	    
-	    finish();
+	    mCharacterCountView = new TextView(this);
+	    
+	    mCharacterCountView.setText(String.valueOf(mCharacterCount) + "/" + getResources().getInteger(R.integer.question_tag_max_length));
+	    mCharacterCountView.setTextColor(Color.BLACK);
+	    mCharacterCountView.setPadding(20, 0, 20, 0);
+	    
+	    menu.add(0, 0, 1, null).setActionView(mCharacterCountView).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+	    
+	    return (true);
 	}
 	
 	
