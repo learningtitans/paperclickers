@@ -55,13 +55,18 @@ public class SaveQuestionActivity extends Activity {
         
         CharSequence cleanedTag;
                 
-        int copyBegin = 0;
-        
-        while ((enteredTag.charAt(copyBegin) == '=') || (enteredTag.charAt(copyBegin) == ' ')) {
-            copyBegin++;
+        if ((enteredTag != null) && (enteredTag.length() > 0)) {
+            
+            int copyBegin = 0;
+            
+            while ((enteredTag.charAt(copyBegin) == '=') || (enteredTag.charAt(copyBegin) == ' ')) {
+                copyBegin++;
+            }
+            
+            cleanedTag = "\"" + enteredTag.subSequence(copyBegin, enteredTag.length()) + "\"";
+        } else {
+            cleanedTag = "\"\"";
         }
-        
-        cleanedTag = "\"" + enteredTag.subSequence(copyBegin, enteredTag.length()) + "\"";
         
         return cleanedTag;
     }
