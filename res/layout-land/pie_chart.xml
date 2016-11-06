@@ -78,7 +78,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="start|center"
-        android:layout_toEndOf="@id/buttonContainer">
+        android:layout_toEndOf="@id/buttonContainer"
+        android:layout_toStartOf="@id/button_finish">
 
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/chart1"

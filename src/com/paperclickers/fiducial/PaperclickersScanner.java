@@ -38,7 +38,7 @@ import android.graphics.Color;
 
 public class PaperclickersScanner extends Scanner {
 
-	final static String TAG = "PaperclickersScanner";
+	final static String TAG = "paperclickers.scanner";
 	
 	// Use this constant to enable logging the number of candidates found
 	public static final boolean CANDIDATES_LOG = true;
@@ -93,7 +93,7 @@ public class PaperclickersScanner extends Scanner {
 	 * Scan the image line by line looking for marked topcodes
 	 * candidates
 	 */
-	protected List<TopCode> findCodes() {
+	protected List<TopCode> findCodes(boolean hasRotated) {
 		
 		int effectiveCandidatesCount = 0;
 		
@@ -128,6 +128,18 @@ public class PaperclickersScanner extends Scanner {
 		                     
 		                     if (spot.isValid()) {
 		                    	 
+		                         if (hasRotated) {
+		                             spot.setLocation(h - spot.getCenterY(), spot.getCenterX());
+		                             
+		                             log.d(TAG, String.format(">>> Previous orientation: %f", spot.getOrientation()));
+		                             
+		                             float newOrientation = (float) (-spot.getOrientation() - Math.PI / 2.0f);
+		                             
+		                             spot.setOrientation((float) (newOrientation < 0 ? -(2.0f * Math.PI + newOrientation) : -newOrientation));
+		                             
+                                     log.d(TAG, String.format(">>> New orientation: %f", spot.getOrientation()));
+		                         }
+		                         
 		                    	 // Make sure there is only one instance of a given topcode in the list
 		                    	 
 		                    	 int existingIndex = spots.indexOf(spot);
@@ -186,7 +198,7 @@ public class PaperclickersScanner extends Scanner {
      * @param height
      * @return
      */
-	public List<TopCode> scan(int[] image, int width, int height) {
+	public List<TopCode> scan(int[] image, int width, int height, boolean hasRotated) {
 	    
 		this.w    = width;
 		this.h    = height;
@@ -206,7 +218,7 @@ public class PaperclickersScanner extends Scanner {
 		}
 		
 		// scan for topcodes
-		List<TopCode> codesFound = findCodes();
+		List<TopCode> codesFound = findCodes(hasRotated);
 
 		if (LOG_EXECUTION_TIMES) {
 			mEndFindCodesTime = System.currentTimeMillis();

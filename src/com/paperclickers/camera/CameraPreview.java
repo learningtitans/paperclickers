@@ -32,14 +32,16 @@ import android.content.Context;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PreviewCallback;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.WindowManager;
 
 
 @SuppressLint("WrongCall")
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 
-	private static String TAG = "CameraPreview";
+	private static String TAG = "paperclickers.CameraPreview";
 	
 	private Camera mCamera;
 	private Context mContext;
@@ -83,7 +85,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     
     
-    private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
+    private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h, boolean hasRotated) {
         
         final double ASPECT_TOLERANCE = 0.05;
         double targetRatio = (double) w / h;
@@ -97,7 +99,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         // Try to find an size match aspect ratio and size
         for (Camera.Size size : sizes) {
-            double ratio = (double) size.width / size.height;
+            
+            double ratio = hasRotated ? (double) size.height / size.width : (double) size.width / size.height;
+            
             if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE)
                 continue;
             if (Math.abs(size.height - targetHeight) < minDiff) {
@@ -154,11 +158,24 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 log.d(TAG, String.format(">>>> %d x %d", size.width, size.height));
             }
             
-            Camera.Size optimalSize = getOptimalPreviewSize(sizes, w, h);
+            WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+            int displayRotation =  windowManager.getDefaultDisplay().getRotation();
+            boolean hasRotated = false;
+            
+            if ((displayRotation == Surface.ROTATION_0) || (displayRotation == Surface.ROTATION_180)) {
+                hasRotated = true;
+            }
+            
+            
+            Camera.Size optimalSize = getOptimalPreviewSize(sizes, w, h, hasRotated);
             
             log.d(TAG, "optimalSize:" + optimalSize.width + "," + optimalSize.height);
             
             parameters.setPreviewSize(optimalSize.width, optimalSize.height);
+            
+            if (hasRotated) {
+                parameters.setRotation(90);
+            }
 
             mCamera.setParameters(parameters);
 
@@ -166,7 +183,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             mCamera.setPreviewDisplay(mSurfaceHolder);
             mCamera.startPreview();
             
-            mCameraListener.updateChangedCameraSize(optimalSize.width, optimalSize.height);
+            if (hasRotated) {
+                mCameraListener.updateChangedCameraSize(optimalSize.height, optimalSize.width);
+            } else {
+                mCameraListener.updateChangedCameraSize(optimalSize.width, optimalSize.height);                
+            }
             
         } catch (Exception e) {
             log.d(TAG, "Error starting camera preview: " + e.getMessage());

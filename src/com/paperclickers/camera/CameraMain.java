@@ -38,8 +38,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.Resources.NotFoundException;
 import android.hardware.Camera;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -47,6 +49,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.SparseArray;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
@@ -61,13 +64,15 @@ import com.paperclickers.result.GridViewActivity;
 import com.paperclickers.R;
 import com.paperclickers.SettingsActivity;
 import com.paperclickers.log;
+import com.paperclickers.camera.OrientationManager.OrientationListener;
+import com.paperclickers.camera.OrientationManager.ScreenOrientation;
 
-public class CameraMain extends Activity implements Camera.PreviewCallback, CameraChangeListener {
+public class CameraMain extends Activity implements Camera.PreviewCallback, CameraChangeListener, OrientationListener {
 
     // Intent used to call CameraMain passing back a list of previously validated topcodes
 	public static String RECALL_CODES_INTENT = "com.paperclickers.intent.action.RECALL_CODES";
 	
-	final static String TAG = "CameraMain";
+	final static String TAG = "paperclickers.CameraMain";
 
 	// Use this constant to enable saving the last analyzed image, right after user requesting to
 	// carry on to the Grid View
@@ -103,7 +108,7 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 	private Vibrator 	  mVibrator;
 	private long          mTouchStart = -1;
 	
-	private int[] mLuma;
+	private int[] mLuma = null;
 	private int mImageWidth;
 	private int mImageHeight;
 	
@@ -141,6 +146,11 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 	private Integer[] mFinalTopcodesFrequency;	
 
 	private Timer scanDismissTimer = null;
+	
+	boolean mHasRotated = false;
+	
+	OrientationManager mOrientationManager = null;
+	
 	
 	
 	private void callNextActivity() {
@@ -413,15 +423,33 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 	
 	
 	
+    @Override
+    public void onOrientationChange(ScreenOrientation screenOrientation) {
+        
+        switch(screenOrientation){
+            case PORTRAIT:
+            case REVERSED_PORTRAIT:
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                break;
+                
+            case LANDSCAPE:
+            case REVERSED_LANDSCAPE:
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                break;
+        }
+    }
+    
+    
+    
 	@Override
 	protected void onPause() {
 		super.onPause();
 		
 		log.d(TAG, "===> onPause()");
 		
-		
 		releaseCamera();
 
+	    mOrientationManager.disable();
 	}
 
 	
@@ -431,6 +459,7 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 
 		List<TopCode> recognizedValidTopcodes = new ArrayList<TopCode>();
         List<TopCode> topcodes = null;
+        
         PaperclickersScanner scan = new PaperclickersScanner();		
 
         // Check if should drop this frame 
@@ -442,17 +471,23 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 			}
 		}
 		
+		if (mLuma == null) {
+		    // Still initializing; ignore call...
+		    
+		    return;
+		}
+		
 		mStartOnPreviewTime = System.currentTimeMillis();
 		
 		stripLumaFromYUV420SP(mLuma, data, mImageWidth, mImageHeight);
 		
 		try {
 			mStartFiducialTime = System.currentTimeMillis();
-			topcodes           = scan.scan(mLuma, mImageWidth, mImageHeight);
+			topcodes           = scan.scan(mLuma, mImageWidth, mImageHeight, mHasRotated);
 			mEndFiducialTime   = System.currentTimeMillis();
 			
 			if (SAVE_LAST_IMAGE && mUserRequestedEnd) {
-				writePGMAfterThreshold("lastfile.pgm", mLuma, mImageWidth, mImageHeight);				
+				writePGMAfterThreshold("lastfile.pgm", mLuma, mImageWidth, mImageHeight);
 			}
 		} catch (NotFoundException e1) {
 			log.e(TAG, e1.toString());
@@ -632,7 +667,10 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 		}
 		
 		setCamera();
-		setCameraPreview();		
+		setCameraPreview();
+		
+		mOrientationManager = new OrientationManager(mContext, SensorManager.SENSOR_DELAY_NORMAL, this);
+		mOrientationManager.enable();
 	}
 	
 	
@@ -701,7 +739,31 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 				
 				cameraParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
 				
-				mCamera.setParameters(cameraParameters);				
+				mCamera.setParameters(cameraParameters);
+				
+				int displayRotation = getWindowManager().getDefaultDisplay().getRotation();
+				int cameraRotation = 0;
+				
+				if ((displayRotation == Surface.ROTATION_0) || (displayRotation == Surface.ROTATION_180)) {
+				    
+				    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+				    
+				    cameraRotation = 90;
+				} else {
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+				}
+				
+				if (cameraRotation != 0) {
+				    mCamera.setDisplayOrientation(cameraRotation);
+				    
+				    mImageWidth  = cameraSize.height;
+				    mImageHeight = cameraSize.width;
+				    
+				    mHasRotated = true;
+				    
+				    log.d(TAG, String.format("Changing camera orientation (%d); width=%d, height=%d", cameraRotation, mImageWidth, mImageHeight));
+				}
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -804,14 +866,28 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 	public void updateChangedCameraSize(int width, int height) {
 			 
         log.d(TAG, String.format("New camera size: %d x %d. Null camera reference? %b", width, height, (mCamera == null))); 
-         
-        mImageWidth  = width;
-        mImageHeight = height;		
+        
+        if (width < height) {
+            mHasRotated = true;
+            
+            // Camera preview always comes in landscape format...
+            
+            mImageWidth  = height;
+            mImageHeight = width;
+        } else {
+            mImageWidth  = width;
+            mImageHeight = height;
+        }
         
         mLuma = new int[mImageWidth * mImageHeight];
         		
         if (mDraw != null) {
-        	mDraw.updateScreenSize(mImageWidth, mImageHeight);
+            if (mHasRotated) {
+                mDraw.updateScreenSize(mImageHeight, mImageWidth);
+            } else {
+                mDraw.updateScreenSize(mImageWidth, mImageHeight);
+                
+            }
         }		
 	}
 	 
@@ -826,7 +902,11 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 			
 			BufferedWriter fout = new BufferedWriter(fstream);
 			
-			fout.write(String.format("P2\n%d\n%d\n%d\n", width, height, maxVal));
+			if (width > height) {
+			    fout.write(String.format("P2\n%d\n%d\n%d\n", width, height, maxVal));
+			} else {
+                fout.write(String.format("P2\n%d\n%d\n%d\n", height, width, maxVal));
+			}
 			
 			for (int i = 0; i < width * height; i++) {
 				int a = threshold[i] >>> 24 ;
