@@ -33,4 +33,8 @@
     
     <string name="development_current_cycle">ciclo:</string>
     <string name="development_current_threshold">limite:</string>
+    
+    <string name="auto_promotion_1">siga-nos em</string>
+    <string name="auto_promotion_2">github.com/learningtitans/paperclickers</string>
+    
 </resources>

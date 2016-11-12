@@ -36,9 +36,9 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
-import android.graphics.RadialGradient;
+import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Shader;
+import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
 import android.graphics.pdf.PdfDocument.Page;
 import android.graphics.pdf.PdfDocument.PageInfo;
@@ -88,6 +88,9 @@ public class SettingsActivity extends PreferenceActivity {
 	
 	// Use this constant to enable the holding area print on codes verso
 	public static final boolean SHOW_CODES_HOLD_AREA = true;
+	
+	// Use this constant to enable the self promotion on topcodes verso
+	public static final boolean PRINT_PROMOTION_ON_VERSO = true;
 	
 	// Internal intents for handling execution options
 	public static String PRINT_CODES_INTENT = "com.paperclickers.intent.action.PRINT_CODES";
@@ -149,6 +152,10 @@ public class SettingsActivity extends PreferenceActivity {
 	static float TOP_CODE_SCALE = 0.8f;
 	static float TOUCH_AREA_WIDTH_FACTOR = 0.4f;
 	
+    static float PROMOTION_LINES_SPACING = 1.5f;
+    
+    static float PROMOTION_TEXT_SIZE_PROPORTION = 0.8f;
+    
 	static String TOPCODES_FILE_PATH       = "/Download";
 	
 	static String TOPCODES_SINGLE_FILENAME = "paperclickers_topCodes.pdf";
@@ -542,7 +549,7 @@ public class SettingsActivity extends PreferenceActivity {
     		}
     		
     		if (savedFileUri != null) {
-    			startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.share_topcodes_using)));				
+    			startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.share_topcodes_using)));
     		}
         }
 	}
@@ -814,11 +821,14 @@ public class SettingsActivity extends PreferenceActivity {
 		paint.setTextSize(textSize);
 		paint.setTextAlign(Align.CENTER);
 		
-        Paint paintTouchArea = new Paint(Paint.ANTI_ALIAS_FLAG);
-        Paint paintTouchAreaLeft = new Paint(Paint.ANTI_ALIAS_FLAG);
+        Paint paintTouchArea      = new Paint(Paint.ANTI_ALIAS_FLAG);
+        Paint paintTouchAreaLeft  = new Paint(Paint.ANTI_ALIAS_FLAG);
         Paint paintTouchAreaRight = new Paint(Paint.ANTI_ALIAS_FLAG);
+        Paint paintPromotion      = new Paint(Paint.ANTI_ALIAS_FLAG);
         
-        String holdHere; 
+        String holdHere;
+        String auto_promotion_1;
+        String auto_promotion_2;
         
 		if (SHOW_CODES_HOLD_AREA) {
     		paintTouchArea.setColor(Color.BLACK);
@@ -837,9 +847,30 @@ public class SettingsActivity extends PreferenceActivity {
             holdHere = getResources().getText(R.string.hold_area).toString();
 		}
 		
+		if (PRINT_PROMOTION_ON_VERSO) {
+		    paintPromotion.setColor(Color.BLACK);
+		    paintPromotion.setTextSize(textSize);
+		    paintPromotion.setTextAlign(Align.CENTER);
+		    paintPromotion.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.ITALIC));
+            
+            auto_promotion_1 = getResources().getText(R.string.auto_promotion_1).toString();
+            auto_promotion_2 = getResources().getText(R.string.auto_promotion_2).toString();
+            
+            // adjust final text size, depeding on the printing format
+            
+            Rect textBounds = new Rect();
+            paintPromotion.getTextBounds(auto_promotion_2, 0, auto_promotion_2.length(), textBounds);
+            
+            float desiredWidth = (height - width * TOUCH_AREA_WIDTH_FACTOR * 2) * PROMOTION_TEXT_SIZE_PROPORTION;
+            
+            paintPromotion.setTextSize(textSize * (desiredWidth / textBounds.width()));
+		}
+		    
+		
 		whichCanvas.drawText(String.valueOf(topCodeTranslation), centerX, centerY + textSize / 2, paint);
 		
-	    float difference = centerY - centerX;   
+	    // use this value to compensate the center coordinates rotation in order to print the text with the proper orientation
+		float difference = centerY - centerX;   
 		
         if (SHOW_CODES_HOLD_AREA) {
             
@@ -904,6 +935,11 @@ public class SettingsActivity extends PreferenceActivity {
             whichCanvas.drawText(holdHere, centerY - difference - height / 2 + 2 * textSize * textMargin, centerX + difference - width / 2 + textSize * textMargin, paintTouchAreaLeft);
             whichCanvas.drawText(holdHere, centerY - difference + height / 2 - 2 * textSize * textMargin, centerX + difference - width / 2 + textSize * textMargin, paintTouchAreaRight);
         }
+        
+        if (PRINT_PROMOTION_ON_VERSO) {
+            whichCanvas.drawText(auto_promotion_1, centerY - difference, centerX + difference - width / 2 + textSize * textMargin, paintPromotion);
+            whichCanvas.drawText(auto_promotion_2, centerY - difference, centerX + difference - width / 2 + textSize * textMargin + textSize * PROMOTION_LINES_SPACING, paintPromotion);
+        }
 
 		whichCanvas.rotate(90, centerX, centerY);
 		
@@ -921,6 +957,11 @@ public class SettingsActivity extends PreferenceActivity {
         if (SHOW_CODES_HOLD_AREA) {
             whichCanvas.drawText(holdHere, centerY - difference - height / 2 + 2 * textSize * textMargin, centerX + difference - width / 2 + textSize * textMargin, paintTouchAreaLeft);
             whichCanvas.drawText(holdHere, centerY - difference + height / 2 - 2 * textSize * textMargin, centerX + difference - width / 2 + textSize * textMargin, paintTouchAreaRight);
+        }
+
+        if (PRINT_PROMOTION_ON_VERSO) {
+            whichCanvas.drawText(auto_promotion_1, centerY - difference, centerX + difference - width / 2 + textSize * textMargin, paintPromotion);
+            whichCanvas.drawText(auto_promotion_2, centerY - difference, centerX + difference - width / 2 + textSize * textMargin + textSize * PROMOTION_LINES_SPACING, paintPromotion);
         }
 
 		whichCanvas.restore();
