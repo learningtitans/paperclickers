@@ -34,7 +34,7 @@
         android:id="@+id/txt_hint1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/icon_margin_left"
+        android:layout_marginStart="@dimen/icon_margin_left"
         android:layout_marginTop="@dimen/icon_margin_top"
         android:textColor="@android:color/white"
         android:textSize="24sp" >
@@ -45,12 +45,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_marginBottom="@dimen/icon_margin_top"
-        android:layout_marginRight="@dimen/icon_margin_left"
+        android:layout_marginEnd="@dimen/icon_margin_left"
+        android:gravity="end"
         android:text="@string/hint2"
         android:textColor="@android:color/white"
         android:textSize="24sp" >
+
     </TextView>
     
     <TextView

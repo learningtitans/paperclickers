@@ -8,7 +8,7 @@
     <string name="save_question_title">Pergunta para turma</string>
     <string name="done_button">nova pergunta</string>
     
-    <string name="hint1Start">Percorra a sala até detectar todos os códigos:\n</string>
+    <string name="hint1Start">Percorra a sala até detectar todos os códigos:\u0020</string>
     <string name="hint1End">\u0020encontrados</string>
     <string name="hint2">Para terminar, pressione a tela por dois segundos.</string>
 
