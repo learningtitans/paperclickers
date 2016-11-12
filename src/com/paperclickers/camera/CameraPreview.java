@@ -159,8 +159,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             }
             
             WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+            
             int displayRotation =  windowManager.getDefaultDisplay().getRotation();
-            boolean hasRotated = false;
+            boolean hasRotated  = false;
             
             if ((displayRotation == Surface.ROTATION_0) || (displayRotation == Surface.ROTATION_180)) {
                 hasRotated = true;

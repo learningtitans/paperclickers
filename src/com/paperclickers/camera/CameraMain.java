@@ -726,7 +726,7 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 
 		if (mCamera == null) {
 			try {
-				mCamera = getCameraInstance();				
+				mCamera = getCameraInstance();
 				
 				Camera.Parameters cameraParameters = mCamera.getParameters();
 				
@@ -737,7 +737,13 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 				
 				log.d(TAG, String.format("Size %d x %d", mImageWidth, mImageHeight));
 				
-				cameraParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                List<String> supportedFocusModes = cameraParameters.getSupportedFocusModes();
+                
+                if (supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                    cameraParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                } else {
+                    cameraParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+                }
 				
 				mCamera.setParameters(cameraParameters);
 				
@@ -754,6 +760,7 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 				}
 				
 				if (cameraRotation != 0) {
+				    
 				    mCamera.setDisplayOrientation(cameraRotation);
 				    
 				    mImageWidth  = cameraSize.height;
