@@ -315,6 +315,10 @@ public class SettingsActivity extends PreferenceActivity {
 		
 		if (!isSimplePreferences(this)) {
 			loadHeadersFromResource(R.xml.pref_headers, target);
+			
+            if (DEVELOPMENT_OPTIONS && mDevelopmentMode) {
+                loadHeadersFromResource(R.xml.pref_header_development, target);
+            }
 		}
 	}
 
