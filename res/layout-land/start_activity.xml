@@ -33,32 +33,6 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true" >
 
-        <LinearLayout
-            android:id="@+id/about_and_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="36dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="33dp">
-            
-	        <Button
-	            android:id="@+id/appIcon"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:background="@drawable/sel_button_launcher" />
-
-	        <TextView
-	            android:id="@+id/appNameText"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_marginStart="15dp"
-        		android:layout_gravity="bottom"
-	            android:text="@string/app_title"
-	            android:textColor="@android:color/black"
-	            android:textSize="@dimen/title_text_size" />
-            
-        </LinearLayout>
         
         <Button
             android:id="@+id/button_start"
@@ -74,14 +48,35 @@
             android:background="@drawable/press_button" />
 
         
+        <Button
+            android:id="@+id/appIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="33dp"
+            android:background="@drawable/sel_button_launcher" />
+
+        <TextView
+            android:id="@+id/appNameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/appIcon"
+            android:layout_marginStart="15dp"
+            android:layout_toEndOf="@+id/appIcon"
+            android:text="@string/app_title"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/title_text_size" />
 
         <Button
             android:id="@+id/settingsIcon"
             android:layout_width="@dimen/settings_icon_size"
             android:layout_height="@dimen/settings_icon_size"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/sel_button_settings" />
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/appIcon"
+            android:layout_marginEnd="46dp"
+            android:background="@drawable/sel_button_settings" />        
 
     </RelativeLayout>
 
