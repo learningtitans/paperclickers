@@ -1,0 +1,100 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* LICENSE
+* proguard-project.txt
+* topcodes/
+* topcodes/en-US/
+* topcodes/en-US/A4_1_perPage/
+* topcodes/en-US/A4_1_perPage/paperclickers_topCodes_1pp_A4.pdf
+* topcodes/en-US/A4_1_perPage/paperclickers_topCodes_rectoOnly_1pp_A4.pdf
+* topcodes/en-US/A4_1_perPage/paperclickers_topCodes_versoOnly_1pp_A4.pdf
+* topcodes/en-US/A4_2_perPage/
+* topcodes/en-US/A4_2_perPage/paperclickers_topCodes_2pp_A4.pdf
+* topcodes/en-US/A4_2_perPage/paperclickers_topCodes_rectoOnly_2pp_A4.pdf
+* topcodes/en-US/A4_2_perPage/paperclickers_topCodes_versoOnly_2pp_A4.pdf
+* topcodes/en-US/A4_4_perPage/
+* topcodes/en-US/A4_4_perPage/paperclickers_topCodes_4pp_A4.pdf
+* topcodes/en-US/A4_4_perPage/paperclickers_topCodes_rectoOnly_4pp_A4.pdf
+* topcodes/en-US/A4_4_perPage/paperclickers_topCodes_versoOnly_4pp_A4.pdf
+* topcodes/en-US/Letter_1_perPage/
+* topcodes/en-US/Letter_1_perPage/paperclickers_topCodes_1pp_letter.pdf
+* topcodes/en-US/Letter_1_perPage/paperclickers_topCodes_rectoOnly_1pp_letter.pdf
+* topcodes/en-US/Letter_1_perPage/paperclickers_topCodes_versoOnly_1pp_letter.pdf
+* topcodes/en-US/Letter_2_perPage/
+* topcodes/en-US/Letter_2_perPage/paperclickers_topCodes_2pp_letter.pdf
+* topcodes/en-US/Letter_2_perPage/paperclickers_topCodes_rectoOnly_2pp_letter.pdf
+* topcodes/en-US/Letter_2_perPage/paperclickers_topCodes_versoOnly_2pp_letter.pdf
+* topcodes/en-US/Letter_4_perPage/
+* topcodes/en-US/Letter_4_perPage/paperclickers_topCodes_4pp_letter.pdf
+* topcodes/en-US/Letter_4_perPage/paperclickers_topCodes_rectoOnly_4pp_letter.pdf
+* topcodes/en-US/Letter_4_perPage/paperclickers_topCodes_versoOnly_4pp_letter.pdf
+* topcodes/pt-BR/
+* topcodes/pt-BR/A4_1_porPágina/
+* topcodes/pt-BR/A4_1_porPágina/paperclickers_topCodes_1pp_A4.pdf
+* topcodes/pt-BR/A4_1_porPágina/paperclickers_topCodes_rectoSomente_1pp_A4.pdf
+* topcodes/pt-BR/A4_1_porPágina/paperclickers_topCodes_versoSomente_1pp_A4.pdf
+* topcodes/pt-BR/A4_2_porPágina/
+* topcodes/pt-BR/A4_2_porPágina/paperclickers_topCodes_2pp_A4.pdf
+* topcodes/pt-BR/A4_2_porPágina/paperclickers_topCodes_rectoSomente_2pp_A4.pdf
+* topcodes/pt-BR/A4_2_porPágina/paperclickers_topCodes_versoSomente_2pp_A4.pdf
+* topcodes/pt-BR/A4_4_porPágina/
+* topcodes/pt-BR/A4_4_porPágina/paperclickers_topCodes_4pp_A4.pdf
+* topcodes/pt-BR/A4_4_porPágina/paperclickers_topCodes_rectoSomente_4pp_A4.pdf
+* topcodes/pt-BR/A4_4_porPágina/paperclickers_topCodes_versoSomente_4pp_A4.pdf
+* topcodes/pt-BR/Carta_1_porPágina/
+* topcodes/pt-BR/Carta_1_porPágina/paperclickers_topCodes_1pp_carta.pdf
+* topcodes/pt-BR/Carta_1_porPágina/paperclickers_topCodes_rectoSomente_1pp_carta.pdf
+* topcodes/pt-BR/Carta_1_porPágina/paperclickers_topCodes_versoSomente_1pp_carta.pdf
+* topcodes/pt-BR/Carta_2_porPágina/
+* topcodes/pt-BR/Carta_2_porPágina/paperclickers_topCodes_2pp_carta.pdf
+* topcodes/pt-BR/Carta_2_porPágina/paperclickers_topCodes_rectoSomente_2pp_carta.pdf
+* topcodes/pt-BR/Carta_2_porPágina/paperclickers_topCodes_versoSomente_2pp_carta.pdf
+* topcodes/pt-BR/Carta_4_porPágina/
+* topcodes/pt-BR/Carta_4_porPágina/paperclickers_topCodes_4pp_carta.pdf
+* topcodes/pt-BR/Carta_4_porPágina/paperclickers_topCodes_rectoSomente_4pp_carta.pdf
+* topcodes/pt-BR/Carta_4_porPágina/paperclickers_topCodes_versoSomente_4pp_carta.pdf
+
+Replaced Jars with Dependencies:
+--------------------------------
+The importer recognized the following .jar files as third party
+libraries and replaced them with Gradle dependencies instead. This has
+the advantage that more explicit version information is known, and the
+libraries can be updated automatically. However, it is possible that
+the .jar file in your project was of an older version than the
+dependency we picked, which could render the project not compileable.
+You can disable the jar replacement in the import wizard and try again:
+
+android-support-v4.jar => com.android.support:support-v4:19.1.0
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+* AndroidManifest.xml => app/src/main/AndroidManifest.xml
+* assets/ => app/src/main/assets/
+* libs/mpandroidchartlibrary-2-0-9.jar => app/libs/mpandroidchartlibrary-2-0-9.jar
+* res/ => app/src/main/res/
+* src/ => app/src/main/java/
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)

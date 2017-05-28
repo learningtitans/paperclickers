@@ -42,6 +42,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources.NotFoundException;
 import android.hardware.Camera;
 import android.hardware.SensorManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -69,69 +70,69 @@ import com.paperclickers.camera.OrientationManager.ScreenOrientation;
 
 public class CameraMain extends Activity implements Camera.PreviewCallback, CameraChangeListener, OrientationListener {
 
-    // Intent used to call CameraMain passing back a list of previously validated topcodes
+	// Intent used to call CameraMain passing back a list of previously validated topcodes
 	public static String RECALL_CODES_INTENT = "com.paperclickers.intent.action.RECALL_CODES";
-	
+
 	final static String TAG = "paperclickers.CameraMain";
 
 	// Use this constant to enable saving the last analyzed image, right after user requesting to
 	// carry on to the Grid View
-	final static boolean SAVE_LAST_IMAGE = false;
+	final static boolean SAVE_LAST_IMAGE = true;
 
 	// Use this constant to enable showing the class topcodes detection raw (regardless validation) 
 	// frequencies as an overlay in camera capture
 	final static boolean SHOW_CODE_FREQUENCY_DEBUG = false;
-	
+
 	// Use this constant to enable the overall topcodes validation mechanism
 	public final static boolean AVOID_PARTIAL_READINGS = true;
-	
+
 	// Use this constant to enable the detailed debug log, showing every topcodes detection and validation
 	// data
 	final static boolean DEBUG_DETECTION_CYCLE_RAW_DATA = false;
-	
+
 	// Defined by TopcodeValidator constant: refers to the moving validation threshold mechanism
 	final static boolean MOVING_VALIDATION_THRESHOLD = TopcodeValidator.MOVING_VALIDATION_THRESHOLD;
-	
+
 	// Use this constant to enable the frame drop
 	final static boolean DROP_EVERY_OTHER_FRAME = true;
-	
+
 	// Use this constant to enable previewing only validated codes as an overlay in the camera capture
-	final static boolean ONLY_PREVIEW_VALIDATED_CODES = true ;
-	
-	final static int SCAN_DIMISS_TIMEOUT = 1500;
-	
-	private Camera        mCamera;
+	final static boolean ONLY_PREVIEW_VALIDATED_CODES = true;
+
+	final static int SCAN_DIMISS_TIMEOUT = 1000;
+
+	private Camera mCamera;
 	private CameraPreview mCameraPreview;
-	private DrawView      mDraw;
-	private FrameLayout   mPreview;
-	
-	private Vibrator 	  mVibrator;
-	private long          mTouchStart = -1;
-	
+	private DrawView mDraw;
+	private FrameLayout mPreview;
+
+	private Vibrator mVibrator;
+	private long mTouchStart = -1;
+
 	private int[] mLuma = null;
 	private int mImageWidth;
 	private int mImageHeight;
-	
+
 	private int mRecognizedTopcodesCount;
 	private int mValidTopcodesCount;
-	
+
 	private boolean mUserRequestedEnd = false;
-	
+
 	long mStartScanTime;
 	long mEndScanTime;
 	long mStartOnPreviewTime;
 	long mEndOnPreviewTime;
-    long mStartFiducialTime;
-    long mEndFiducialTime;	
-	
+	long mStartFiducialTime;
+	long mEndFiducialTime;
+
 	int mScanCycle;
-	
+
 	Context mContext;
-	
+
 	TextView mHint1TextView;
 	TextView mFreqDebugTextView;
 	TextView mDevelopmentData;
-	
+
 	String mDevelopmentCurrentCycle;
 	String mDevelopmentCurrentThreshold;
 
@@ -142,23 +143,111 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 	private boolean mShowingValidation = false;
 
 	private SparseArray<TopCode> mFinalTopcodes;
-    private SparseArray<TopcodeValidator> mFinalTopcodesValidator;
-	private Integer[] mFinalTopcodesFrequency;	
+	private SparseArray<TopcodeValidator> mFinalTopcodesValidator;
+	private Integer[] mFinalTopcodesFrequency;
 
 	private Timer scanDismissTimer = null;
-	
+
 	boolean mHasRotated = false;
-	
+
 	OrientationManager mOrientationManager = null;
-	
-	
-	
+
+	PaperclickersScanner mScan = null;
+
+
+	private class SaveLastProcessedFrame extends AsyncTask<Void, Void, Void> {
+
+		String mFilename;
+		int[] mThresholdData;
+		int mWidth;
+		int mHeight;
+
+
+
+		public SaveLastProcessedFrame(String filename, int[] threshold, int width, int height) {
+
+			super();
+
+			mFilename      = filename;
+			mThresholdData = threshold.clone();
+			mWidth         = width;
+			mHeight        = height;
+		}
+
+
+
+		@Override
+		protected Void doInBackground(Void... params) {
+
+			writePGMAfterThreshold (mFilename, mThresholdData, mWidth, mHeight);
+
+			return null;
+		}
+
+
+
+		private void writePGMAfterThreshold(String filename, int[] threshold, int width, int height) {
+
+			long startTime = System.currentTimeMillis();
+
+			log.d(TAG, "Saving last processed image frame");
+
+			int maxVal = 236;
+
+			try {
+				FileWriter fstream = new FileWriter(Environment.getExternalStorageDirectory() + "/PaperClickers/" + filename);
+
+				BufferedWriter fout = new BufferedWriter(fstream);
+
+				if (width > height) {
+					fout.write(String.format("P2\n%d\n%d\n%d\n", width, height, maxVal));
+				} else {
+					fout.write(String.format("P2\n%d\n%d\n%d\n", height, width, maxVal));
+				}
+
+				log.d(TAG,String.format("Writing file - size: %d x %d", width, height));
+
+				int total = 0;
+
+				for (int i = 0; i < width * height; i++) {
+					int a = threshold[i] >>> 24;
+					int r = maxVal;
+
+					if (a == 0) {
+						r = 0;
+					}
+
+					fout.write(String.format("%d ", r));
+
+					total++;
+				}
+
+				fout.close();
+
+				log.d(TAG, String.format("Total %d (%d) - time: %d", total, width * height, System.currentTimeMillis() - startTime));
+
+			} catch (IOException e) {
+				Toast.makeText(getApplicationContext(), "Error saving PGM file.", Toast.LENGTH_SHORT).show();
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+
 	private void callNextActivity() {
+
+
+		log.d(TAG,">>>>> callNextActivity");
 
 		HashMap<Integer, String> detectedTopcodes = new HashMap<Integer, String>();
 
 		if (mFinalTopcodes != null) {
-			
+
+
+			log.d(TAG,String.format("mFinalTopcodes.size: %d", mFinalTopcodes.size()));
+
+
 			// Build a hashmap containing only code and detected answer of each topcode
 			
 			for (int i = 0; i < mFinalTopcodes.size(); i++) {
@@ -202,13 +291,13 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 						
 			log.d(TAG, String.format("Total scan cycles: %d, total scan time (ms): %d", mScanCycle, mEndScanTime - mStartScanTime));
 		} else {
-			log.d(TAG, "Empy class!!! Shouldn't have happen; applicaton shared preferences might have been tampered!!!");
+			log.d(TAG, "Empty class!!! Shouldn't have happen; application shared preferences might have been tampered!!!");
 		}
 
 		log.d(TAG, "callNextActivity with topcodes list of size: " + detectedTopcodes.size());		
 
 		finish();
-		
+
 		Intent i = new Intent(getApplicationContext(), GridViewActivity.class);
 
 		i.putExtra("detectedAnswers", detectedTopcodes);
@@ -256,36 +345,38 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 
 	
 	
-	private boolean hasDetectedEnd(boolean timeoutOccurred) {
-		
-		boolean hasDetected = false;
-	
+	private void hasDetectedEnd(boolean timeoutOccurred) {
+
+
     	if (mTouchStart != -1) {
-        	if ((timeoutOccurred) || (System.currentTimeMillis() - mTouchStart > SCAN_DIMISS_TIMEOUT)) {
+			if ((timeoutOccurred) || (System.currentTimeMillis() - mTouchStart > SCAN_DIMISS_TIMEOUT)) {
 				if (mVibrator != null) {
-				    mVibrator.vibrate(50);
+					mVibrator.vibrate(50);
 				}
-				
+
+				mUserRequestedEnd = true;
+
 				mTouchStart = -1;
-				
-				log.d(TAG, String.format("Last scan time: %d", mEndOnPreviewTime - mStartOnPreviewTime));
-				
-	            if (SAVE_LAST_IMAGE) {
-	                writePGMAfterThreshold("lastfile.pgm", mLuma, mImageWidth, mImageHeight);               
-	            }
-				
-				callNextActivity();
-				
-				hasDetected = true;
-        	}
+
+				log.d(TAG, ">>>>> hasDetectedEnd. Registered termination");
+
+//				if (SAVE_LAST_IMAGE) {
+//
+//					SaveLastProcessedFrame saveImage = new SaveLastProcessedFrame("lastfile.pgm", mLuma, mImageWidth, mImageHeight);
+//
+//					saveImage.execute();
+//				}
+//
+//				callNextActivity();
+			} else {
+				mUserRequestedEnd = false;
+			}
     	}
     	
         if (scanDismissTimer != null) {
             scanDismissTimer.cancel();
             scanDismissTimer = null;
         }
-    	
-    	return hasDetected;
 	}
 	
 	
@@ -460,9 +551,7 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 		List<TopCode> recognizedValidTopcodes = new ArrayList<TopCode>();
         List<TopCode> topcodes = null;
         
-        PaperclickersScanner scan = new PaperclickersScanner();		
-
-        // Check if should drop this frame 
+        // Check if should drop this frame
 		if (DROP_EVERY_OTHER_FRAME) {
 			mIgnoreCall = !mIgnoreCall;
 		
@@ -478,21 +567,20 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 		}
 		
 		mStartOnPreviewTime = System.currentTimeMillis();
-		
+
 		stripLumaFromYUV420SP(mLuma, data, mImageWidth, mImageHeight);
-		
+
 		try {
 			mStartFiducialTime = System.currentTimeMillis();
-			topcodes           = scan.scan(mLuma, mImageWidth, mImageHeight, mHasRotated);
-			mEndFiducialTime   = System.currentTimeMillis();
-			
-			if (SAVE_LAST_IMAGE && mUserRequestedEnd) {
-				writePGMAfterThreshold("lastfile.pgm", mLuma, mImageWidth, mImageHeight);
-			}
+
+//			topcodes           = scan.scan(mLuma, mImageWidth, mImageHeight, mHasRotated);
+			topcodes = mScan.scanProcessing(mLuma, mHasRotated);
+
+			mEndFiducialTime = System.currentTimeMillis();
 		} catch (NotFoundException e1) {
 			log.e(TAG, e1.toString());
 		}
-		
+
 		if (topcodes != null) {			
 			if (topcodes.size() > 0) {
 				
@@ -621,12 +709,23 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
         mEndOnPreviewTime = System.currentTimeMillis();
 		
 		log.d(TAG, String.format("Cycle: %d, overall onPreview time(ms): %d, fiducial time(ms): %d - candidates points found: %d", 
-			  mScanCycle, mEndOnPreviewTime - mStartOnPreviewTime, mEndFiducialTime - mStartFiducialTime, scan.getCandidatesCount()));
+			  mScanCycle, mEndOnPreviewTime - mStartOnPreviewTime, mEndFiducialTime - mStartFiducialTime, mScan.getCandidatesCount()));
 		
 		mScanCycle++;
 		
 		if (MOVING_VALIDATION_THRESHOLD) {
 			TopcodeValidator.updateValidationThreshold(mScanCycle);
+		}
+
+		if (mUserRequestedEnd) {
+			if (SAVE_LAST_IMAGE) {
+
+				SaveLastProcessedFrame saveImage = new SaveLastProcessedFrame("lastfile.pgm", mLuma, mImageWidth, mImageHeight);
+
+				saveImage.execute();
+			}
+
+			callNextActivity();
 		}
 	}
 
@@ -769,7 +868,10 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 				    mHasRotated = true;
 				    
 				    log.d(TAG, String.format("Changing camera orientation (%d); width=%d, height=%d", cameraRotation, mImageWidth, mImageHeight));
-				}
+				} else {
+                    mHasRotated = false;
+                }
+
 				
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -813,7 +915,7 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 				        	scanDismissTimer.schedule(new TimerTask() {
 				        	    
 				        	    public void run() {
-				        	        mUserRequestedEnd = hasDetectedEnd(true);
+				        	        hasDetectedEnd(true);
 				        	    }
 				        	}, (long) SCAN_DIMISS_TIMEOUT);
 				        	
@@ -821,7 +923,7 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 				        	
 				        case MotionEvent.ACTION_UP:
 				        	
-				        	mUserRequestedEnd = hasDetectedEnd(false);
+				        	hasDetectedEnd(false);
 				        	
 				        	if (!mUserRequestedEnd) {
 				        		mTouchStart = -1;
@@ -833,7 +935,7 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 				        	
 				        case MotionEvent.ACTION_MOVE:
 				        	
-				        	mUserRequestedEnd = hasDetectedEnd(false);
+				        	hasDetectedEnd(false);
 					        	
 				            break;
 				        case MotionEvent.ACTION_CANCEL:
@@ -882,11 +984,15 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
             mImageWidth  = height;
             mImageHeight = width;
         } else {
+            mHasRotated = false;
+
             mImageWidth  = width;
             mImageHeight = height;
         }
         
         mLuma = new int[mImageWidth * mImageHeight];
+
+		mScan = new PaperclickersScanner(mImageWidth, mImageHeight, mContext);
         		
         if (mDraw != null) {
             if (mHasRotated) {
@@ -900,37 +1006,4 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 	 
 	 
 	 
-    void writePGMAfterThreshold(String filename, int[] threshold, int width, int height) {
-    	
-    	int maxVal = 236;
-    	
-		try {
-			FileWriter fstream = new FileWriter(Environment.getExternalStorageDirectory() + "/PaperClickers/" + filename);
-			
-			BufferedWriter fout = new BufferedWriter(fstream);
-			
-			if (width > height) {
-			    fout.write(String.format("P2\n%d\n%d\n%d\n", width, height, maxVal));
-			} else {
-                fout.write(String.format("P2\n%d\n%d\n%d\n", height, width, maxVal));
-			}
-			
-			for (int i = 0; i < width * height; i++) {
-				int a = threshold[i] >>> 24 ;
-		    	int r = maxVal;
-		    	
-		    	if (a == 0) {
-		    		r = 0;
-		    	}
-		    	
-				fout.write(String.format("%d ", r));
-			}
-			
-			fout.close();
-			
-		} catch (IOException e) {
-			Toast.makeText(getApplicationContext(), "Error saving PGM file.", Toast.LENGTH_SHORT).show();
-			e.printStackTrace();
-		}			
-    }
 }
