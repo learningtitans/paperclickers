@@ -4,6 +4,9 @@
 
 static uint32_t const PIXEL_COLOR_MASK = 0x01000000;
 
+static uint32_t const MEDIAN_FILTER_ELEMENT_SIZE = 5;
+static uint32_t const MEDIAN_FILTER_HALF_ELEMENT_SIZE = (MEDIAN_FILTER_ELEMENT_SIZE - 1) / 2;
+
 uint32_t width;
 uint32_t height;
 uint32_t elementSize;
@@ -91,6 +94,40 @@ void adaptiveThreshold() {
 
 
 
+static void quickSort(uint pixels[], uint size, uint begin, uint end) {
+
+    uint pivot = pixels[size / 2];
+    uint tmp;
+
+    uint left  = begin;
+    uint right = end;
+
+    while (left <= right) {
+
+        while (pixels[left] < pivot) {
+            left++;
+        }
+
+        while (pixels[right] > pivot) {
+            right--;
+        }
+
+        if (left <= right) {
+            tmp = pixels[left];
+
+            pixels[left]  = pixels[right];
+            pixels[right] = tmp;
+
+            left++;
+            right--;
+        }
+    }
+
+    quickSort(pixels, right - begin + 1, begin, right);
+    quickSort(pixels, end - left + 1, left, end);
+}
+
+
 
 
 //
@@ -173,3 +210,35 @@ uint RS_KERNEL erosion(uint in, uint32_t x, uint32_t y) {
     return out;
 }
 
+
+
+uint RS_KERNEL median(uint in, uint32_t x, uint32_t y) {
+
+    bool hasHit = false;
+
+    int32_t startHeight = y - MEDIAN_FILTER_HALF_ELEMENT_SIZE;
+    int32_t startWidth  = x - MEDIAN_FILTER_HALF_ELEMENT_SIZE;
+
+    int32_t totalHeight = MEDIAN_FILTER_ELEMENT_SIZE;
+    int32_t totalWidth  = MEDIAN_FILTER_ELEMENT_SIZE;
+
+    uint element;
+    uint pixels[MEDIAN_FILTER_ELEMENT_SIZE * MEDIAN_FILTER_ELEMENT_SIZE];
+    uint out;
+
+    uchar pixelsCount = 0;
+
+    for (uint32_t i = 0; i < totalHeight; i++) {
+        for (uint32_t j = 0; j < totalWidth; j++) {
+            element = rsGetElementAt_uint(currentInput, startWidth + j, startHeight + i);
+
+            pixels[pixelsCount++] = element;
+        }
+    }
+
+    quickSort(pixels, MEDIAN_FILTER_ELEMENT_SIZE * MEDIAN_FILTER_ELEMENT_SIZE, 0, (MEDIAN_FILTER_ELEMENT_SIZE * MEDIAN_FILTER_ELEMENT_SIZE) - 1);
+
+    out = pixels[(MEDIAN_FILTER_ELEMENT_SIZE * MEDIAN_FILTER_ELEMENT_SIZE - 1) / 2];
+
+    return out;
+}

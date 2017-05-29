@@ -737,12 +737,15 @@ public class PaperclickersScanner extends Scanner {
             log.d(TAG, String.format("Threshold execution time(ms): %d", mEndThresholdTime - mStartThresholdTime));
 
 			if (USE_RENDERSCRIPT) {
-				log.d(TAG, String.format("Closing execution time(ms): %d, Opening execution time(ms): %d", mEndClosingTime - mStartClosingTime, mEndOpeningTime - mStartOpeningTime));
+				log.d(TAG, String.format("Closing execution time(ms): %d, Opening execution time(ms): %d",
+					  mEndClosingTime - mStartClosingTime, mEndOpeningTime - mStartOpeningTime));
 			} else {
-				log.d(TAG, String.format("Closing Dilation execution time(ms): %d, Closing Erosion execution time(ms): %d", mEndDilationTime - mStartDilationTime, mEndErosionTime - mStartErosionTime));
+				log.d(TAG, String.format("Closing Dilation execution time(ms): %d, Closing Erosion execution time(ms): %d",
+					  mEndDilationTime - mStartDilationTime, mEndErosionTime - mStartErosionTime));
 
 				if (APPLY_OPENING) {
-					log.d(TAG, String.format("Opening Dilation execution time(ms): %d, Opening Erosion execution time(ms): %d", mEndDilation2Time - mStartDilation2Time, mEndErosion2Time - mStartErosion2Time));
+					log.d(TAG, String.format("Opening Dilation execution time(ms): %d, Opening Erosion execution time(ms): %d",
+						  mEndDilation2Time - mStartDilation2Time, mEndErosion2Time - mStartErosion2Time));
 				}
 			}
 
