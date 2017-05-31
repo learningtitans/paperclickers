@@ -64,6 +64,10 @@ public class PaperclickersScanner extends Scanner {
 
 	public static final boolean APPLY_OPENING = true;
 
+	public static final boolean APPLY_MEDIAN_FILTER = true;
+	public static final boolean APPLY_MORPHO_OPERATIONS = false;
+
+
 
 	public static final float INVALID_TOPCODE_ORIENTATION = Float.NaN;
 	
@@ -105,6 +109,9 @@ public class PaperclickersScanner extends Scanner {
 	public static final int MORPHO_HALF_DILATION_STRUCT_SIZE = (MORPHO_DILATION_STRUCT_SIZE - 1) / 2;
 	public static final int MORPHO_HALF_EROSION_STRUCT_SIZE  = (MORPHO_EROSION_STRUCT_SIZE - 1) / 2;
 
+	public static final int MEDIAN_FILTER_ELEMENT_SIZE = 7;
+	public static final int MEDIAN_FILTER_HALF_ELEMENT_SIZE = (MEDIAN_FILTER_ELEMENT_SIZE - 1) / 2;
+
 	public static final int PIXEL_COLOR_MASK = 0x01000000;
 	
 	
@@ -128,6 +135,9 @@ public class PaperclickersScanner extends Scanner {
 	long mEndOpeningTime;
 	long mStartClosingTime;
 	long mEndClosingTime;
+
+	long mStartMedianFilterTime;
+	long mEndMedianFilterTime;
 
 	long mStartHorizontalScanTime;
 	long mEndHorizontalScanTime;
@@ -490,34 +500,33 @@ public class PaperclickersScanner extends Scanner {
 
 
 
-    protected void morphoRenderscriptClosing() {
+    protected void medianFilterRenderscript(Allocation initialInput, Allocation auxiliaryData) {
 
-//		mMorphoData.copyFromUnchecked(data);
-//
-//		mMorphoOperationsScript.set_currentInput(mMorphoData);
-		mMorphoOperationsScript.forEach_dilation(mMorphoData, mTmpData, mLaunchOptions);
-
-		mMorphoOperationsScript.set_currentInput(mTmpData);
-		mMorphoOperationsScript.forEach_erosion(mTmpData, mMorphoData, mLaunchOptions);
-
-		mMorphoData.copyTo(data);
+		mMorphoOperationsScript.set_currentInput(initialInput);
+		mMorphoOperationsScript.forEach_median(initialInput, auxiliaryData, mLaunchOptions);
 	}
 
 
 
-	protected void morphoRenderscriptOpening() {
+    protected void morphoRenderscriptClosing(Allocation initialInput, Allocation auxiliaryData) {
 
-		mMorphoData.copyFromUnchecked(data);
+		mMorphoOperationsScript.set_currentInput(initialInput);
+		mMorphoOperationsScript.forEach_dilation(initialInput, auxiliaryData, mLaunchOptions);
 
-		mMorphoOperationsScript.set_currentInput(mMorphoData);
-		mMorphoOperationsScript.forEach_erosion(mMorphoData, mTmpData, mLaunchOptions);
-
-		mMorphoOperationsScript.set_currentInput(mTmpData);
-		mMorphoOperationsScript.forEach_dilation(mTmpData, mMorphoData, mLaunchOptions);
-
-		mMorphoData.copyTo(data);
+		mMorphoOperationsScript.set_currentInput(auxiliaryData);
+		mMorphoOperationsScript.forEach_erosion(auxiliaryData, initialInput, mLaunchOptions);
 	}
 
+
+
+	protected void morphoRenderscriptOpening(Allocation initialInput, Allocation auxiliaryData) {
+
+		mMorphoOperationsScript.set_currentInput(initialInput);
+		mMorphoOperationsScript.forEach_erosion(initialInput, auxiliaryData, mLaunchOptions);
+
+		mMorphoOperationsScript.set_currentInput(auxiliaryData);
+		mMorphoOperationsScript.forEach_dilation(auxiliaryData, initialInput, mLaunchOptions);
+	}
 
 
 
@@ -534,8 +543,15 @@ public class PaperclickersScanner extends Scanner {
 
 		mLaunchOptions = new Script.LaunchOptions();
 
-		mLaunchOptions.setX(MORPHO_HALF_DILATION_STRUCT_SIZE, w - MORPHO_HALF_DILATION_STRUCT_SIZE);
-		mLaunchOptions.setY(MORPHO_HALF_DILATION_STRUCT_SIZE, h - MORPHO_HALF_DILATION_STRUCT_SIZE);
+		if (APPLY_MEDIAN_FILTER) {
+			mLaunchOptions.setX(MEDIAN_FILTER_HALF_ELEMENT_SIZE, w - MEDIAN_FILTER_HALF_ELEMENT_SIZE);
+			mLaunchOptions.setY(MEDIAN_FILTER_HALF_ELEMENT_SIZE, h - MEDIAN_FILTER_HALF_ELEMENT_SIZE);
+		} else {
+			mLaunchOptions.setX(MORPHO_HALF_DILATION_STRUCT_SIZE, w - MORPHO_HALF_DILATION_STRUCT_SIZE);
+			mLaunchOptions.setY(MORPHO_HALF_DILATION_STRUCT_SIZE, h - MORPHO_HALF_DILATION_STRUCT_SIZE);
+		}
+
+
 
 		Type.Builder array2DBuilder = new Type.Builder(mRs, Element.U32(mRs));
 
@@ -616,12 +632,27 @@ public class PaperclickersScanner extends Scanner {
 		log.d(TAG, String.format("++++> START SCAN", ccount));
 
 
-        if (LOG_EXECUTION_TIMES) {
-            mStartThresholdTime = System.currentTimeMillis();
-        }
-
         if (USE_RENDERSCRIPT) {
-			mMorphoData.copyFromUnchecked(data);
+			if (APPLY_MEDIAN_FILTER) {
+				if (LOG_EXECUTION_TIMES) {
+					mStartMedianFilterTime = System.currentTimeMillis();
+				}
+
+				mTmpData.copyFromUnchecked(data);
+
+				medianFilterRenderscript(mTmpData, mMorphoData);
+
+				if (LOG_EXECUTION_TIMES) {
+					mEndMedianFilterTime = System.currentTimeMillis();
+					mStartThresholdTime  = System.currentTimeMillis();
+				}
+			} else {
+				if (LOG_EXECUTION_TIMES) {
+					mStartThresholdTime = System.currentTimeMillis();
+				}
+
+				mMorphoData.copyFromUnchecked(data);
+			}
 
 			mMorphoOperationsScript.set_currentInput(mMorphoData);
 
@@ -629,71 +660,39 @@ public class PaperclickersScanner extends Scanner {
 
 			mRs.finish();
 		} else {
+			if (LOG_EXECUTION_TIMES) {
+				mStartThresholdTime = System.currentTimeMillis();
+			}
+
 			adaptiveThreshold(); // run the adaptive threshold filter
 		}
 
-
-		if (USE_RENDERSCRIPT) {
-			if (LOG_EXECUTION_TIMES) {
-				mEndThresholdTime = System.currentTimeMillis();
-
-				mStartClosingTime = System.currentTimeMillis();
-			}
-
-			morphoRenderscriptClosing();
-
-			if (LOG_EXECUTION_TIMES) {
-				mEndClosingTime = System.currentTimeMillis();
-
-				mStartOpeningTime = System.currentTimeMillis();
-			}
-
-			morphoRenderscriptOpening();
-
-			if (LOG_EXECUTION_TIMES) {
-				mEndOpeningTime = System.currentTimeMillis();
-				mStartHorizontalScanTime = System.currentTimeMillis();
-			}
-		} else {
-			if (LOG_EXECUTION_TIMES) {
-				mEndThresholdTime = System.currentTimeMillis();
-
-				mStartDilationTime = System.currentTimeMillis();
-			}
-
-			morphoDilation();
-
-			System.arraycopy(mWorkingDataInt, 0, data, 0, mWorkingDataInt.length);
-
-			if (LOG_EXECUTION_TIMES) {
-				mEndDilationTime = System.currentTimeMillis();
-
-				mStartErosionTime = System.currentTimeMillis();
-			}
-
-			morphoErosion();
-
-			System.arraycopy(mWorkingDataInt, 0, data, 0, mWorkingDataInt.length);
-
-			if (LOG_EXECUTION_TIMES) {
-				mEndErosionTime = System.currentTimeMillis();
-
-				if (APPLY_OPENING) {
-					mStartErosion2Time = System.currentTimeMillis();
-				} else {
-					mStartHorizontalScanTime = System.currentTimeMillis();
+		if (APPLY_MORPHO_OPERATIONS) {
+			if (USE_RENDERSCRIPT) {
+				if (LOG_EXECUTION_TIMES) {
+					mEndThresholdTime = System.currentTimeMillis();
+					mStartClosingTime = System.currentTimeMillis();
 				}
-			}
 
-			if (APPLY_OPENING) {
-				morphoErosion();
-
-				System.arraycopy(mWorkingDataInt, 0, data, 0, mWorkingDataInt.length);
+				morphoRenderscriptClosing(mMorphoData, mTmpData);
 
 				if (LOG_EXECUTION_TIMES) {
-					mEndErosion2Time = System.currentTimeMillis();
+					mEndClosingTime   = System.currentTimeMillis();
+					mStartOpeningTime = System.currentTimeMillis();
+				}
 
-					mStartDilation2Time = System.currentTimeMillis();
+				morphoRenderscriptOpening(mMorphoData, mTmpData);
+
+				mMorphoData.copyTo(data);
+
+				if (LOG_EXECUTION_TIMES) {
+					mEndOpeningTime          = System.currentTimeMillis();
+					mStartHorizontalScanTime = System.currentTimeMillis();
+				}
+			} else {
+				if (LOG_EXECUTION_TIMES) {
+					mEndThresholdTime  = System.currentTimeMillis();
+					mStartDilationTime = System.currentTimeMillis();
 				}
 
 				morphoDilation();
@@ -701,10 +700,52 @@ public class PaperclickersScanner extends Scanner {
 				System.arraycopy(mWorkingDataInt, 0, data, 0, mWorkingDataInt.length);
 
 				if (LOG_EXECUTION_TIMES) {
-					mEndDilation2Time = System.currentTimeMillis();
-
-					mStartHorizontalScanTime = System.currentTimeMillis();
+					mEndDilationTime  = System.currentTimeMillis();
+					mStartErosionTime = System.currentTimeMillis();
 				}
+
+				morphoErosion();
+
+				System.arraycopy(mWorkingDataInt, 0, data, 0, mWorkingDataInt.length);
+
+				if (LOG_EXECUTION_TIMES) {
+					mEndErosionTime = System.currentTimeMillis();
+
+					if (APPLY_OPENING) {
+						mStartErosion2Time = System.currentTimeMillis();
+					} else {
+						mStartHorizontalScanTime = System.currentTimeMillis();
+					}
+				}
+
+				if (APPLY_OPENING) {
+					morphoErosion();
+
+					System.arraycopy(mWorkingDataInt, 0, data, 0, mWorkingDataInt.length);
+
+					if (LOG_EXECUTION_TIMES) {
+						mEndErosion2Time    = System.currentTimeMillis();
+						mStartDilation2Time = System.currentTimeMillis();
+					}
+
+					morphoDilation();
+
+					System.arraycopy(mWorkingDataInt, 0, data, 0, mWorkingDataInt.length);
+
+					if (LOG_EXECUTION_TIMES) {
+						mEndDilation2Time        = System.currentTimeMillis();
+						mStartHorizontalScanTime = System.currentTimeMillis();
+					}
+				}
+			}
+		} else {
+			if (LOG_EXECUTION_TIMES) {
+				mEndThresholdTime        = System.currentTimeMillis();
+				mStartHorizontalScanTime = System.currentTimeMillis();
+			}
+
+			if (USE_RENDERSCRIPT) {
+				mMorphoData.copyTo(data);
 			}
 		}
 
@@ -736,17 +777,23 @@ public class PaperclickersScanner extends Scanner {
             
             log.d(TAG, String.format("Threshold execution time(ms): %d", mEndThresholdTime - mStartThresholdTime));
 
-			if (USE_RENDERSCRIPT) {
-				log.d(TAG, String.format("Closing execution time(ms): %d, Opening execution time(ms): %d",
-					  mEndClosingTime - mStartClosingTime, mEndOpeningTime - mStartOpeningTime));
-			} else {
-				log.d(TAG, String.format("Closing Dilation execution time(ms): %d, Closing Erosion execution time(ms): %d",
-					  mEndDilationTime - mStartDilationTime, mEndErosionTime - mStartErosionTime));
+			if (APPLY_MORPHO_OPERATIONS) {
+				if (USE_RENDERSCRIPT) {
+					log.d(TAG, String.format("Closing execution time(ms): %d, Opening execution time(ms): %d",
+							mEndClosingTime - mStartClosingTime, mEndOpeningTime - mStartOpeningTime));
+				} else {
+					log.d(TAG, String.format("Closing Dilation execution time(ms): %d, Closing Erosion execution time(ms): %d",
+							mEndDilationTime - mStartDilationTime, mEndErosionTime - mStartErosionTime));
 
-				if (APPLY_OPENING) {
-					log.d(TAG, String.format("Opening Dilation execution time(ms): %d, Opening Erosion execution time(ms): %d",
-						  mEndDilation2Time - mStartDilation2Time, mEndErosion2Time - mStartErosion2Time));
+					if (APPLY_OPENING) {
+						log.d(TAG, String.format("Opening Dilation execution time(ms): %d, Opening Erosion execution time(ms): %d",
+								mEndDilation2Time - mStartDilation2Time, mEndErosion2Time - mStartErosion2Time));
+					}
 				}
+			}
+
+			if (APPLY_MEDIAN_FILTER) {
+				log.d(TAG, String.format("Median filter execution time(ms): %d", mEndMedianFilterTime - mStartMedianFilterTime));
 			}
 
             log.d(TAG, String.format("Horizontal scan execution time(ms): %d, Vertical scan execution time(ms): %d", mEndHorizontalScanTime - mStartHorizontalScanTime, mEndVerticalScanTime - mStartVerticalScanTime));

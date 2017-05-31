@@ -4,7 +4,7 @@
 
 static uint32_t const PIXEL_COLOR_MASK = 0x01000000;
 
-static uint32_t const MEDIAN_FILTER_ELEMENT_SIZE = 5;
+static uint32_t const MEDIAN_FILTER_ELEMENT_SIZE = 7;
 static uint32_t const MEDIAN_FILTER_HALF_ELEMENT_SIZE = (MEDIAN_FILTER_ELEMENT_SIZE - 1) / 2;
 
 uint32_t width;
@@ -94,37 +94,47 @@ void adaptiveThreshold() {
 
 
 
-static void quickSort(uint pixels[], uint size, uint begin, uint end) {
+static void quickSort(uint pixels[], int size, int begin, int end) {
 
-    uint pivot = pixels[size / 2];
-    uint tmp;
+    if (size > 1) {
+        uint pivot = pixels[begin + size / 2];
+        uint tmp;
 
-    uint left  = begin;
-    uint right = end;
+        int left  = begin;
+        int right = end;
 
-    while (left <= right) {
+        while (left <= right) {
 
-        while (pixels[left] < pivot) {
-            left++;
+            while (pixels[left] < pivot) {
+                left++;
+            }
+
+            while (pixels[right] > pivot) {
+                right--;
+            }
+
+            if (left <= right) {
+                tmp = pixels[left];
+
+                pixels[left]  = pixels[right];
+                pixels[right] = tmp;
+
+                left++;
+                right--;
+            }
         }
 
-        while (pixels[right] > pivot) {
-            right--;
+        uint size1 = right - begin + 1;
+        uint size2 = end - left + 1;
+
+        if (size1 > 1) {
+            quickSort(pixels, size1, begin, right);
         }
 
-        if (left <= right) {
-            tmp = pixels[left];
-
-            pixels[left]  = pixels[right];
-            pixels[right] = tmp;
-
-            left++;
-            right--;
+        if (size2 > 1) {
+            quickSort(pixels, size2, left, end);
         }
     }
-
-    quickSort(pixels, right - begin + 1, begin, right);
-    quickSort(pixels, end - left + 1, left, end);
 }
 
 
