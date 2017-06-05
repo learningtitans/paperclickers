@@ -235,7 +235,13 @@ public class PaperclickersScanner extends Scanner {
         }
 	}
 	
-	
+
+
+	public void finalize() {
+        renderscriptFinalize();
+    }
+
+
 	
 	/**
 	 * Scan the image line by line looking for marked topcodes
@@ -529,43 +535,6 @@ public class PaperclickersScanner extends Scanner {
 	}
 
 
-
-	protected void morphoRenderscriptInitialize(Context context) {
-
-		mRs = RenderScript.create(context);
-
-		mMorphoOperationsScript = new ScriptC_morphoOperations(mRs);
-
-		mMorphoOperationsScript.set_width(w);
-		mMorphoOperationsScript.set_height(h);
-		mMorphoOperationsScript.set_elementSize(MORPHO_DILATION_STRUCT_SIZE);
-		mMorphoOperationsScript.set_halfElementSize(MORPHO_HALF_DILATION_STRUCT_SIZE);
-
-		mLaunchOptions = new Script.LaunchOptions();
-
-		if (APPLY_MEDIAN_FILTER) {
-			mLaunchOptions.setX(MEDIAN_FILTER_HALF_ELEMENT_SIZE, w - MEDIAN_FILTER_HALF_ELEMENT_SIZE);
-			mLaunchOptions.setY(MEDIAN_FILTER_HALF_ELEMENT_SIZE, h - MEDIAN_FILTER_HALF_ELEMENT_SIZE);
-		} else {
-			mLaunchOptions.setX(MORPHO_HALF_DILATION_STRUCT_SIZE, w - MORPHO_HALF_DILATION_STRUCT_SIZE);
-			mLaunchOptions.setY(MORPHO_HALF_DILATION_STRUCT_SIZE, h - MORPHO_HALF_DILATION_STRUCT_SIZE);
-		}
-
-
-
-		Type.Builder array2DBuilder = new Type.Builder(mRs, Element.U32(mRs));
-
-		array2DBuilder.setX(w);
-		array2DBuilder.setY(h);
-
-		Type array2D = array2DBuilder.create();
-
-		mMorphoData = Allocation.createTyped(mRs, array2D);
-		mTmpData    = Allocation.createTyped(mRs, array2D);
-	}
-
-
-
 	public PaperclickersScanner(int width, int height, Context context) {
 		super();
 
@@ -573,14 +542,71 @@ public class PaperclickersScanner extends Scanner {
 		this.h = height;
 
 		if (USE_RENDERSCRIPT) {
-			morphoRenderscriptInitialize(context);
+            renderscriptInitialize(context);
 		} else {
 			mWorkingDataInt = new int[width * height];
 		}
 	}
-	
-	
-	
+
+
+
+    protected void renderscriptFinalize() {
+
+        mMorphoData.destroy();
+        mTmpData.destroy();
+
+        mMorphoData = null;
+        mTmpData = null;
+
+        mLaunchOptions = null;
+
+        mMorphoOperationsScript.destroy();
+
+        mMorphoOperationsScript = null;
+
+        mRs.destroy();
+        mRs = null;
+    }
+
+
+
+
+    protected void renderscriptInitialize(Context context) {
+
+        mRs = RenderScript.create(context);
+
+        mMorphoOperationsScript = new ScriptC_morphoOperations(mRs);
+
+        mMorphoOperationsScript.set_width(w);
+        mMorphoOperationsScript.set_height(h);
+        mMorphoOperationsScript.set_elementSize(MORPHO_DILATION_STRUCT_SIZE);
+        mMorphoOperationsScript.set_halfElementSize(MORPHO_HALF_DILATION_STRUCT_SIZE);
+
+        mLaunchOptions = new Script.LaunchOptions();
+
+        if (APPLY_MEDIAN_FILTER) {
+            mLaunchOptions.setX(MEDIAN_FILTER_HALF_ELEMENT_SIZE, w - MEDIAN_FILTER_HALF_ELEMENT_SIZE);
+            mLaunchOptions.setY(MEDIAN_FILTER_HALF_ELEMENT_SIZE, h - MEDIAN_FILTER_HALF_ELEMENT_SIZE);
+        } else {
+            mLaunchOptions.setX(MORPHO_HALF_DILATION_STRUCT_SIZE, w - MORPHO_HALF_DILATION_STRUCT_SIZE);
+            mLaunchOptions.setY(MORPHO_HALF_DILATION_STRUCT_SIZE, h - MORPHO_HALF_DILATION_STRUCT_SIZE);
+        }
+
+
+
+        Type.Builder array2DBuilder = new Type.Builder(mRs, Element.U32(mRs));
+
+        array2DBuilder.setX(w);
+        array2DBuilder.setY(h);
+
+        Type array2D = array2DBuilder.create();
+
+        mMorphoData = Allocation.createTyped(mRs, array2D);
+        mTmpData    = Allocation.createTyped(mRs, array2D);
+    }
+
+
+
     /**
      * New scan method to allow directly sending lumma buffer instead of a Bitmap
      * 

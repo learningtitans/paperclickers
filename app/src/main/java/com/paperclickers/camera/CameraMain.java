@@ -296,6 +296,12 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
 
 		log.d(TAG, "callNextActivity with topcodes list of size: " + detectedTopcodes.size());		
 
+		if (mScan != null) {
+			mScan.finalize();
+
+			mScan = null;
+		}
+
 		finish();
 
 		Intent i = new Intent(getApplicationContext(), GridViewActivity.class);
@@ -991,6 +997,10 @@ public class CameraMain extends Activity implements Camera.PreviewCallback, Came
         }
         
         mLuma = new int[mImageWidth * mImageHeight];
+
+		if (mScan != null) {
+			mScan.finalize();
+		}
 
 		mScan = new PaperclickersScanner(mImageWidth, mImageHeight, mContext);
         		
