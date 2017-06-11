@@ -64,8 +64,8 @@ public class PaperclickersScanner extends Scanner {
 
 	public static final boolean APPLY_OPENING = true;
 
-	public static final boolean APPLY_MEDIAN_FILTER = true;
-	public static final boolean APPLY_MORPHO_OPERATIONS = false;
+	public static final boolean APPLY_MEDIAN_FILTER = false;
+	public static final boolean APPLY_MORPHO_OPERATIONS = true;
 
 
 
@@ -552,22 +552,31 @@ public class PaperclickersScanner extends Scanner {
 
     protected void renderscriptFinalize() {
 
-        mMorphoData.destroy();
-        mTmpData.destroy();
+		if (mMorphoData != null) {
+			mMorphoData.destroy();
 
-        mMorphoData = null;
-        mTmpData = null;
+			mMorphoData = null;
+		}
+
+		if (mTmpData != null) {
+			mTmpData.destroy();
+
+			mTmpData = null;
+		}
 
         mLaunchOptions = null;
 
-        mMorphoOperationsScript.destroy();
+		if (mMorphoOperationsScript != null) {
+			mMorphoOperationsScript.destroy();
 
-        mMorphoOperationsScript = null;
+			mMorphoOperationsScript = null;
+		}
 
-        mRs.destroy();
-        mRs = null;
+		if (mRs != null) {
+			mRs.destroy();
+			mRs = null;
+		}
     }
-
 
 
 
@@ -591,7 +600,6 @@ public class PaperclickersScanner extends Scanner {
             mLaunchOptions.setX(MORPHO_HALF_DILATION_STRUCT_SIZE, w - MORPHO_HALF_DILATION_STRUCT_SIZE);
             mLaunchOptions.setY(MORPHO_HALF_DILATION_STRUCT_SIZE, h - MORPHO_HALF_DILATION_STRUCT_SIZE);
         }
-
 
 
         Type.Builder array2DBuilder = new Type.Builder(mRs, Element.U32(mRs));

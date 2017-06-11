@@ -20,43 +20,37 @@
  * 
  */
 
-package com.paperclickers.camera;
+package com.paperclickers;
 
-import com.paperclickers.SettingsActivity;
-import com.paperclickers.log;
 import com.paperclickers.fiducial.PaperclickersScanner;
 import com.paperclickers.fiducial.TopCode;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
-public class TopcodeValidator {
+public class TopCodeValidator {
 	
-	final static String TAG = "TopcodeValidator";
+	final static String TAG = "TopCodeValidator";
 	
 	// Use this constant to enable the topcode validation using the most frequent answer criteria, in
 	// Opposition to the last valid answer criteria
-	final static boolean VALID_BY_FREQUENCY = CameraMain.AVOID_PARTIAL_READINGS & false;
+	final static boolean VALID_BY_FREQUENCY = AudienceResponses.AVOID_PARTIAL_READINGS & false;
 	
 	// Use this constant to enable the moving validation threshold, which is increased according to the
 	// scan time
-	final static boolean MOVING_VALIDATION_THRESHOLD = CameraMain.AVOID_PARTIAL_READINGS & true;
+	public final static boolean MOVING_VALIDATION_THRESHOLD = AudienceResponses.AVOID_PARTIAL_READINGS & true;
 		
 	final static int INITIAL_VALIDATION_THRESHOLD = 3;
 	final static int MAXIMUM_VALIDATION_THRESHOLD = 100;
 	
-	final static int VALIDATION_THRESHOLD_INCREASE_STEP = 32;
+	public final static int VALIDATION_THRESHOLD_INCREASE_STEP = 32;
 	
 	final static int INVALID_DUPLICATED_ANSWER = -1;
     
     // Response codes for "checkContinousDetection()" method
-    final static int TURNED_VALID        = -2;
-    final static int VALID_ALREADY       = -1;
-    final static int IGNORED_DUPLICATE   = 0;
-    final static int CONTINUOS_DETECTION = 1;
-    final static int MISSED_CYCLES       = 2;
-    final static int CHANGED_ANSWER      = 3;   
+    public final static int TURNED_VALID        = -2;
+	public final static int VALID_ALREADY       = -1;
+	public final static int IGNORED_DUPLICATE   = 0;
+	public final static int CONTINUOS_DETECTION = 1;
+	public final static int MISSED_CYCLES       = 2;
+	public final static int CHANGED_ANSWER      = 3;
     
     // Absolute number of cycles this topcode has been detected, by valid answer
 	private int[] mFrequency;
@@ -86,13 +80,13 @@ public class TopcodeValidator {
 
 	
 	
-	int checkContinousDetection(int currentScanCycle, int translatedAnswer, TopCode whichTopcode) {
+	public int checkContinousDetection(int currentScanCycle, int translatedAnswer, TopCode whichTopCode) {
 		
 		int result = CONTINUOS_DETECTION;
 
-		mHandledTopcode = whichTopcode;
+		mHandledTopcode = whichTopCode;
 		
-		if (CameraMain.AVOID_PARTIAL_READINGS) {
+		if (AudienceResponses.AVOID_PARTIAL_READINGS) {
 		    
             // Resets this duplicate indication for this scan cycle
             mDuplicateAnswerInLastScanCycle = PaperclickersScanner.ID_NO_ANSWER;
@@ -201,7 +195,7 @@ public class TopcodeValidator {
 	
 	
 	
-	void forceValid(int whichAnswer) {
+	public void forceValid(int whichAnswer) {
 		mNumberOfContinuousDetection[whichAnswer] = MAXIMUM_VALIDATION_THRESHOLD;
 		
 		mValidTopcode[whichAnswer] = true;
@@ -209,19 +203,19 @@ public class TopcodeValidator {
 	
 	
 	
-    int getAnswerValidationCounter(int whichAnswer) {
+    public int getAnswerValidationCounter(int whichAnswer) {
         return mNumberOfContinuousDetection[whichAnswer];
     }
     
     
 
-	int getBestValidAnswer() {
+	public int getBestValidAnswer() {
 		
 		int bestAnswer = PaperclickersScanner.ID_NO_ANSWER;
 		int bestAnswerFrequency = 0;
 		int bestAnswerLastDetectedScanCycle = -1;
 		
-		if (CameraMain.AVOID_PARTIAL_READINGS) {
+		if (AudienceResponses.AVOID_PARTIAL_READINGS) {
 			for (int i = 0; i < PaperclickersScanner.NUM_OF_VALID_ANSWERS; i++) {
 				if (mValidTopcode[i]) {
 					if (VALID_BY_FREQUENCY) {
@@ -246,19 +240,19 @@ public class TopcodeValidator {
 	
 	
 	
-	static int getCurrentValidationThrehshold() {
+	public static int getCurrentValidationThrehshold() {
 	    return mCurrentValidationThreshold;
 	}
 	
 	
 	
-	int getDuplicatedAnswerInLastScanCycle() {
+	public int getDuplicatedAnswerInLastScanCycle() {
 	    return mDuplicateAnswerInLastScanCycle;
 	}
 	
 	
 	
-    int getFrequency(int whichAnswer) {
+    public int getFrequency(int whichAnswer) {
 		return mFrequency[whichAnswer];
 	}
 	
@@ -270,43 +264,43 @@ public class TopcodeValidator {
 	
 	
 	
-	int getLastDetectedAnswer() {
+	public int getLastDetectedAnswer() {
 	    return mPreviousTranslatedAnswer;
 	}
 	
 	
 	
-	int getLastDetectedScanCycle(int whichAnswer) {
+	public int getLastDetectedScanCycle(int whichAnswer) {
 		return mLastDetectedScanCycle[whichAnswer];
 	}
 	
 	
 	
-	int getNumberOfContinuousDetection(int whichAnswer) {
+	public int getNumberOfContinuousDetection(int whichAnswer) {
 		return mNumberOfContinuousDetection[whichAnswer];
 	}
 	
 
 	
-	int getNumberOfLongestContinuousDetection(int whichAnswer) {
+	public int getNumberOfLongestContinuousDetection(int whichAnswer) {
 		return mLongestNumberOfContinuousDetection[whichAnswer];
 	}
 
 	
 	
-	void incFrequency(int whichAnswer) {
+	public void incFrequency(int whichAnswer) {
 		mFrequency[whichAnswer]++;
 	}
 
 
 	
-	boolean isAnswerValid(int whichAnswer) {
+	public boolean isAnswerValid(int whichAnswer) {
 	    return mValidTopcode[whichAnswer];
 	}
 	
 	
 
-	boolean isValid() {
+	public boolean isValid() {
 		
 		boolean alreadyValidated = false;
 		
@@ -319,7 +313,7 @@ public class TopcodeValidator {
 	
 	
 	
-	public TopcodeValidator(TopCode whichTopCode, Context whichContext) {
+	public TopCodeValidator(TopCode whichTopCode, float currentValidationThreshold) {
 					
 		mFrequency                   = new int[PaperclickersScanner.NUM_OF_VALID_ANSWERS];
 		mNumberOfContinuousDetection = new int[PaperclickersScanner.NUM_OF_VALID_ANSWERS];
@@ -346,16 +340,9 @@ public class TopcodeValidator {
 		mCurrentValidationThreshold = INITIAL_VALIDATION_THRESHOLD;
 		
 		mDuplicateAnswerInLastScanCycle = PaperclickersScanner.ID_NO_ANSWER;
-		
-		if (SettingsActivity.DEVELOPMENT_OPTIONS) {
-	        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(whichContext);
-	        
-	        String validationThresholdStr   = prefs.getString("validation_threshold", String.valueOf(VALIDATION_THRESHOLD_INCREASE_STEP));
-	        mCurrentValidationThresholdStep = (float) Integer.parseInt(validationThresholdStr);     		    
-		} else {
-		    mCurrentValidationThresholdStep = (float) VALIDATION_THRESHOLD_INCREASE_STEP;
-		}
-	}		
+
+		mCurrentValidationThresholdStep = currentValidationThreshold;
+	}
 
 	
 	

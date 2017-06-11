@@ -41,6 +41,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.paperclickers.AudienceResponses;
 import com.paperclickers.fiducial.PaperclickersScanner;
 import com.paperclickers.result.GridViewAdapter;
 import com.paperclickers.R;
@@ -186,10 +187,12 @@ public class GridViewActivity extends Activity {
 		if (isFinishing()) {
 			
 			log.d(TAG, "Finishing...");
-			
+
+			//TODO: AQUI!!! direcionar para a activity correta !!!
+
 			Intent i = new Intent(getApplicationContext(), CameraMain.class);
 			
-			i.setAction(CameraMain.RECALL_CODES_INTENT);
+			i.setAction(AudienceResponses.RECALL_CODES_INTENT);
 			i.putExtra("detectedAnswers", mDetectedAnswers);
 
 			startActivity(i);			

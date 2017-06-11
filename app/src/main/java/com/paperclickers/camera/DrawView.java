@@ -25,6 +25,7 @@ package com.paperclickers.camera;
 
 import java.util.List;
 
+import com.paperclickers.TopCodeValidator;
 import com.paperclickers.log;
 import com.paperclickers.fiducial.PaperclickersScanner;
 import com.paperclickers.fiducial.TopCode;
@@ -32,7 +33,6 @@ import com.paperclickers.fiducial.TopCode;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
@@ -50,7 +50,7 @@ public class DrawView extends SurfaceView {
 	// Enabling this disables the CameraMain.ONLY_PREVIEW_VALIDATED_CODES feature
 	final static boolean DRAW_VALIDATION_COUNTDOWN = true;
 	
-	private SparseArray<TopcodeValidator> mValidatorsList;
+	private SparseArray<TopCodeValidator> mValidatorsList;
 	
 	private int mWidth;
 	private int mHeight;
@@ -93,7 +93,7 @@ public class DrawView extends SurfaceView {
 	
 	
 	public DrawView(Context context, 
-	                SparseArray<TopcodeValidator> whichValidatorsList, 
+	                SparseArray<TopCodeValidator> whichValidatorsList,
 	                int width, 
 	                int height,
 	                boolean showingValidation) {
@@ -161,7 +161,7 @@ public class DrawView extends SurfaceView {
 			    
 			    boolean showingDuplicate = false;
 			    
-				TopcodeValidator whichValidator = mValidatorsList.get(topCode.getCode());
+				TopCodeValidator whichValidator = mValidatorsList.get(topCode.getCode());
 				
 				int bestAnswer = PaperclickersScanner.ID_NO_ANSWER;
 				
@@ -238,7 +238,7 @@ public class DrawView extends SurfaceView {
 		                } else if (whichValidator.isAnswerValid(bestAnswer)) {
 		                    answerCountdown = "\u2713";
 		                } else {
-		                    answerCountdown = String.valueOf(TopcodeValidator.getCurrentValidationThrehshold() - whichValidator.getAnswerValidationCounter(bestAnswer));
+		                    answerCountdown = String.valueOf(TopCodeValidator.getCurrentValidationThrehshold() - whichValidator.getAnswerValidationCounter(bestAnswer));
 		                }
 		                    
 		                textPaint.setTextSize(40);

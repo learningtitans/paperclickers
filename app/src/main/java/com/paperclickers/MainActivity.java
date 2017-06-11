@@ -113,6 +113,9 @@ public class MainActivity extends Activity {
 			    if (mManualQuestionsTagging) {
 	                newActivity = new Intent(getApplicationContext(), SaveQuestionActivity.class);
 			    } else {
+
+					//TODO: !!! AQUI precisa direcionar qual a classe correta !!!
+
 			        newActivity = new Intent(getApplicationContext(), CameraMain.class);
 			    }
 				
