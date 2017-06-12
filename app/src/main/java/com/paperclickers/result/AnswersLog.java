@@ -154,7 +154,14 @@ public class AnswersLog {
 		return dateFormat.format(date);
 	}
     
-    
+
+
+	public static String getPaperclickersFolder() {
+		return Environment.getExternalStorageDirectory() + LOG_FILEPATH + "/";
+	}
+
+
+
     
     public static void resetQuestionsSequenceNumber() {
         

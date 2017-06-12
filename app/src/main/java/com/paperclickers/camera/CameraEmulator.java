@@ -1,0 +1,133 @@
+/*
+ * Paperclickers - Affordable solution for classroom response system.
+ *
+ * Copyright (C) 2015-2017 Eduardo Valle Jr <dovalle@dca.fee.unicamp.br>
+ * Copyright (C) 2015-2017 Eduardo Seiti de Oliveira <eduseiti@dca.fee.unicamp.br>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ */
+
+package com.paperclickers.camera;
+
+import android.graphics.Bitmap;
+import android.graphics.SurfaceTexture;
+import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.view.Surface;
+import android.view.TextureView;
+
+import com.paperclickers.result.AnswersLog;
+
+import java.io.IOException;
+
+import com.paperclickers.log;
+
+/**
+ * Created by eduseiti on 11/06/17.
+ */
+
+public class CameraEmulator extends CameraAbstraction implements TextureView.SurfaceTextureListener, SurfaceTexture.OnFrameAvailableListener {
+
+    final static String TEST_VIDEO_FILENAME = "testVideo.mp4";
+
+
+    MediaPlayer mMediaPlayer = null;
+    TextureView mTextureView = null;
+
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+
+        mTextureView = new TextureView(this);
+        mTextureView.setSurfaceTextureListener(this);
+
+        mPreview.addView(mTextureView);
+    }
+
+
+
+    @Override
+    public void onFrameAvailable (SurfaceTexture surfaceTexture) {
+
+        Bitmap imageBitmap = mTextureView.getBitmap();
+
+        int data[] = new int[mImageWidth * mImageHeight];
+
+        imageBitmap.getPixels(data, 0, mImageWidth, 0, 0, mImageWidth, mImageHeight);
+
+        onNewFrame(data);
+    }
+
+
+
+    @Override
+    public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
+
+        mImageWidth  = width;
+        mImageHeight = height;
+
+        surfaceTexture.setOnFrameAvailableListener(this);
+
+        Surface surface = new Surface(surfaceTexture);
+
+        try {
+            mMediaPlayer = new MediaPlayer();
+            mMediaPlayer.setDataSource(AnswersLog.getPaperclickersFolder() + TEST_VIDEO_FILENAME);
+            mMediaPlayer.setSurface(surface);
+            mMediaPlayer.setLooping(true);
+            mMediaPlayer.prepareAsync();
+
+            // Play video when the media source is ready for playback.
+            mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    mediaPlayer.start();
+                }
+            });
+
+        } catch (IllegalArgumentException e) {
+            log.d(TAG, e.getMessage());
+        } catch (SecurityException e) {
+            log.d(TAG, e.getMessage());
+        } catch (IllegalStateException e) {
+            log.d(TAG, e.getMessage());
+        } catch (IOException e) {
+            log.d(TAG, e.getMessage());
+        }
+    }
+
+
+
+    @Override
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int width, int height) {
+    }
+
+
+
+    @Override
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
+        return true;
+    }
+
+
+
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
+    }
+}

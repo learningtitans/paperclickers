@@ -363,6 +363,186 @@ public class AudienceResponses {
 
         stripLumaFromYUV420SP(mLuma, data, mImageWidth, mImageHeight);
 
+        result = processNewFrame(hasRotated, userHasRequestedEnd, recognizedValidTopCodes, topCodes);
+
+        return result;
+
+//        try {
+//            mStartFiducialTime = System.currentTimeMillis();
+//
+//            topCodes = mScan.scanProcessing(mLuma, hasRotated);
+//
+//            mEndFiducialTime = System.currentTimeMillis();
+//        } catch (Resources.NotFoundException e1) {
+//            log.e(TAG, e1.toString());
+//        }
+//
+//        if (topCodes != null) {
+//            if (topCodes.size() > 0) {
+//
+//                // Update the existing topcodes list with the information found, either including new ones or
+//                // updating the orientation of the existing ones.
+//
+//                for (TopCode t : topCodes) {
+//
+//                    TopCode validTopCode = mFinalTopCodes.get(t.getCode());
+//
+//                    String scanDebug;
+//
+//                    if (validTopCode != null) {
+//                        TopCodeValidator currentValidator = mFinalTopCodesValidator.get(t.getCode());
+//
+//                        int translatedAnswer = PaperclickersScanner.translateOrientationToID(t.getOrientation());
+//                        int continuousDetectionResult;
+//
+//                        currentValidator.incFrequency(translatedAnswer);
+//
+//                        if (AVOID_PARTIAL_READINGS) {
+//                            continuousDetectionResult = currentValidator.checkContinousDetection(mScanCycle, translatedAnswer, validTopCode);
+//
+//                            if (continuousDetectionResult == TopCodeValidator.CHANGED_ANSWER) {
+//                                log.d(TAG, String.format("Code %d changed orientation: %f to %f", t.getCode(), validTopCode.getOrientation(), t.getOrientation()));
+//
+//                                if (!ONLY_PREVIEW_VALIDATED_CODES || mShowingValidation) {
+//                                    recognizedValidTopCodes.add(t);
+//                                }
+//                            } else if (continuousDetectionResult == TopCodeValidator.TURNED_VALID ||
+//                                    continuousDetectionResult == TopCodeValidator.VALID_ALREADY) {
+//
+//                                if (continuousDetectionResult == TopCodeValidator.TURNED_VALID) {
+//
+//                                    mValidTopCodesCount++;
+//                                }
+//
+//                                recognizedValidTopCodes.add(t);
+//                            } else if (!ONLY_PREVIEW_VALIDATED_CODES || mShowingValidation) {
+//                                recognizedValidTopCodes.add(t);
+//                            }
+//                        } else {
+//                            currentValidator.checkContinousDetection(mScanCycle, translatedAnswer, validTopCode);
+//
+//                            mValidTopCodesCount++;
+//                        }
+//
+//                        if (!PaperclickersScanner.isValidOrientation(validTopCode.getOrientation())) {
+//                            mRecognizedTopCodesCount++;
+//                        }
+//
+//                        // Update topcode with the information recognized in this scan cycle
+//                        validTopCode.setDiameter(t.getDiameter());
+//                        validTopCode.setLocation(t.getCenterX(), t.getCenterY());
+//                        validTopCode.setOrientation(t.getOrientation());
+//
+//                        // Only logging debug information...
+//                        if (DEBUG_DETECTION_CYCLE_RAW_DATA) {
+//                            if (AVOID_PARTIAL_READINGS) {
+//                                scanDebug = String.format("Cycle: %d, Code: %d,  orientation: %f, frequency: %d(A), %d(B), %d(C), %d(D), isValid: %b, lastDetectedScanCycle: "
+//                                                + "%d(A), %d(B), %d(C), %d(D), numberOfContinuousDetection: %d(A), %d(B), %d(C), %d(D)",
+//                                        mScanCycle, t.getCode(), t.getOrientation(),
+//                                        currentValidator.getFrequency(PaperclickersScanner.ID_ANSWER_A), currentValidator.getFrequency(PaperclickersScanner.ID_ANSWER_B),
+//                                        currentValidator.getFrequency(PaperclickersScanner.ID_ANSWER_C), currentValidator.getFrequency(PaperclickersScanner.ID_ANSWER_D),
+//                                        currentValidator.isValid(),
+//                                        currentValidator.getLastDetectedScanCycle(PaperclickersScanner.ID_ANSWER_A), currentValidator.getLastDetectedScanCycle(PaperclickersScanner.ID_ANSWER_B),
+//                                        currentValidator.getLastDetectedScanCycle(PaperclickersScanner.ID_ANSWER_C), currentValidator.getLastDetectedScanCycle(PaperclickersScanner.ID_ANSWER_D),											                  currentValidator.getNumberOfContinuousDetection(PaperclickersScanner.ID_ANSWER_A), currentValidator.getNumberOfContinuousDetection(PaperclickersScanner.ID_ANSWER_B),
+//                                        currentValidator.getNumberOfContinuousDetection(PaperclickersScanner.ID_ANSWER_C), currentValidator.getNumberOfContinuousDetection(PaperclickersScanner.ID_ANSWER_D));
+//
+//                                if (MOVING_VALIDATION_THRESHOLD) {
+//                                    scanDebug += String.format("longestContinuous: %d(A), %d(B), %d(C), %d(D)",
+//                                            currentValidator.getNumberOfLongestContinuousDetection(PaperclickersScanner.ID_ANSWER_A),
+//                                            currentValidator.getNumberOfLongestContinuousDetection(PaperclickersScanner.ID_ANSWER_B),
+//                                            currentValidator.getNumberOfLongestContinuousDetection(PaperclickersScanner.ID_ANSWER_C),
+//                                            currentValidator.getNumberOfLongestContinuousDetection(PaperclickersScanner.ID_ANSWER_D));
+//                                }
+//                            } else {
+//                                scanDebug = String.format("Cycle: %d, Code: %d,  orientation: %f, frequency: %d(A), %d(B), %d(C), %d(D)",
+//                                        mScanCycle, t.getCode(), t.getOrientation(),
+//                                        currentValidator.getFrequency(PaperclickersScanner.ID_ANSWER_A), currentValidator.getFrequency(PaperclickersScanner.ID_ANSWER_B),
+//                                        currentValidator.getFrequency(PaperclickersScanner.ID_ANSWER_C), currentValidator.getFrequency(PaperclickersScanner.ID_ANSWER_D));
+//                            }
+//
+//                            log.d(TAG, scanDebug);
+//                        }
+//                    } else {
+//                        // according to the predefined class size this is not a valid topcode; ignore it
+//
+//                        log.d(TAG, "onPreviewFrame - invalid topcode (" + t.getCode() + ") for defined class !");
+//                    }
+//                }
+//
+//                if (SHOW_CODE_FREQUENCY_DEBUG) {
+//                    for (int i = 0; i < mFinalTopCodesValidator.size(); i++) {
+//                        for (int j = 0; j < PaperclickersScanner.NUM_OF_VALID_ANSWERS; j++) {
+//                            mFinalTopCodesFrequency[(i * PaperclickersScanner.NUM_OF_VALID_ANSWERS) + j] = mFinalTopCodesValidator.valueAt(i).getFrequency(j);
+//                        }
+//                    }
+//                }
+//            }
+//
+//            // Now that the validators list have already been updated, indicate the need of redrawing the markers
+//
+//            result = NEED_TO_REDRAW;
+//        }
+//
+//
+//        mEndOnPreviewTime = System.currentTimeMillis();
+//
+//        log.d(TAG, String.format("Cycle: %d, overall onPreview time(ms): %d, fiducial time(ms): %d - candidates points found: %d",
+//                mScanCycle, mEndOnPreviewTime - mStartOnPreviewTime, mEndFiducialTime - mStartFiducialTime, mScan.getCandidatesCount()));
+//
+//        mScanCycle++;
+//
+//        if (MOVING_VALIDATION_THRESHOLD) {
+//            TopCodeValidator.updateValidationThreshold(mScanCycle);
+//        }
+//
+//        if (userHasRequestedEnd) {
+//            if (SAVE_LAST_IMAGE) {
+//
+//                SaveLastProcessedFrame saveImage = new SaveLastProcessedFrame("lastfile.pgm", mLuma, mImageWidth, mImageHeight);
+//
+//                saveImage.execute();
+//            }
+//        }
+//
+//        return result;
+    }
+
+
+
+    public int onNewFrame(int[] data, boolean hasRotated, boolean userHasRequestedEnd, List<TopCode> recognizedValidTopCodes, List<TopCode> topCodes) {
+
+        int result = DO_NOT_REDRAW;
+
+        // Check if should drop this frame
+        if (DROP_EVERY_OTHER_FRAME) {
+            mIgnoreCall = !mIgnoreCall;
+
+            if (mIgnoreCall) {
+                return COMPLETLY_IGNORE_CYCLE;
+            }
+        }
+
+        if (mLuma == null) {
+            // Still initializing; ignore call...
+
+            return COMPLETLY_IGNORE_CYCLE;
+        }
+
+        mStartOnPreviewTime = System.currentTimeMillis();
+
+        stripLumaFromYUV420SP(mLuma, data, mImageWidth, mImageHeight);
+
+        result = processNewFrame(hasRotated, userHasRequestedEnd, recognizedValidTopCodes, topCodes);
+
+        return result;
+    }
+
+
+
+    public int processNewFrame(boolean hasRotated, boolean userHasRequestedEnd, List<TopCode> recognizedValidTopCodes, List<TopCode> topCodes) {
+
+        int result = DO_NOT_REDRAW;
+
         try {
             mStartFiducialTime = System.currentTimeMillis();
 
@@ -591,4 +771,17 @@ public class AudienceResponses {
     }
 
 
+
+    private void stripLumaFromYUV420SP(int[] greyscale, int[] yuv420sp, int width, int height) {
+
+        for (int i = 0; i < width * height; i++) {
+            int y = (yuv420sp[i] & 0xff) - 16;
+
+            if (y < 0) {
+                y = 0;
+            }
+
+            greyscale[i] = y << 24;
+        }
+    }
 }
