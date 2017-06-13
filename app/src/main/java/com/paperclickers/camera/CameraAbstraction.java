@@ -313,38 +313,6 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         int cycleResult = mAudienceResponses.onNewFrame(data, mHasRotated, mUserRequestedEnd, recognizedValidTopCodes, topCodes);
 
         processNewFrameResult(cycleResult, recognizedValidTopCodes, topCodes);
-
-//
-//        if (cycleResult == AudienceResponses.COMPLETLY_IGNORE_CYCLE) {
-//            return;
-//        } else if (cycleResult == AudienceResponses.NEED_TO_REDRAW) {
-//
-//            if (AudienceResponses.AVOID_PARTIAL_READINGS) {
-//                mHint1TextView.setText(mHint1StringStart + mAudienceResponses.getValidTopCodesCount() + mHint1StringEnd);
-//            } else {
-//                mHint1TextView.setText(mHint1StringStart + mAudienceResponses.getRecognizedTopCodesCount() + mHint1StringEnd);
-//            }
-//
-//            if (AudienceResponses.SHOW_CODE_FREQUENCY_DEBUG) {
-//                mFreqDebugTextView.setText(Arrays.toString(mAudienceResponses.getFinalTopCodesFrequency()));
-//            }
-//
-//            if (AudienceResponses.AVOID_PARTIAL_READINGS) {
-//                mDraw.updateValidTopcodesList(recognizedValidTopCodes);
-//            } else {
-//                mDraw.updateValidTopcodesList(topCodes);
-//            }
-//
-//            mDraw.postInvalidate();
-//        }
-//
-//        if (mShowingValidation) {
-//            mDevelopmentData.setText(String.format("%s %d\n%s %d", mDevelopmentCurrentCycle, mAudienceResponses.getScanCycleCount(), mDevelopmentCurrentThreshold, TopCodeValidator.getCurrentValidationThrehshold()));
-//        }
-//
-//        if (mUserRequestedEnd) {
-//            callNextActivity();
-//        }
     }
 
 
@@ -421,11 +389,6 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
     public void processNewFrameResult(int cycleResult, List<TopCode> recognizedValidTopCodes, List<TopCode> topCodes) {
 
-//        List<TopCode> recognizedValidTopCodes = new ArrayList<TopCode>();
-//        List<TopCode> topCodes = null;
-//
-//        int cycleResult = mAudienceResponses.onNewFrame(data, mHasRotated, mUserRequestedEnd, recognizedValidTopCodes, topCodes);
-//
         if (cycleResult == AudienceResponses.COMPLETLY_IGNORE_CYCLE) {
             return;
         } else if (cycleResult == AudienceResponses.NEED_TO_REDRAW) {

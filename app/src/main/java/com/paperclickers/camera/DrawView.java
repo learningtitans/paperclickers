@@ -36,6 +36,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.DisplayMetrics;
@@ -115,7 +116,10 @@ public class DrawView extends SurfaceView {
 	
 	
 	private void init(){
-		
+
+		this.setZOrderOnTop(true);
+		getHolder().setFormat(PixelFormat.TRANSPARENT);
+
 		mPaintA = new Paint();
 		
 		mPaintA.setColor(PaperclickersScanner.COLOR_A);

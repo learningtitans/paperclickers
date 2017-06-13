@@ -26,6 +26,7 @@ package com.paperclickers.camera;
 import java.util.List;
 import android.content.pm.ActivityInfo;
 import android.hardware.Camera;
+import android.os.Bundle;
 import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -56,8 +57,8 @@ public class CameraMain extends CameraAbstraction implements Camera.PreviewCallb
 		return c; // returns null if camera is unavailable
 	}
 
-    
-    
+
+
 	@Override
 	protected void onPause() {
 		super.onPause();

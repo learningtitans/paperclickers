@@ -25,6 +25,7 @@ package com.paperclickers.camera;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
+
 import android.os.Bundle;
 import android.view.Surface;
 import android.view.TextureView;
@@ -39,7 +40,7 @@ import com.paperclickers.log;
  * Created by eduseiti on 11/06/17.
  */
 
-public class CameraEmulator extends CameraAbstraction implements TextureView.SurfaceTextureListener, SurfaceTexture.OnFrameAvailableListener {
+public class CameraEmulator extends CameraAbstraction implements TextureView.SurfaceTextureListener {
 
     final static String TEST_VIDEO_FILENAME = "testVideo.mp4";
 
@@ -47,6 +48,7 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
     MediaPlayer mMediaPlayer = null;
     TextureView mTextureView = null;
 
+    boolean mVideoIsPrepared = false;
 
 
     @Override
@@ -63,15 +65,62 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
 
 
     @Override
-    public void onFrameAvailable (SurfaceTexture surfaceTexture) {
+    protected void onDestroy() {
+        super.onDestroy();
 
-        Bitmap imageBitmap = mTextureView.getBitmap();
+        if (mMediaPlayer != null) {
+            mMediaPlayer.stop();
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+        }
+    }
 
-        int data[] = new int[mImageWidth * mImageHeight];
 
-        imageBitmap.getPixels(data, 0, mImageWidth, 0, 0, mImageWidth, mImageHeight);
 
-        onNewFrame(data);
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (mMediaPlayer != null) {
+            mMediaPlayer.pause();
+        }
+    }
+
+
+
+    protected void onResume() {
+        super.onResume();
+
+        if (mVideoIsPrepared) {
+            mMediaPlayer.start();
+        }
+    }
+
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (mMediaPlayer != null) {
+            mMediaPlayer.prepareAsync();
+        }
+    }
+
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (mMediaPlayer != null) {
+
+            mMediaPlayer.stop();
+
+            mVideoIsPrepared = false;
+
+            releaseTopCodesFeedbackPreview();
+        }
     }
 
 
@@ -79,10 +128,12 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
 
+        log.d(TAG, "===> onSurfaceTextureAvailable");
+
         mImageWidth  = width;
         mImageHeight = height;
 
-        surfaceTexture.setOnFrameAvailableListener(this);
+        mAudienceResponses.setImageSize(mImageWidth, mImageHeight);
 
         Surface surface = new Surface(surfaceTexture);
 
@@ -91,13 +142,23 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
             mMediaPlayer.setDataSource(AnswersLog.getPaperclickersFolder() + TEST_VIDEO_FILENAME);
             mMediaPlayer.setSurface(surface);
             mMediaPlayer.setLooping(true);
+
             mMediaPlayer.prepareAsync();
+
+            mVideoIsPrepared = false;
 
             // Play video when the media source is ready for playback.
             mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {
+
+                    log.d(TAG, "onPrepared");
+
+                    mVideoIsPrepared = true;
+
                     mediaPlayer.start();
+
+                    setTopCodesFeedbackPreview();
                 }
             });
 
@@ -116,12 +177,18 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
 
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int width, int height) {
+
+        log.d(TAG, "onSurfaceTextureSizeChanged");
+
     }
 
 
 
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
+
+        log.d(TAG, "onSurfaceTextureDestroyed");
+
         return true;
     }
 
@@ -129,5 +196,15 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
 
     @Override
     public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
+
+        log.d(TAG, "onSurfaceTextureUpdated");
+
+        Bitmap imageBitmap = mTextureView.getBitmap();
+
+        int data[] = new int[mImageWidth * mImageHeight];
+
+        imageBitmap.getPixels(data, 0, mImageWidth, 0, 0, mImageWidth, mImageHeight);
+
+        onNewFrame(data);
     }
 }
