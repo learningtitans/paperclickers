@@ -30,8 +30,10 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -42,6 +44,8 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.paperclickers.AudienceResponses;
+import com.paperclickers.SettingsActivity;
+import com.paperclickers.camera.CameraEmulator;
 import com.paperclickers.fiducial.PaperclickersScanner;
 import com.paperclickers.result.GridViewAdapter;
 import com.paperclickers.R;
@@ -188,10 +192,24 @@ public class GridViewActivity extends Activity {
 			
 			log.d(TAG, "Finishing...");
 
-			//TODO: AQUI!!! direcionar para a activity correta !!!
+			Intent i;
 
-			Intent i = new Intent(getApplicationContext(), CameraMain.class);
-			
+			boolean useRegularCamera = true;
+
+			if (SettingsActivity.getDevelopmentMode()) {
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+				String useCameraEmulationStr = prefs.getString("development_use_camera_emulation", "0");
+
+				useRegularCamera = useCameraEmulationStr.equals("0");
+			}
+
+			if (useRegularCamera) {
+				i = new Intent(getApplicationContext(), CameraMain.class);
+			} else {
+				i = new Intent(getApplicationContext(), CameraEmulator.class);
+			}
+
 			i.setAction(AudienceResponses.RECALL_CODES_INTENT);
 			i.putExtra("detectedAnswers", mDetectedAnswers);
 

@@ -22,6 +22,7 @@
 
 package com.paperclickers;
 
+import com.paperclickers.camera.CameraEmulator;
 import com.paperclickers.camera.CameraMain;
 import android.app.Activity;
 import android.content.Context;
@@ -47,9 +48,10 @@ public class SaveQuestionActivity extends Activity {
     TextView       mCharacterCountView;
     int            mCharacterCount = 0;
     CharSequence   mQuestionTag;
+
+	boolean mUseRegularCamera;
     
-    
-    
+
     
     CharSequence cleanupQuestionTagForCSV(CharSequence enteredTag) {
         
@@ -95,7 +97,11 @@ public class SaveQuestionActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.save_question);
-		
+
+		Intent whichIntent = getIntent();
+
+		mUseRegularCamera = whichIntent.getBooleanExtra("useRegularCamera", true);
+
 		mEditText = (CustomEditText) findViewById(R.id.questionTag);
 		
 		mEditText.setHorizontallyScrolling(false);
@@ -134,7 +140,13 @@ public class SaveQuestionActivity extends Activity {
 		            
 		            hideSoftKeyboard();
 
-		            Intent i = new Intent(getApplicationContext(), CameraMain.class);
+					Intent i = null;
+
+					if (mUseRegularCamera) {
+						i = new Intent(getApplicationContext(), CameraMain.class);
+					} else {
+						i = new Intent(getApplicationContext(), CameraEmulator.class);
+					}
 	                
 	                startActivity(i);
 		            

@@ -42,6 +42,7 @@ import com.paperclickers.log;
 
 public class CameraEmulator extends CameraAbstraction implements TextureView.SurfaceTextureListener {
 
+    final static String TAG = "paperclickers.CameraEmulator";
     final static String TEST_VIDEO_FILENAME = "testVideo.mp4";
 
 
@@ -49,6 +50,11 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
     TextureView mTextureView = null;
 
     boolean mVideoIsPrepared = false;
+    boolean mActivityPauseIndicated = false;
+    boolean mActivityStopIndicated  = false;
+
+    int mData[] = null;
+
 
 
     @Override
@@ -59,6 +65,8 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
         mTextureView = new TextureView(this);
         mTextureView.setSurfaceTextureListener(this);
 
+        mTextureView.setOnTouchListener(new TouchListener(mTextureView));
+
         mPreview.addView(mTextureView);
     }
 
@@ -67,6 +75,8 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        log.d(TAG, "===> onDestroy()");
 
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
@@ -81,7 +91,9 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
     protected void onPause() {
         super.onPause();
 
-        if (mMediaPlayer != null) {
+        mActivityPauseIndicated = true;
+
+        if ((mMediaPlayer != null) && (mMediaPlayer.isPlaying())){
             mMediaPlayer.pause();
         }
     }
@@ -90,6 +102,8 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
 
     protected void onResume() {
         super.onResume();
+
+        mActivityPauseIndicated = false;
 
         if (mVideoIsPrepared) {
             mMediaPlayer.start();
@@ -102,6 +116,8 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
     protected void onStart() {
         super.onStart();
 
+        mActivityStopIndicated = false;
+
         if (mMediaPlayer != null) {
             mMediaPlayer.prepareAsync();
         }
@@ -113,7 +129,9 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
     protected void onStop() {
         super.onStop();
 
-        if (mMediaPlayer != null) {
+        mActivityStopIndicated = true;
+
+        if ((mMediaPlayer != null) && (mVideoIsPrepared)) {
 
             mMediaPlayer.stop();
 
@@ -135,6 +153,8 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
 
         mAudienceResponses.setImageSize(mImageWidth, mImageHeight);
 
+        mData = new int[mImageWidth * mImageHeight];
+
         Surface surface = new Surface(surfaceTexture);
 
         try {
@@ -154,11 +174,15 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
 
                     log.d(TAG, "onPrepared");
 
-                    mVideoIsPrepared = true;
+                    if (mActivityStopIndicated) {
+                        mediaPlayer.stop();
+                    } else if (!mActivityPauseIndicated) {
+                        mVideoIsPrepared = true;
 
-                    mediaPlayer.start();
+                        mediaPlayer.start();
 
-                    setTopCodesFeedbackPreview();
+                        setTopCodesFeedbackPreview();
+                    }
                 }
             });
 
@@ -199,12 +223,14 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
 
         log.d(TAG, "onSurfaceTextureUpdated");
 
-        Bitmap imageBitmap = mTextureView.getBitmap();
+        if (isFinishing()) {
+            return;
+        } else {
+            Bitmap imageBitmap = mTextureView.getBitmap();
 
-        int data[] = new int[mImageWidth * mImageHeight];
+            imageBitmap.getPixels(mData, 0, mImageWidth, 0, 0, mImageWidth, mImageHeight);
 
-        imageBitmap.getPixels(data, 0, mImageWidth, 0, 0, mImageWidth, mImageHeight);
-
-        onNewFrame(data);
+            onNewFrame(mData);
+        }
     }
 }

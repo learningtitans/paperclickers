@@ -34,9 +34,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.paperclickers.camera.CameraEmulator;
 import com.paperclickers.camera.CameraMain;
 import com.paperclickers.result.AnswersLog;
-import com.paperclickers.R;
 
 public class MainActivity extends Activity {
 
@@ -49,6 +49,7 @@ public class MainActivity extends Activity {
 	long mDebugOptionsActivationLastTapTime = 0;
 	
 	boolean mManualQuestionsTagging = false;
+	boolean mUseRegularCamera = false;
 	
 	
 	@Override
@@ -112,11 +113,14 @@ public class MainActivity extends Activity {
 			    
 			    if (mManualQuestionsTagging) {
 	                newActivity = new Intent(getApplicationContext(), SaveQuestionActivity.class);
+
+					newActivity.putExtra("useRegularCamera", mUseRegularCamera);
 			    } else {
-
-					//TODO: !!! AQUI precisa direcionar qual a classe correta !!!
-
-			        newActivity = new Intent(getApplicationContext(), CameraMain.class);
+					if (mUseRegularCamera) {
+						newActivity = new Intent(getApplicationContext(), CameraMain.class);
+					} else {
+						newActivity = new Intent(getApplicationContext(), CameraEmulator.class);
+					}
 			    }
 				
 				startActivity(newActivity);
@@ -188,5 +192,14 @@ public class MainActivity extends Activity {
         String questionsTaggingStr = prefs.getString("questions_tagging", "0");
 
         mManualQuestionsTagging = questionsTaggingStr.equals("1");
+
+		mUseRegularCamera = true;
+
+		if (SettingsActivity.getDevelopmentMode()) {
+			String useCameraEmulationStr = prefs.getString("development_use_camera_emulation", "0");
+
+			mUseRegularCamera = useCameraEmulationStr.equals("0");
+		}
+
     }
 }

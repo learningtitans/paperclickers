@@ -210,8 +210,7 @@ public class AudienceResponses {
 
         Serializable receivedTopcodes = null;
 
-        if ((intentAction != null) &&
-                (intentAction.equals(AudienceResponses.RECALL_CODES_INTENT))) {
+        if ((intentAction != null) && (intentAction.equals(AudienceResponses.RECALL_CODES_INTENT))) {
 
             receivedTopcodes = whichIntent.getSerializableExtra("detectedAnswers");
 

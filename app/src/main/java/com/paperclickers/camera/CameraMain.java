@@ -26,7 +26,6 @@ package com.paperclickers.camera;
 import java.util.List;
 import android.content.pm.ActivityInfo;
 import android.hardware.Camera;
-import android.os.Bundle;
 import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
