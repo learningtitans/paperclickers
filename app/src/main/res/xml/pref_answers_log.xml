@@ -3,16 +3,7 @@
 	<PreferenceCategory 
 	     android:title="@string/pref_header_answers_log">
 	     
-	    <ListPreference 
-	        android:key="questions_tagging" 
-	        android:title="@string/pref_title_questions_tagging" 
-	        android:entryValues="@array/pref_questions_tagging_sequence_values" 
-	        android:entries="@array/pref_questions_tagging_sequence_titles" 
-	        android:negativeButtonText="@null"
-	        android:positiveButtonText="@null"
-	        android:defaultValue="0"/>
-
-    	<Preference 
+    	<Preference
 	        android:title="@string/pref_title_share_answers_log"  
 	        android:key="share_answers_log">
 	    

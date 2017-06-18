@@ -10,4 +10,14 @@
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:title="@string/pref_title_number_of_students" />
+
+    <ListPreference
+        android:key="questions_tagging"
+        android:title="@string/pref_title_questions_tagging"
+        android:entryValues="@array/pref_questions_tagging_sequence_values"
+        android:entries="@array/pref_questions_tagging_sequence_titles"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:defaultValue="0"/>
+
 </PreferenceScreen>

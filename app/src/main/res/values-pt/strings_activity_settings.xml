@@ -8,11 +8,11 @@
     
     <string name="pref_header_answers_log">Registro de respostas</string>
     
-    <string name="pref_title_questions_tagging">Rótulos das questões</string>
+    <string name="pref_title_questions_tagging">Entrar texto para questões?</string>
 
     <string-array name="pref_questions_tagging_sequence_titles">
-        <item>Automático (autonumeradas)</item>
-        <item>Manual</item>
+        <item>Não (autonumeradas)</item>
+        <item>Sim</item>
     </string-array>
     <string-array name="pref_questions_tagging_sequence_values">
         <item>0</item>
