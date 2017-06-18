@@ -64,7 +64,6 @@ public class MainActivity extends Activity {
 		boolean restartedInternally = false;
 		
 		if (intentExtras != null) {
-	        
 	        restartedInternally = intentExtras.getBoolean("restartingInternally");   
 		}
 		
@@ -72,11 +71,16 @@ public class MainActivity extends Activity {
 		
 		if (!restartedInternally) {
 		    AnswersLog.resetQuestionsSequenceNumber();
-		    
+
 		    log.d(TAG, ">>> New execution sequence; restart sequence number in answer log");
 		}
-		
-		// Adding listener for "about" button
+
+
+		// Reset previously opened log entry, allowing new question to be registered in the answers' log.
+
+        AnswersLog.resetOpenLogEntry();
+
+        // Adding listener for "about" button
 		Button about = (Button) findViewById(R.id.appIcon);
 		about.setOnClickListener(new View.OnClickListener() {
 

@@ -27,6 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -43,13 +44,17 @@ import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 public class AnswersLog {
-	
+
+	final static long NO_OPEN_LOG_ENTRY = -1;
+
 	static int mSessionQuestionsSeqNum = 0;
+
+	static long mOpenLogEntryOffset = NO_OPEN_LOG_ENTRY;
 	
 	static String TAG          = "AnswersLog";
 	static String LOG_FILENAME = "AnswersLog.csv";
 	static String LOG_FILEPATH = "/PaperClickers";
-	
+
 	private Context mActivityContext = null;
 	
 	
@@ -103,8 +108,8 @@ public class AnswersLog {
 
         answersLog.append(System.getProperty("line.separator"));
         
-        writeToFile(answersLog.toString());     
-    }
+		writeToFileSeekeable(answersLog.toString());
+	}
     
 
     
@@ -162,7 +167,12 @@ public class AnswersLog {
 
 
 
-    
+	public static void resetOpenLogEntry() {
+		mOpenLogEntryOffset = NO_OPEN_LOG_ENTRY;
+	}
+
+
+
     public static void resetQuestionsSequenceNumber() {
         
         mSessionQuestionsSeqNum = 0;
@@ -170,20 +180,20 @@ public class AnswersLog {
 	
 	
 	
-	private void writeToFile(String data) {
+	private void writeToFileSeekeable(String data) {
 
-		FileOutputStream fOut = null;
+		RandomAccessFile fOut = null;
 		File directory        = new File(Environment.getExternalStorageDirectory()
-								         + LOG_FILEPATH);
+				+ LOG_FILEPATH);
 		boolean needToWriteHeader = true;
-		
-		
+
+
 		if (!directory.exists()) {
 			directory.mkdirs();
 		} else {
 			File logFile = new File(Environment.getExternalStorageDirectory()
-								    + LOG_FILEPATH, LOG_FILENAME);
-			
+					+ LOG_FILEPATH, LOG_FILENAME);
+
 			if (logFile.exists()) {
 				needToWriteHeader = false;
 			}
@@ -191,28 +201,37 @@ public class AnswersLog {
 
 		try {
 			// Create the stream pointing at the file location
-			fOut = new FileOutputStream(new File(directory, LOG_FILENAME), true);
-			
+			fOut = new RandomAccessFile(new File(directory, LOG_FILENAME), "rwd");
+
 		} catch (FileNotFoundException e) {
 			Toast.makeText(mActivityContext, mActivityContext.getResources().getText(R.string.error_saving_log),
-						   Toast.LENGTH_LONG).show();
-			
+					Toast.LENGTH_LONG).show();
+
 			e.printStackTrace();
 		}
 
-		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fOut);
-		
 		try {
 			if (needToWriteHeader) {
-				outputStreamWriter.write(createLogFileHeader().toString());
+				fOut.writeBytes(createLogFileHeader().toString());
+			} else {
+
+				if (mOpenLogEntryOffset < 0) {
+					mOpenLogEntryOffset = fOut.length();
+				}
+
+				fOut.seek(mOpenLogEntryOffset);
 			}
-			
-			outputStreamWriter.write(data);
-			outputStreamWriter.close();
+
+			fOut.writeBytes(data);
+
+			fOut.setLength(fOut.getFilePointer());
+
+			fOut.close();
 		} catch (IOException e) {
 			Toast.makeText(mActivityContext, mActivityContext.getResources().getText(R.string.error_saving_log),
-						   Toast.LENGTH_LONG).show();
+					Toast.LENGTH_LONG).show();
+
 			e.printStackTrace();
 		}
-	}	
+	}
 }

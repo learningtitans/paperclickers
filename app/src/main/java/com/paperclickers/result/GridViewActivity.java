@@ -61,8 +61,21 @@ public class GridViewActivity extends Activity {
 	private ArrayList<Entry> mAnswers;
 	private ArrayList<Entry> mManuallyChangedAnswers;
 
+	private AnswersLog mAnswersLog = null;
 
-	
+
+
+	private void checkChangesAndSaveAnswersLog() {
+
+		if (mAnswersLog != null) {
+			if (!mManuallyChangedAnswers.isEmpty()) {
+				mAnswersLog.createAndWriteLog(mDetectedAnswers);
+			}
+		}
+	}
+
+
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    
@@ -92,7 +105,14 @@ public class GridViewActivity extends Activity {
 		
 		mAnswers                = new ArrayList<Entry>(sortedMap.entrySet());
 		mManuallyChangedAnswers = new ArrayList<Entry>();
-		
+
+
+		// Save received list of detected answers in the answers log
+
+		mAnswersLog = new AnswersLog(getApplicationContext());
+		mAnswersLog.createAndWriteLog(mDetectedAnswers);
+
+
 		imagegrid.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -163,12 +183,15 @@ public class GridViewActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 
+				checkChangesAndSaveAnswersLog();
+
 				Intent i = new Intent(getApplicationContext(), PieChartActivity.class);
 				i.putExtra("detectedAnswers", mDetectedAnswers);
 
 				startActivity(i);
 			}
 		});
+
 
 		Button back = (Button) findViewById(R.id.button_back);
 		back.setOnClickListener(new View.OnClickListener() {
@@ -179,7 +202,6 @@ public class GridViewActivity extends Activity {
 				finish();
 			}
 		});
-
 	}
 
 	
@@ -191,6 +213,8 @@ public class GridViewActivity extends Activity {
 		if (isFinishing()) {
 			
 			log.d(TAG, "Finishing...");
+
+			checkChangesAndSaveAnswersLog();
 
 			Intent i;
 

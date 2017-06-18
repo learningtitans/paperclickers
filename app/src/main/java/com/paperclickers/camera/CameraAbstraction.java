@@ -310,7 +310,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         List<TopCode> recognizedValidTopCodes = new ArrayList<TopCode>();
         List<TopCode> topCodes = null;
 
-        int cycleResult = mAudienceResponses.onNewFrame(data, mHasRotated, mUserRequestedEnd, recognizedValidTopCodes, topCodes);
+        int cycleResult = mAudienceResponses.onNewFrame(data, mHasRotated, recognizedValidTopCodes, topCodes);
 
         processNewFrameResult(cycleResult, recognizedValidTopCodes, topCodes);
     }
@@ -322,7 +322,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         List<TopCode> recognizedValidTopCodes = new ArrayList<TopCode>();
         List<TopCode> topCodes = null;
 
-        int cycleResult = mAudienceResponses.onNewFrame(data, mHasRotated, mUserRequestedEnd, recognizedValidTopCodes, topCodes);
+        int cycleResult = mAudienceResponses.onNewFrame(data, mHasRotated, recognizedValidTopCodes, topCodes);
 
         processNewFrameResult(cycleResult, recognizedValidTopCodes, topCodes);
     }
@@ -417,6 +417,10 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         }
 
         if (mUserRequestedEnd) {
+            if (AudienceResponses.SAVE_LAST_IMAGE) {
+                mAudienceResponses.saveLastImage();
+            }
+
             callNextActivity();
         }
     }

@@ -62,7 +62,6 @@ public class PieChartActivity extends Activity {
 
 	private PieChart mChart;
 	private Typeface mTypeFace;
-	private AnswersLog mAnswersLogHandler;
 
 	int[] mColorsValue = { PaperclickersScanner.COLOR_A, 
 						   PaperclickersScanner.COLOR_B, 
@@ -82,15 +81,6 @@ public class PieChartActivity extends Activity {
 
 	
 	
-	public static boolean checkIfAnswersLogExists() {
-		File answersLog = new File(Environment.getExternalStorageDirectory() 
-								   + LOG_FILEPATH + LOG_FILENAME);
-		
-		return answersLog.exists();
-	}
-	
-	
-    
     private int[] countAnswers() {
 
         int answerA = 0, answerB = 0, answerC = 0, answerD = 0;
@@ -138,8 +128,6 @@ public class PieChartActivity extends Activity {
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		setContentView(R.layout.pie_chart);
 
-		mAnswersLogHandler = new AnswersLog(getApplicationContext());
-
 		Intent i = getIntent();
 		
 		Serializable obj = i.getSerializableExtra("detectedAnswers");
@@ -167,8 +155,6 @@ public class PieChartActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				mAnswersLogHandler.createAndWriteLog(mDetectedAnswers);
-				
 				nextActivity();
 			}
 		});
