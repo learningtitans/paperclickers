@@ -39,6 +39,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.paperclickers.Analytics;
 import com.paperclickers.AudienceResponses;
 import com.paperclickers.R;
 import com.paperclickers.SettingsActivity;
@@ -56,6 +57,11 @@ import java.util.TimerTask;
 
 /**
  * Created by eduseiti on 10/06/17.
+ */
+
+/**
+ * This is the base class for the camera implementations - real camera hardware ("CameraMain" class)
+ * and camera emulation via MediaPlayer ("CameraEmulator" class)
  */
 
 public class CameraAbstraction extends Activity implements OrientationManager.OrientationListener {
@@ -100,6 +106,9 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
     OrientationManager mOrientationManager = null;
 
     AudienceResponses mAudienceResponses = null;
+
+    Analytics mAnalytics = null;
+
 
     protected class TouchListener implements View.OnTouchListener {
 
@@ -170,6 +179,17 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
         log.d(TAG,">>>>> callNextActivity");
 
+        int topCodesFound = 0;
+
+        if (AudienceResponses.AVOID_PARTIAL_READINGS) {
+            topCodesFound = mAudienceResponses.getValidTopCodesCount();
+        } else {
+            topCodesFound = mAudienceResponses.getRecognizedTopCodesCount();
+        }
+
+        mAnalytics.send_scanCycle(mEndScanTime - mStartScanTime, topCodesFound);
+
+
         Intent i = new Intent(getApplicationContext(), GridViewActivity.class);
 
         i.putExtra("detectedAnswers", mAudienceResponses.returnDetectedTopCodesList());
@@ -178,7 +198,9 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
         log.d(TAG, String.format("Total scan cycles: %d, total scan time (ms): %d", mAudienceResponses.getScanCycleCount(), mEndScanTime - mStartScanTime));
 
+
         mAudienceResponses.finalize();
+
 
         finish();
 
@@ -239,18 +261,18 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 
-        mContext  = getApplicationContext();
+        mContext = getApplicationContext();
         mVibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
 
         hideStatusBar();
 
-        mHint1StringStart  = (String) getResources().getText(R.string.hint1Start);
-        mHint1StringEnd    = (String) getResources().getText(R.string.hint1End);
-        mHint1TextView     = (TextView) findViewById(R.id.txt_hint1);
+        mHint1StringStart = (String) getResources().getText(R.string.hint1Start);
+        mHint1StringEnd = (String) getResources().getText(R.string.hint1End);
+        mHint1TextView = (TextView) findViewById(R.id.txt_hint1);
         mFreqDebugTextView = (TextView) findViewById(R.id.txt_freqDebug);
-        mDevelopmentData   = (TextView) findViewById(R.id.txt_development_data);
+        mDevelopmentData = (TextView) findViewById(R.id.txt_development_data);
 
-        mDevelopmentCurrentCycle     = (String) getResources().getText(R.string.development_current_cycle);
+        mDevelopmentCurrentCycle = (String) getResources().getText(R.string.development_current_cycle);
         mDevelopmentCurrentThreshold = (String) getResources().getText(R.string.development_current_threshold);
 
         if (!AudienceResponses.SHOW_CODE_FREQUENCY_DEBUG) {
@@ -264,6 +286,8 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         mAudienceResponses.checkIncomingIntentAndInitialize(getIntent());
 
         mUserRequestedEnd = false;
+
+        mAnalytics = new Analytics(getApplicationContext());
     }
 
 

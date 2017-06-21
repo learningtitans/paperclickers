@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "933834852485",
+    "firebase_url": "https://paperclickers-f30d4.firebaseio.com",
+    "project_id": "paperclickers-f30d4",
+    "storage_bucket": "paperclickers-f30d4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:933834852485:android:3dd04d9146061852",
+        "android_client_info": {
+          "package_name": "com.paperclickers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "933834852485-ouj7g833b8pteug5jurrge584nhpmoor.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBboLe4rFyUSfPMQaBYZZlpR2ow_8QSki4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
