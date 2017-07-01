@@ -187,14 +187,15 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
             topCodesFound = mAudienceResponses.getRecognizedTopCodesCount();
         }
 
-        mAnalytics.send_scanCycle(mEndScanTime - mStartScanTime, topCodesFound);
-
-
         Intent i = new Intent(getApplicationContext(), GridViewActivity.class);
 
         i.putExtra("detectedAnswers", mAudienceResponses.returnDetectedTopCodesList());
 
         mEndScanTime = System.currentTimeMillis();
+
+
+        mAnalytics.send_scanCycle(mEndScanTime - mStartScanTime, topCodesFound);
+
 
         log.d(TAG, String.format("Total scan cycles: %d, total scan time (ms): %d", mAudienceResponses.getScanCycleCount(), mEndScanTime - mStartScanTime));
 
