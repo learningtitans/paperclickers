@@ -50,12 +50,18 @@ public class MainActivity extends Activity {
 	
 	boolean mManualQuestionsTagging = false;
 	boolean mUseRegularCamera = false;
-	
-	
+
+	private Analytics mAnalytics = null;
+
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
-		
+
+		mAnalytics = new Analytics(getApplicationContext());
+
 		setContentView(R.layout.start_activity);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		
@@ -164,13 +170,13 @@ public class MainActivity extends Activity {
                                 newDevelopmentModeStatus = true;
                             }
                             
-                            Toast.makeText(getApplicationContext(), 
-                                           activationText,
-                                           Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), activationText, Toast.LENGTH_SHORT).show();
                             
                             SettingsActivity.setDevelopmentMode(newDevelopmentModeStatus);
                             
                             mDebugOptionsActivationTapCounter = 0;
+
+							mAnalytics.send_debugMode(newDevelopmentModeStatus);
                         }
                     } else {
                         mDebugOptionsActivationTapCounter = 1;

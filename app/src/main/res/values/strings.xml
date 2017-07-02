@@ -17,7 +17,8 @@
  	
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    
+
+    <string name="saved_answers_log">Answers saved in log.</string>
     <string name="error_saving_pdf">Error saving students\' codes pdf.</string>
     <string name="error_saving_log">Error saving answers log.</string>
     <string name="file_saved">saved.</string>
@@ -35,5 +36,5 @@
     
     <string name="auto_promotion_1">follow us on</string>
     <string name="auto_promotion_2">github.com/learningtitans/paperclickers</string>
-    
+
 </resources>

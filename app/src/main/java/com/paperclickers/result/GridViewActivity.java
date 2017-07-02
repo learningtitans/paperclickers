@@ -43,6 +43,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.paperclickers.Analytics;
 import com.paperclickers.AudienceResponses;
 import com.paperclickers.SettingsActivity;
 import com.paperclickers.camera.CameraEmulator;
@@ -63,13 +64,19 @@ public class GridViewActivity extends Activity {
 
 	private AnswersLog mAnswersLog = null;
 
+	private Analytics mAnalytics = null;
+
+	private boolean mHasChangedAnswers = false;
+
 
 
 	private void checkChangesAndSaveAnswersLog() {
 
 		if (mAnswersLog != null) {
-			if (!mManuallyChangedAnswers.isEmpty()) {
+			if (!mManuallyChangedAnswers.isEmpty() && mHasChangedAnswers) {
 				mAnswersLog.createAndWriteLog(mDetectedAnswers);
+
+				mAnalytics.send_enteredAnswers(mManuallyChangedAnswers.size());
 			}
 		}
 	}
@@ -112,6 +119,7 @@ public class GridViewActivity extends Activity {
 		mAnswersLog = new AnswersLog(getApplicationContext());
 		mAnswersLog.createAndWriteLog(mDetectedAnswers);
 
+		mAnalytics = new Analytics(getApplicationContext());
 
 		imagegrid.setOnItemClickListener(new OnItemClickListener() {
 
@@ -170,6 +178,8 @@ public class GridViewActivity extends Activity {
 				textView.setTextColor(whichColor);
 				
 				mDetectedAnswers.put((Integer) givenAnswer.getKey(), (String) givenAnswer.getValue());
+
+				mHasChangedAnswers = true;
 			}
 		});
 		
@@ -208,6 +218,7 @@ public class GridViewActivity extends Activity {
 	
 	@Override
 	protected void onPause() {
+
 		super.onPause();
 		
 		if (isFinishing()) {
@@ -245,8 +256,11 @@ public class GridViewActivity extends Activity {
 	
 	@Override
 	protected void onResume() {
+
 		super.onResume();
 		
 		log.d(TAG, "Resuming...");
+
+		mHasChangedAnswers = false;
 	}
 }

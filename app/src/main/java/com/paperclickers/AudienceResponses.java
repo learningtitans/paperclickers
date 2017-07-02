@@ -247,6 +247,12 @@ public class AudienceResponses {
 
 
 
+    public int getTotalTopCodesCount() {
+        return mFinalTopCodes.size();
+    }
+
+
+
     public int getValidTopCodesCount() {
         return mValidTopCodesCount;
     }

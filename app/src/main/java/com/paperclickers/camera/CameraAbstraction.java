@@ -192,14 +192,13 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         mEndScanTime = System.currentTimeMillis();
 
 
-        mAnalytics.send_scanCycle(mEndScanTime - mStartScanTime, topCodesFound);
+        mAnalytics.send_scanCycle(mEndScanTime - mStartScanTime, topCodesFound, mAudienceResponses.getTotalTopCodesCount());
 
 
         log.d(TAG, String.format("Total scan cycles: %d, total scan time (ms): %d", mAudienceResponses.getScanCycleCount(), mEndScanTime - mStartScanTime));
 
 
         mAudienceResponses.finalize();
-
 
         finish();
 
@@ -235,6 +234,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
 
     void hideStatusBar() {
+
         Window w = getWindow();
 
         View decorView = w.getDecorView();
@@ -266,9 +266,11 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         hideStatusBar();
 
         mHint1StringStart = (String) getResources().getText(R.string.hint1Start);
-        mHint1StringEnd = (String) getResources().getText(R.string.hint1End);
-        mHint1TextView = (TextView) findViewById(R.id.txt_hint1);
+        mHint1StringEnd   = (String) getResources().getText(R.string.hint1End);
+
+        mHint1TextView     = (TextView) findViewById(R.id.txt_hint1);
         mFreqDebugTextView = (TextView) findViewById(R.id.txt_freqDebug);
+
         mDevelopmentData = (TextView) findViewById(R.id.txt_development_data);
 
         mDevelopmentCurrentCycle = (String) getResources().getText(R.string.development_current_cycle);
@@ -292,6 +294,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
 
     protected void onNewIntent(Intent newIntent) {
+
         super.onNewIntent(newIntent);
 
         log.e(TAG, "Shouldn't be entering on onNewIntent(), since CameraMain should have been finished");
@@ -354,6 +357,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
     @Override
     protected void onResume() {
+
         super.onResume();
 
         log.d(TAG, "===> onResume()");
@@ -394,6 +398,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
     @Override
     protected void onStart() {
+
         super.onStart();
 
         log.d(TAG, "===> onStart()");
@@ -403,6 +408,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
     @Override
     protected void onStop() {
+
         super.onStop();
 
         log.d(TAG, "===> onStop()");
@@ -451,11 +457,13 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
 
     protected void releaseTopCodesFeedbackPreview() {
+
         mPreview.removeView(mDraw);
     }
 
 
     protected void setTopCodesFeedbackPreview() {
+
         mDraw = new DrawView(mContext, mAudienceResponses.getTopCodesValidator(), mImageWidth, mImageHeight, mShowingValidation);
 
         mPreview.addView(mDraw);

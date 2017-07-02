@@ -23,7 +23,6 @@
 package com.paperclickers.result;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
@@ -137,14 +136,16 @@ public class AnswersLog {
 
     
 	public static boolean deleteAnswersLog() {
+
 		File answersLog = new File(Environment.getExternalStorageDirectory() + LOG_FILEPATH, LOG_FILENAME);
 
-		return answersLog.delete();		
+		return answersLog.delete();
 	}
 	
 	
 	
 	public static Uri getAnswersLogUri() {
+
 		File answersLog = new File(Environment.getExternalStorageDirectory() + LOG_FILEPATH, LOG_FILENAME);
 		
 		return Uri.fromFile(answersLog);
@@ -164,12 +165,14 @@ public class AnswersLog {
 
 
 	public static String getPaperclickersFolder() {
+
 		return Environment.getExternalStorageDirectory() + LOG_FILEPATH + "/";
 	}
 
 
 
 	public static void resetOpenLogEntry() {
+
 		mOpenLogEntryOffset = NO_OPEN_LOG_ENTRY;
 	}
 
@@ -204,13 +207,6 @@ public class AnswersLog {
 			// Create the stream pointing at the file location
 			fOut = new RandomAccessFile(new File(directory, LOG_FILENAME), "rwd");
 
-		} catch (FileNotFoundException e) {
-			Toast.makeText(mActivityContext, mActivityContext.getResources().getText(R.string.error_saving_log), Toast.LENGTH_LONG).show();
-
-			e.printStackTrace();
-		}
-
-		try {
 			if (needToWriteHeader) {
 				fOut.writeBytes(createLogFileHeader().toString());
 
@@ -232,8 +228,10 @@ public class AnswersLog {
 			fOut.setLength(fOut.getFilePointer());
 
 			fOut.close();
+
+			Toast.makeText(mActivityContext, mActivityContext.getResources().getText(R.string.saved_answers_log), Toast.LENGTH_SHORT).show();
 		} catch (IOException e) {
-			Toast.makeText(mActivityContext, mActivityContext.getResources().getText(R.string.error_saving_log), Toast.LENGTH_LONG).show();
+			Toast.makeText(mActivityContext, mActivityContext.getResources().getText(R.string.error_saving_log), Toast.LENGTH_SHORT).show();
 
 			e.printStackTrace();
 		}

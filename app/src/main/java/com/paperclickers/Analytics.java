@@ -24,7 +24,6 @@ package com.paperclickers;
 
 import android.content.Context;
 import android.os.Bundle;
-
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 
@@ -37,9 +36,22 @@ public class Analytics {
 
     final static boolean ENABLE_ANALYTICS = true;
 
-    final static String ANALYTICS_SCAN_CYCLE_EVENT = "pce_scan_cycle";
-    final static String ANALYTICS_TOTAL_TIME_PARAM = "pcp_total_time";
-    final static String ANALYTICS_TOPCODES_COUNT_PARAM = "pcp_topcodes_count";
+    final static String ANALYTICS_ANSWERS_TEXT_STATUS_EVENT = "pce_answers_enter_text_status";
+    final static String ANALYTICS_CHANGED_CLASS_SIZE_EVENT  = "pce_changed_class_size";
+    final static String ANALYTICS_CLEARED_ANSWERS_LOG_EVENT = "pce_cleared_answers_log";
+    final static String ANALYTICS_SHARED_ANSWERS_LOG_EVENT  = "pce_shared_answers_log";
+
+    final static String ANALYTICS_SCAN_CYCLE_EVENT  = "pce_scan_cycle";
+
+    final static String ANALYTICS_ENTERED_ANSWERS_EVENT = "pce_entered_answers";
+
+    final static String ANALYTICS_DEBUG_MODE_EVENT = "pce_debug_mode";
+
+
+    final static String ANALYTICS_TOTAL_TIME_PARAM      = "pcp_total_time";
+    final static String ANALYTICS_STUDENTS_NUMBER_PARAM = "pcp_students_num";
+    final static String ANALYTICS_BOOLEAN_PARAM         = "pcp_boolean";
+    final static String ANALYTICS_ANSWERS_COUNT_PARAM   = "pcp_answers_count";
 
 
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -56,13 +68,86 @@ public class Analytics {
 
 
 
-    public void send_scanCycle(long scanCycleTime, int topCodesFound) {
+    public void send_answersEnterTextStatus(boolean answersTextStatus) {
 
         if (mAnalyticsEnabled) {
             Bundle bundle = new Bundle();
+
+            bundle.putBoolean(ANALYTICS_BOOLEAN_PARAM, answersTextStatus);
+
+            mFirebaseAnalytics.logEvent(ANALYTICS_ANSWERS_TEXT_STATUS_EVENT, bundle);
+        }
+    }
+
+
+
+    public void send_changedClassSize(int studentsNumber) {
+
+        if (mAnalyticsEnabled) {
+            Bundle bundle = new Bundle();
+
+            bundle.putLong(ANALYTICS_STUDENTS_NUMBER_PARAM, studentsNumber);
+
+            mFirebaseAnalytics.logEvent(ANALYTICS_CHANGED_CLASS_SIZE_EVENT, bundle);
+        }
+    }
+
+
+
+    public void send_clearedAnswersLog() {
+
+        if (mAnalyticsEnabled) {
+            mFirebaseAnalytics.logEvent(ANALYTICS_CLEARED_ANSWERS_LOG_EVENT, null);
+        }
+    }
+
+
+
+    public void send_debugMode(boolean debugModeStatus) {
+
+        if (mAnalyticsEnabled) {
+            Bundle bundle = new Bundle();
+
+            bundle.putBoolean(ANALYTICS_BOOLEAN_PARAM, debugModeStatus);
+
+            mFirebaseAnalytics.logEvent(ANALYTICS_DEBUG_MODE_EVENT, bundle);
+        }
+    }
+
+
+
+    public void send_enteredAnswers(int answersCount) {
+
+        if (mAnalyticsEnabled) {
+            Bundle bundle = new Bundle();
+
+            bundle.putLong(ANALYTICS_ANSWERS_COUNT_PARAM, answersCount);
+
+            mFirebaseAnalytics.logEvent(ANALYTICS_ENTERED_ANSWERS_EVENT, bundle);
+        }
+    }
+
+
+
+    public void send_scanCycle(long scanCycleTime, int topCodesFound, int studentsNumber) {
+
+        if (mAnalyticsEnabled) {
+            Bundle bundle = new Bundle();
+
             bundle.putLong(ANALYTICS_TOTAL_TIME_PARAM, scanCycleTime);
-            bundle.putLong(ANALYTICS_TOPCODES_COUNT_PARAM, topCodesFound);
+            bundle.putLong(ANALYTICS_ANSWERS_COUNT_PARAM, topCodesFound);
+            bundle.putLong(ANALYTICS_STUDENTS_NUMBER_PARAM, studentsNumber);
+
             mFirebaseAnalytics.logEvent(ANALYTICS_SCAN_CYCLE_EVENT, bundle);
+        }
+    }
+
+
+
+    public void send_shareAnswersLog() {
+
+        if (mAnalyticsEnabled) {
+            mFirebaseAnalytics.logEvent(ANALYTICS_SHARED_ANSWERS_LOG_EVENT, null);
         }
     }
 }

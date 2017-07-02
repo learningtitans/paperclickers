@@ -91,7 +91,11 @@ public class SettingsActivity extends PreferenceActivity {
 	
 	// Use this constant to enable the self promotion on topcodes verso
 	public static final boolean PRINT_PROMOTION_ON_VERSO = true;
-	
+
+
+	private static Analytics mAnalytics = null;
+
+
 	// Internal intents for handling execution options
 	public static String PRINT_CODES_INTENT = "com.paperclickers.intent.action.PRINT_CODES";
 	public static String SHARE_ANSWERS_LOG  = "com.paperclickers.intent.action.SHARE_ANSWERS_LOG";
@@ -260,19 +264,20 @@ public class SettingsActivity extends PreferenceActivity {
 	 *
 	 * @see #sBindPreferenceSummaryToValueListener
 	 */
+
 	private static void bindPreferenceSummaryToValue(Preference preference) {
+
 		// Set the listener to watch for value changes.
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
-		// Trigger the listener immediately with the preference's
-		// current value.
-		sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, PreferenceManager
-				.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(), ""));
+		// Update the preference summary
+		preference.setSummary(PreferenceManager.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(), "").toString());
 	}
 
 	
 	
 	public static boolean getDevelopmentMode() {
+
 	    return mDevelopmentMode;
 	}
 	
@@ -286,6 +291,7 @@ public class SettingsActivity extends PreferenceActivity {
 	 * "simplified" settings UI should be shown.
 	 */
 	private static boolean isSimplePreferences(Context context) {
+
 		return ALWAYS_SIMPLE_PREFS || Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB || !isXLargeTablet(context);
 	}
 
@@ -293,6 +299,7 @@ public class SettingsActivity extends PreferenceActivity {
 	
 	@Override
 	public boolean isValidFragment(String fragmentName) {
+
 		return true;
 	}
 
@@ -303,6 +310,7 @@ public class SettingsActivity extends PreferenceActivity {
 	 * example, 10" tablets are extra-large.
 	 */
 	private static boolean isXLargeTablet(Context context) {
+
 		return (context.getResources().getConfiguration().screenLayout
 				& Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
 	}
@@ -327,8 +335,11 @@ public class SettingsActivity extends PreferenceActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 		setupActionBar();
+
+		mAnalytics = new Analytics(getApplicationContext());
 	}
 
 	
@@ -336,6 +347,7 @@ public class SettingsActivity extends PreferenceActivity {
 	/** {@inheritDoc} */
 	@Override
 	public boolean onIsMultiPane() {
+
 		return isXLargeTablet(this) && !isSimplePreferences(this);
 	}
 
@@ -343,6 +355,7 @@ public class SettingsActivity extends PreferenceActivity {
 	
     @Override
     protected void onNewIntent(Intent newIntent) {
+
         super.onNewIntent(newIntent);
         
         log.d(TAG,"+++++ New intent: " + newIntent + " " + getCallingActivity() + " " + getCallingPackage() + 
@@ -363,10 +376,10 @@ public class SettingsActivity extends PreferenceActivity {
         		shareIntent.setType("text/csv");
         		
         		startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.share_answers_log_using)));
-        		
+
+				mAnalytics.send_shareAnswersLog();
         	} else {
-    			Toast.makeText(getApplicationContext(), getResources().getText(R.string.no_answers_log),
-						       Toast.LENGTH_LONG).show();        		
+    			Toast.makeText(getApplicationContext(), getResources().getText(R.string.no_answers_log), Toast.LENGTH_LONG).show();
         	}
         } else if (newIntent.getAction().equals(DELETE_ANSWERS_LOG)) {
         	
@@ -377,15 +390,17 @@ public class SettingsActivity extends PreferenceActivity {
 	    			.setMessage(R.string.delete_answers_log_dialog_text)
 	    			.setPositiveButton(R.string.yes,
 		    			new DialogInterface.OnClickListener() {
+
 		    				@Override
 		    				public void onClick(DialogInterface dialog, int which) {
-		    					com.paperclickers.result.AnswersLog.deleteAnswersLog();
+		    					if (com.paperclickers.result.AnswersLog.deleteAnswersLog()) {
+									mAnalytics.send_clearedAnswersLog();
+								}
 		    				}
     			}).show();
         		
         	} else {
-    			Toast.makeText(getApplicationContext(), getResources().getText(R.string.no_answers_log),
-						       Toast.LENGTH_LONG).show();        		
+    			Toast.makeText(getApplicationContext(), getResources().getText(R.string.no_answers_log), Toast.LENGTH_LONG).show();
         	}        	
         }
     }
@@ -411,8 +426,10 @@ public class SettingsActivity extends PreferenceActivity {
 			// that hierarchy.
 		    
 			NavUtils.navigateUpFromSameTask(this);
+
 			return true;
 		}
+
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -1029,6 +1046,7 @@ public class SettingsActivity extends PreferenceActivity {
 	 * to reflect its new value.
 	 */
 	private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
+
 		@Override
 		public boolean onPreferenceChange(Preference preference, Object value) {
 			
@@ -1047,8 +1065,10 @@ public class SettingsActivity extends PreferenceActivity {
 				// Set the summary to reflect the new value.
 				preference.setSummary(index >= 0 ? listPreference.getEntries()[index] : null);
 
+				if (preference.getKey().equals("questions_tagging")) {
+					mAnalytics.send_answersEnterTextStatus(index == 1);
+				}
 			} else {
-				
 				// For all other preferences, set the summary to the value's
 				// simple string representation.
 				
@@ -1062,6 +1082,8 @@ public class SettingsActivity extends PreferenceActivity {
 								       Toast.LENGTH_LONG).show();
 						
 						updateResult = false;
+					} else {
+						mAnalytics.send_changedClassSize(studentsNum);
 					}
 				}
 				
@@ -1118,6 +1140,7 @@ public class SettingsActivity extends PreferenceActivity {
 	 */
 
 	private void setupActionBar() {
+
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			// Show the Up button in the action bar.
 			ActionBar actionBar = getActionBar();
@@ -1147,9 +1170,7 @@ public class SettingsActivity extends PreferenceActivity {
 		// use the older PreferenceActivity APIs.
 
 		addPreferencesFromResource(R.xml.pref_general);
-
 		addPreferencesFromResource(R.xml.pref_answers_log);
-
 		addPreferencesFromResource(R.xml.pref_print_codes);
 		
 		// Bind the summaries of EditText/List/Dialog/Ringtone preferences to
@@ -1181,5 +1202,4 @@ public class SettingsActivity extends PreferenceActivity {
 		    }
 		}
 	}
-	
 }
