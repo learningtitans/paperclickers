@@ -43,7 +43,9 @@ import java.util.List;
 
 
 /**
- * Created by eduseiti on 05/06/17.
+ * Implements the audience responses core processing, regardless of the image frames provider.
+ *
+ * @author eduseiti on 05/06/17.
  */
 
 public class AudienceResponses {

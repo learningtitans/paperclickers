@@ -37,8 +37,12 @@ import java.io.IOException;
 import com.paperclickers.log;
 
 /**
- * Created by eduseiti on 11/06/17.
+ * Camera emulator Activity implementation - provides audience response with image frames from
+ * fixed video file played by MediaPlayer class.
+ *
+ * @author eduseiti, on 11/06/2017
  */
+
 
 public class CameraEmulator extends CameraAbstraction implements TextureView.SurfaceTextureListener {
 

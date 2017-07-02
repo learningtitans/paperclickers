@@ -33,6 +33,7 @@ import java.util.Locale;
 
 import com.paperclickers.R;
 import com.paperclickers.fiducial.PaperclickersScanner;
+import com.paperclickers.log;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -64,8 +65,7 @@ public class AnswersLog {
 	
 	
 	public static boolean checkIfAnswersLogExists() {
-		File answersLog = new File(Environment.getExternalStorageDirectory() 
-								   + LOG_FILEPATH, LOG_FILENAME);
+		File answersLog = new File(Environment.getExternalStorageDirectory() + LOG_FILEPATH, LOG_FILENAME);
 		
 		return answersLog.exists();
 	}
@@ -73,10 +73,17 @@ public class AnswersLog {
     
     
     void createAndWriteLog(HashMap<Integer, String> detectedAnswers) {
-        
+
+		log.d(TAG, "createAndWriteLog: " + mOpenLogEntryOffset);
+
         StringBuilder answersLog;
 
-        mSessionQuestionsSeqNum++;
+		if (mOpenLogEntryOffset < 0) {
+
+			// Just increment the sequence number if there isn't an open log entry...
+
+			mSessionQuestionsSeqNum++;
+		}
         
         answersLog = new StringBuilder();
         
@@ -130,8 +137,7 @@ public class AnswersLog {
 
     
 	public static boolean deleteAnswersLog() {
-		File answersLog = new File(Environment.getExternalStorageDirectory() 
-				   				   + LOG_FILEPATH, LOG_FILENAME);
+		File answersLog = new File(Environment.getExternalStorageDirectory() + LOG_FILEPATH, LOG_FILENAME);
 
 		return answersLog.delete();		
 	}
@@ -139,8 +145,7 @@ public class AnswersLog {
 	
 	
 	public static Uri getAnswersLogUri() {
-		File answersLog = new File(Environment.getExternalStorageDirectory() 
-				   				   + LOG_FILEPATH, LOG_FILENAME);	
+		File answersLog = new File(Environment.getExternalStorageDirectory() + LOG_FILEPATH, LOG_FILENAME);
 		
 		return Uri.fromFile(answersLog);
 	}
@@ -149,8 +154,7 @@ public class AnswersLog {
 	
 	private String getDateTime() {
 	    
-		SimpleDateFormat dateFormat = new SimpleDateFormat(
-				"yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 		
 		Date date = new Date();
 		
@@ -181,16 +185,15 @@ public class AnswersLog {
 	private void writeToFileSeekeable(String data) {
 
 		RandomAccessFile fOut = null;
-		File directory        = new File(Environment.getExternalStorageDirectory()
-				+ LOG_FILEPATH);
+		File directory        = new File(Environment.getExternalStorageDirectory() + LOG_FILEPATH);
+
 		boolean needToWriteHeader = true;
 
 
 		if (!directory.exists()) {
 			directory.mkdirs();
 		} else {
-			File logFile = new File(Environment.getExternalStorageDirectory()
-					+ LOG_FILEPATH, LOG_FILENAME);
+			File logFile = new File(Environment.getExternalStorageDirectory() + LOG_FILEPATH, LOG_FILENAME);
 
 			if (logFile.exists()) {
 				needToWriteHeader = false;
@@ -202,8 +205,7 @@ public class AnswersLog {
 			fOut = new RandomAccessFile(new File(directory, LOG_FILENAME), "rwd");
 
 		} catch (FileNotFoundException e) {
-			Toast.makeText(mActivityContext, mActivityContext.getResources().getText(R.string.error_saving_log),
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(mActivityContext, mActivityContext.getResources().getText(R.string.error_saving_log), Toast.LENGTH_LONG).show();
 
 			e.printStackTrace();
 		}
@@ -211,14 +213,19 @@ public class AnswersLog {
 		try {
 			if (needToWriteHeader) {
 				fOut.writeBytes(createLogFileHeader().toString());
-			} else {
 
-				if (mOpenLogEntryOffset < 0) {
-					mOpenLogEntryOffset = fOut.length();
-				}
-
-				fOut.seek(mOpenLogEntryOffset);
+				log.d(TAG, "Writing the logfile header: " + mOpenLogEntryOffset);
 			}
+
+			if (mOpenLogEntryOffset < 0) {
+				mOpenLogEntryOffset = fOut.length();
+
+				log.d(TAG, "Going to the end of file: " + mOpenLogEntryOffset);
+			}
+
+			log.d(TAG, "Seek to open log position: " + mOpenLogEntryOffset);
+
+			fOut.seek(mOpenLogEntryOffset);
 
 			fOut.writeBytes(data);
 
@@ -226,8 +233,7 @@ public class AnswersLog {
 
 			fOut.close();
 		} catch (IOException e) {
-			Toast.makeText(mActivityContext, mActivityContext.getResources().getText(R.string.error_saving_log),
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(mActivityContext, mActivityContext.getResources().getText(R.string.error_saving_log), Toast.LENGTH_LONG).show();
 
 			e.printStackTrace();
 		}

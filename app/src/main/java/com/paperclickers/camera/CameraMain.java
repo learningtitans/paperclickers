@@ -31,6 +31,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import com.paperclickers.log;
 
+/**
+ * Real camera hardware Activity implementation - provides audience response with image frames from
+ * camera preview.
+ *
+ * @author eduseiti, on 10/06/2017
+ */
+
 public class CameraMain extends CameraAbstraction implements Camera.PreviewCallback, CameraChangeListener {
 
 	final static String TAG = "paperclickers.CameraMain";

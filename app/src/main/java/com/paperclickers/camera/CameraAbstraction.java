@@ -56,12 +56,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * Created by eduseiti on 10/06/17.
- */
-
-/**
- * This is the base class for the camera implementations - real camera hardware ("CameraMain" class)
+ * This is the base class for the camera Activity implementations - real camera hardware ("CameraMain" class)
  * and camera emulation via MediaPlayer ("CameraEmulator" class)
+ *
+ * @author eduseiti, on 10/06/2017
  */
 
 public class CameraAbstraction extends Activity implements OrientationManager.OrientationListener {

@@ -35,6 +35,8 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class Analytics {
 
+    final static boolean ENABLE_ANALYTICS = true;
+
     final static String ANALYTICS_SCAN_CYCLE_EVENT = "pce_scan_cycle";
     final static String ANALYTICS_TOTAL_TIME_PARAM = "pcp_total_time";
     final static String ANALYTICS_TOPCODES_COUNT_PARAM = "pcp_topcodes_count";
@@ -42,19 +44,25 @@ public class Analytics {
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
+    private boolean mAnalyticsEnabled = true;
+
 
     public Analytics(Context whichContext) {
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(whichContext);
+
+        mAnalyticsEnabled = ENABLE_ANALYTICS;
     }
 
 
 
     public void send_scanCycle(long scanCycleTime, int topCodesFound) {
 
-        Bundle bundle = new Bundle();
-        bundle.putLong(ANALYTICS_TOTAL_TIME_PARAM, scanCycleTime);
-        bundle.putLong(ANALYTICS_TOPCODES_COUNT_PARAM, topCodesFound);
-        mFirebaseAnalytics.logEvent(ANALYTICS_SCAN_CYCLE_EVENT, bundle);
+        if (mAnalyticsEnabled) {
+            Bundle bundle = new Bundle();
+            bundle.putLong(ANALYTICS_TOTAL_TIME_PARAM, scanCycleTime);
+            bundle.putLong(ANALYTICS_TOPCODES_COUNT_PARAM, topCodesFound);
+            mFirebaseAnalytics.logEvent(ANALYTICS_SCAN_CYCLE_EVENT, bundle);
+        }
     }
 }
