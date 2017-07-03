@@ -38,7 +38,8 @@ public class AboutActivity extends Activity {
 		
 		// Create a webview for to show the about webpage
 		WebView webView = (WebView)findViewById(R.id.about_webview);
-		webView.loadUrl("file:///android_asset/paperclickers_about.html");
+
+		webView.loadUrl(getResources().getText(R.string.paperclickers_about).toString());
 		
 		setupActionBar();
 	}

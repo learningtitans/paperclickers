@@ -218,8 +218,10 @@ public class SettingsActivity extends PreferenceActivity {
     
 
 	public static class GeneralPreferenceFragment extends PreferenceFragment {
+
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
+
 			super.onCreate(savedInstanceState);
 			
 			log.d(TAG, "----> GeneralPreferenceFragment");
@@ -233,8 +235,10 @@ public class SettingsActivity extends PreferenceActivity {
 
 
 	public static class PrintCodesPreferenceFragment extends PreferenceFragment {
+
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
+
 			super.onCreate(savedInstanceState);
 			
 			log.d(TAG, "----> PrintCodesPreferenceFragment");
@@ -253,8 +257,25 @@ public class SettingsActivity extends PreferenceActivity {
 		}
 	}
 
-	
-	
+
+
+	public static class UsageAnalyticsPreferenceFragment extends PreferenceFragment {
+
+		@Override
+		public void onCreate(Bundle savedInstanceState) {
+
+			super.onCreate(savedInstanceState);
+
+			log.d(TAG, "----> UsageAnalyticsPreferenceFragment");
+
+			addPreferencesFromResource(R.xml.pref_analytics);
+
+			bindPreferenceSummaryToValue(findPreference("usage_analytics"));
+		}
+	}
+
+
+
 	/**
 	 * Binds a preference's summary to its value. More specifically, when the
 	 * preference's value is changed, its summary (line of text below the
@@ -270,8 +291,23 @@ public class SettingsActivity extends PreferenceActivity {
 		// Set the listener to watch for value changes.
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
-		// Update the preference summary
-		preference.setSummary(PreferenceManager.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(), "").toString());
+        String stringValue = PreferenceManager.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(), "").toString();
+
+        if (preference instanceof ListPreference) {
+            // For list preferences, look up the correct display value in
+            // the preference's 'entries' list.
+            ListPreference listPreference = (ListPreference) preference;
+            int index = listPreference.findIndexOfValue(stringValue);
+
+            // Set the summary to reflect the new value.
+            preference.setSummary(index >= 0 ? listPreference.getEntries()[index] : null);
+
+            if (preference.getKey().equals("questions_tagging")) {
+                mAnalytics.send_answersEnterTextStatus(index == 1);
+            }
+        } else {
+            preference.setSummary(stringValue);
+        }
 	}
 
 	
@@ -398,7 +434,6 @@ public class SettingsActivity extends PreferenceActivity {
 								}
 		    				}
     			}).show();
-        		
         	} else {
     			Toast.makeText(getApplicationContext(), getResources().getText(R.string.no_answers_log), Toast.LENGTH_LONG).show();
         	}        	
@@ -413,7 +448,6 @@ public class SettingsActivity extends PreferenceActivity {
 		
 		log.d(TAG, "onOptionsItemSelected: " + id);
 
-		
 		if (id == android.R.id.home) {
 			// This ID represents the Home or Up button. In the case of this
 			// activity, the Up button is shown. Use NavUtils to allow users
@@ -1172,7 +1206,8 @@ public class SettingsActivity extends PreferenceActivity {
 		addPreferencesFromResource(R.xml.pref_general);
 		addPreferencesFromResource(R.xml.pref_answers_log);
 		addPreferencesFromResource(R.xml.pref_print_codes);
-		
+		addPreferencesFromResource(R.xml.pref_analytics);
+
 		// Bind the summaries of EditText/List/Dialog/Ringtone preferences to
 		// their values. When their values change, their summaries are updated
 		// to reflect the new value, per the Android Design guidelines.
@@ -1181,7 +1216,8 @@ public class SettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference("print_codes_page_format"));
 		bindPreferenceSummaryToValue(findPreference("print_codes_per_page"));
 		bindPreferenceSummaryToValue(findPreference("print_recto_verso_sequence"));
-		
+		bindPreferenceSummaryToValue(findPreference("usage_analytics"));
+
 		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.KITKAT) {
 		    findPreference("print_codes_page_format").setEnabled(false);
 		    findPreference("print_codes_per_page").setEnabled(false);

@@ -38,4 +38,6 @@
     <string name="auto_promotion_1">siga-nos em</string>
     <string name="auto_promotion_2">github.com/learningtitans/paperclickers</string>
 
+    <string name="paperclickers_about">file:///android_asset/paperclickers_about_pt-br.html</string>
+
 </resources>

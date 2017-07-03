@@ -23,7 +23,10 @@
 package com.paperclickers;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 
@@ -33,8 +36,6 @@ import com.google.firebase.analytics.FirebaseAnalytics;
  */
 
 public class Analytics {
-
-    final static boolean ENABLE_ANALYTICS = true;
 
     final static String ANALYTICS_ANSWERS_TEXT_STATUS_EVENT = "pce_answers_enter_text_status";
     final static String ANALYTICS_CHANGED_CLASS_SIZE_EVENT  = "pce_changed_class_size";
@@ -63,7 +64,11 @@ public class Analytics {
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(whichContext);
 
-        mAnalyticsEnabled = ENABLE_ANALYTICS;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(whichContext);
+
+        mAnalyticsEnabled = prefs.getString("usage_analytics", "0").equals("0");
+
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(mAnalyticsEnabled);
     }
 
 

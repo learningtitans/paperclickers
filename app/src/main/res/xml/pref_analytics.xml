@@ -1,0 +1,16 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory
+        android:title="@string/pref_header_usage_analytics">
+
+        <ListPreference
+            android:key="usage_analytics"
+            android:title="@string/pref_title_usage_analytics"
+            android:entryValues="@array/pref_usage_analytics_sequence_values"
+            android:entries="@array/pref_usage_analytics_sequence_titles"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:defaultValue="0"/>
+
+    </PreferenceCategory>
+</PreferenceScreen>
