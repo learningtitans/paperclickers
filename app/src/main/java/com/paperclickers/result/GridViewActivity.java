@@ -54,9 +54,11 @@ import com.paperclickers.log;
 import com.paperclickers.camera.CameraMain;
 
 public class GridViewActivity extends Activity {
-	
+
 	private static final String TAG = "GridViewActivity";
-	
+
+	private static final boolean ALLOW_ANSWERS_CHANGING = false;
+
 	private HashMap<Integer, String> mDetectedAnswers;
 	
 	private ArrayList<Entry> mAnswers;
@@ -121,68 +123,69 @@ public class GridViewActivity extends Activity {
 
 		mAnalytics = new Analytics(getApplicationContext());
 
-		imagegrid.setOnItemClickListener(new OnItemClickListener() {
+		if (ALLOW_ANSWERS_CHANGING) {
+			imagegrid.setOnItemClickListener(new OnItemClickListener() {
 
-			@Override
-			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-				ImageView imageview = (ImageView) v.findViewById(R.id.imgAnswer);
-				TextView textView   = (TextView) v.findViewById(R.id.imgText);
+				@Override
+				public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+					ImageView imageview = (ImageView) v.findViewById(R.id.imgAnswer);
+					TextView textView = (TextView) v.findViewById(R.id.imgText);
 
-				Entry givenAnswer = mAnswers.get(position);
+					Entry givenAnswer = mAnswers.get(position);
 
-				log.d(TAG, "clickListener: " + position + " : " + givenAnswer.getValue());
-				
+					log.d(TAG, "clickListener: " + position + " : " + givenAnswer.getValue());
 
-				//
-				// Allows manually defining an answer
-				//
-				
-				String answerValue = (String) givenAnswer.getValue();
-				
-				int whichColor = Color.WHITE;
-				
-				if (answerValue.equals(PaperclickersScanner.NO_ANSWER_STRING)) {
-					if (!mManuallyChangedAnswers.contains(givenAnswer)) {
-						mManuallyChangedAnswers.add(givenAnswer);
+
+					//
+					// Allows manually defining an answer
+					//
+
+					String answerValue = (String) givenAnswer.getValue();
+
+					int whichColor = Color.WHITE;
+
+					if (answerValue.equals(PaperclickersScanner.NO_ANSWER_STRING)) {
+						if (!mManuallyChangedAnswers.contains(givenAnswer)) {
+							mManuallyChangedAnswers.add(givenAnswer);
+						}
+
+						imageview.setImageResource(R.drawable.answer_a);
+
+						givenAnswer.setValue("A");
+
+					} else if (mManuallyChangedAnswers.contains(givenAnswer)) {
+						if (answerValue.equals("A")) {
+							imageview.setImageResource(R.drawable.answer_b);
+
+							givenAnswer.setValue("B");
+
+						} else if (answerValue.equals("B")) {
+							imageview.setImageResource(R.drawable.answer_c);
+
+							givenAnswer.setValue("C");
+
+						} else if (answerValue.equals("C")) {
+							imageview.setImageResource(R.drawable.answer_d);
+
+							givenAnswer.setValue("D");
+
+						} else {
+							imageview.setImageResource(R.drawable.answer_notdetected);
+
+							givenAnswer.setValue(PaperclickersScanner.NO_ANSWER_STRING);
+
+							whichColor = Color.BLACK;
+						}
 					}
-					
-					imageview.setImageResource(R.drawable.answer_a);
-					
-					givenAnswer.setValue("A");
-					
-				} else if (mManuallyChangedAnswers.contains(givenAnswer)) {
-					if (answerValue.equals("A")) {
-						imageview.setImageResource(R.drawable.answer_b);
-						
-						givenAnswer.setValue("B");
-						
-					} else if (answerValue.equals("B")) {
-						imageview.setImageResource(R.drawable.answer_c);
-						
-						givenAnswer.setValue("C");
-						
-					} else if (answerValue.equals("C")) {
-						imageview.setImageResource(R.drawable.answer_d);
-						
-						givenAnswer.setValue("D");
-						
-					} else {
-						imageview.setImageResource(R.drawable.answer_notdetected);
-						
-						givenAnswer.setValue(PaperclickersScanner.NO_ANSWER_STRING);
-						
-						whichColor = Color.BLACK;
-					}
+
+					textView.setTextColor(whichColor);
+
+					mDetectedAnswers.put((Integer) givenAnswer.getKey(), (String) givenAnswer.getValue());
+
+					mHasChangedAnswers = true;
 				}
-
-				textView.setTextColor(whichColor);
-				
-				mDetectedAnswers.put((Integer) givenAnswer.getKey(), (String) givenAnswer.getValue());
-
-				mHasChangedAnswers = true;
-			}
-		});
-		
+			});
+		}
 		
 		imageAdapter = new GridViewAdapter(GridViewActivity.this, mAnswers);
 		imagegrid.setAdapter(imageAdapter);
