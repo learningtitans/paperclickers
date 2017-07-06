@@ -68,7 +68,7 @@ public class CameraMain extends CameraAbstraction implements Camera.PreviewCallb
 	@Override
 	protected void onPause() {
 		super.onPause();
-		
+
 		releaseCamera();
 	}
 
@@ -123,7 +123,7 @@ public class CameraMain extends CameraAbstraction implements Camera.PreviewCallb
 
 		if (mCameraPreview != null) {
 			mPreview.removeView(mCameraPreview);
-			
+
 			mCameraPreview = null;
 		}
 	}

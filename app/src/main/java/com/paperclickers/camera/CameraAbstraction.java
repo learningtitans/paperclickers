@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -253,7 +254,20 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+
+        super.onConfigurationChanged(newConfig);
+
+        log.d(TAG, "onConfigurationChanged");
+    }
+
+
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        log.d(TAG, "onCreate");
 
         super.onCreate(savedInstanceState);
 
@@ -321,11 +335,17 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         switch(screenOrientation){
             case PORTRAIT:
             case REVERSED_PORTRAIT:
+
+                log.d(TAG, "Orientation changed to PORTRAIT");
+
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 break;
 
             case LANDSCAPE:
             case REVERSED_LANDSCAPE:
+
+                log.d(TAG, "Orientation changed to LANDSCAPE");
+
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 break;
         }
@@ -403,7 +423,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
             }
         }
 
-        mOrientationManager = new OrientationManager(mContext, SensorManager.SENSOR_DELAY_NORMAL, this);
+        mOrientationManager = new OrientationManager(mContext, SensorManager.SENSOR_DELAY_NORMAL, this, getWindowManager().getDefaultDisplay().getRotation());
         mOrientationManager.enable();
     }
 

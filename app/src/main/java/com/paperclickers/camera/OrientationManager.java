@@ -24,22 +24,50 @@ package com.paperclickers.camera;
 
 import android.content.Context;
 import android.view.OrientationEventListener;
+import android.view.Surface;
 
 public class OrientationManager extends OrientationEventListener {
 
     public enum ScreenOrientation {
-        REVERSED_LANDSCAPE, LANDSCAPE, PORTRAIT, REVERSED_PORTRAIT
+        REVERSED_LANDSCAPE,
+        LANDSCAPE,
+        PORTRAIT,
+        REVERSED_PORTRAIT
     }
 
-    
+
     
     public ScreenOrientation screenOrientation; 
     private OrientationListener listener;
 
     
     
-    public OrientationManager(Context context, int rate, OrientationListener listener) {
+    public OrientationManager(Context context, int rate, OrientationListener listener, int currentOrientation) {
         super(context, rate);
+
+        switch (currentOrientation) {
+
+            case Surface.ROTATION_0:
+                screenOrientation = ScreenOrientation.PORTRAIT;
+
+                break;
+
+            case Surface.ROTATION_90:
+                screenOrientation = ScreenOrientation.LANDSCAPE;
+
+                break;
+
+            case Surface.ROTATION_180:
+                screenOrientation = ScreenOrientation.REVERSED_PORTRAIT;
+
+                break;
+
+            case Surface.ROTATION_270:
+                screenOrientation = ScreenOrientation.REVERSED_LANDSCAPE;
+
+                break;
+        }
+
         setListener(listener);
     }
 
@@ -78,6 +106,7 @@ public class OrientationManager extends OrientationEventListener {
         
         if(newOrientation != screenOrientation){
             screenOrientation = newOrientation;
+
             if(listener != null){
                 listener.onOrientationChange(screenOrientation);
             }           
