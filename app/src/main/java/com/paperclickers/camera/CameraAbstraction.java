@@ -49,6 +49,7 @@ import com.paperclickers.fiducial.TopCode;
 import com.paperclickers.log;
 import com.paperclickers.result.GridViewActivity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -192,7 +193,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         mEndScanTime = System.currentTimeMillis();
 
 
-        mAnalytics.send_scanCycle(mEndScanTime - mStartScanTime, topCodesFound, mAudienceResponses.getTotalTopCodesCount());
+        mAnalytics.send_scanCycle(mEndScanTime - mStartScanTime, topCodesFound, mAudienceResponses.getPreviouslyDetectedTopCodesCount(), mAudienceResponses.getTotalTopCodesCount());
 
 
         log.d(TAG, String.format("Total scan cycles: %d, total scan time (ms): %d", mAudienceResponses.getScanCycleCount(), mEndScanTime - mStartScanTime));
@@ -284,7 +285,19 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
         mAudienceResponses = new AudienceResponses(mContext, PreferenceManager.getDefaultSharedPreferences(this));
 
-        mAudienceResponses.checkIncomingIntentAndInitialize(getIntent());
+        Intent whichIntent = getIntent();
+
+        String intentAction = whichIntent.getAction();
+
+        Serializable receivedTopcodes = null;
+
+        if ((intentAction != null) && (intentAction.equals(AudienceResponses.RECALL_CODES_INTENT))) {
+
+            receivedTopcodes = whichIntent.getSerializableExtra("detectedAnswers");
+
+        }
+
+        mAudienceResponses.initialize(receivedTopcodes);
 
         mUserRequestedEnd = false;
 

@@ -42,7 +42,10 @@ public class Analytics {
     final static String ANALYTICS_CLEARED_ANSWERS_LOG_EVENT = "pce_cleared_answers_log";
     final static String ANALYTICS_SHARED_ANSWERS_LOG_EVENT  = "pce_shared_answers_log";
 
-    final static String ANALYTICS_SCAN_CYCLE_EVENT  = "pce_scan_cycle";
+    final static String ANALYTICS_SCAN_CYCLE_EVENT                = "pce_scan_cycle";
+    final static String ANALYTICS_SCAN_CYCLE_ALL_STUDENTS_EVENT   = "pce_scan_cycle_all";
+    final static String ANALYTICS_RESCAN_CYCLE_EVENT              = "pce_rescan_cycle";
+    final static String ANALYTICS_RESCAN_CYCLE_ALL_STUDENTS_EVENT = "pce_rescan_cycle_all";
 
     final static String ANALYTICS_ENTERED_ANSWERS_EVENT = "pce_entered_answers";
 
@@ -134,16 +137,31 @@ public class Analytics {
 
 
 
-    public void send_scanCycle(long scanCycleTime, int topCodesFound, int studentsNumber) {
+    public void send_scanCycle(long scanCycleTime, int topCodesFound, int topCodesPreviouslyFound, int studentsNumber) {
 
         if (mAnalyticsEnabled) {
             Bundle bundle = new Bundle();
 
             bundle.putLong(ANALYTICS_TOTAL_TIME_PARAM, scanCycleTime);
             bundle.putLong(ANALYTICS_ANSWERS_COUNT_PARAM, topCodesFound);
+            bundle.putLong(ANALYTICS_ANSWERS_COUNT_PARAM, topCodesPreviouslyFound);
             bundle.putLong(ANALYTICS_STUDENTS_NUMBER_PARAM, studentsNumber);
 
-            mFirebaseAnalytics.logEvent(ANALYTICS_SCAN_CYCLE_EVENT, bundle);
+            String eventToLog = ANALYTICS_SCAN_CYCLE_EVENT;
+
+            if (topCodesPreviouslyFound > 0) {
+                if (topCodesFound == studentsNumber) {
+                    eventToLog = ANALYTICS_RESCAN_CYCLE_ALL_STUDENTS_EVENT;
+                } else {
+                    eventToLog = ANALYTICS_RESCAN_CYCLE_EVENT;
+                }
+            } else {
+                if (topCodesFound == studentsNumber) {
+                    eventToLog = ANALYTICS_SCAN_CYCLE_ALL_STUDENTS_EVENT;
+                }
+            }
+
+            mFirebaseAnalytics.logEvent(eventToLog, bundle);
         }
     }
 

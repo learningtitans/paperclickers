@@ -113,6 +113,8 @@ public class AudienceResponses {
 
     PaperclickersScanner mScan = null;
 
+    int mPreviouslyDetectedTopCodesCount = 0;
+
 
 
     private class SaveLastProcessedFrame extends AsyncTask<Void, Void, Void> {
@@ -204,27 +206,14 @@ public class AudienceResponses {
 
 
 
-    public void checkIncomingIntentAndInitialize(Intent whichIntent) {
-
-        log.d(TAG, ">>>>> checkIncomingIntentAndInitialize()");
-
-        String intentAction = whichIntent.getAction();
-
-        Serializable receivedTopcodes = null;
-
-        if ((intentAction != null) && (intentAction.equals(AudienceResponses.RECALL_CODES_INTENT))) {
-
-            receivedTopcodes = whichIntent.getSerializableExtra("detectedAnswers");
-
-        }
-
-        initializeTopCodesList((HashMap<Integer, String>) receivedTopcodes);
+    public Integer[] getFinalTopCodesFrequency() {
+        return mFinalTopCodesFrequency;
     }
 
 
 
-    public Integer[] getFinalTopCodesFrequency() {
-        return mFinalTopCodesFrequency;
+    public int getPreviouslyDetectedTopCodesCount() {
+        return mPreviouslyDetectedTopCodesCount;
     }
 
 
@@ -259,6 +248,15 @@ public class AudienceResponses {
 
 
 
+    public void initialize(Serializable receivedTopcodes) {
+
+        log.d(TAG, ">>>>> initialize()");
+
+        initializeTopCodesList((HashMap<Integer, String>) receivedTopcodes);
+    }
+
+
+
     public void initializeTopCodesList(HashMap<Integer, String> receivedTopcodes) {
 
         String studentsStr = mSharedPreferences.getString("students_number", "40");
@@ -274,6 +272,8 @@ public class AudienceResponses {
         mRecognizedTopCodesCount = 0;
         mValidTopCodesCount      = 0;
         mScanCycle               = 0;
+
+        mPreviouslyDetectedTopCodesCount = 0;
 
         log.d(TAG, "initializeTopCodesList - students number: " + studentsNum);
 
@@ -329,6 +329,8 @@ public class AudienceResponses {
 
                         validator.forceValid(answerID);
                     }
+
+                    mPreviouslyDetectedTopCodesCount++;
                 }
             }
         }
