@@ -64,7 +64,9 @@ public class DrawView extends SurfaceView {
 	private Paint mPaintB;
 	private Paint mPaintC;
 	private Paint mPaintD;
-	
+
+	private Float mTextStrokeWidth;
+
 	private boolean mShowingValidation;
 
 	
@@ -126,15 +128,20 @@ public class DrawView extends SurfaceView {
 		mPaintA.setStyle(Style.STROKE);
 		
 		DisplayMetrics display = getResources().getDisplayMetrics();
-		
+
 		if (display.densityDpi > DisplayMetrics.DENSITY_XHIGH) {
-			strokeWidth = 5.0f;
+			strokeWidth = 10.0f;
+			mTextStrokeWidth = 5.0f;
 		} else if (display.densityDpi > DisplayMetrics.DENSITY_HIGH) {
 			strokeWidth = 3.5f;
+			mTextStrokeWidth = 3.5f;
 		} else {
 			strokeWidth = 2.0f;
+			mTextStrokeWidth = 1.0f;
 		}
-		
+
+		log.d(TAG, "StrokeWidth: " + strokeWidth);
+
 		mPaintA.setStrokeWidth(strokeWidth);			
 
 		
@@ -144,7 +151,7 @@ public class DrawView extends SurfaceView {
 		mPaintB = new Paint(mPaintA);
 		mPaintC = new Paint(mPaintA);
 		mPaintD = new Paint(mPaintA);
-		
+
 		mPaintB.setColor(PaperclickersScanner.COLOR_B);
 		mPaintC.setColor(PaperclickersScanner.COLOR_C);
 		mPaintD.setColor(PaperclickersScanner.COLOR_D);
@@ -207,28 +214,28 @@ public class DrawView extends SurfaceView {
 		            case PaperclickersScanner.ID_ANSWER_A:
 		            	drawTriangle(canvas, codeX, codeY, codeDiameter, mPaintA);
 		            	
-		            	textPaint = mPaintA;
+		            	textPaint = new Paint(mPaintA);
 		            	
 		            	break;
 		            	
 		            case PaperclickersScanner.ID_ANSWER_B:
 		            	drawRectangle(canvas, codeX, codeY, codeDiameter * 0.8f, codeDiameter, false, mPaintB);
 		            	
-                        textPaint = mPaintB;
+                        textPaint = new Paint(mPaintB);
                         
 		            	break;
 		            	
 		            case PaperclickersScanner.ID_ANSWER_C:
 		            	canvas.drawCircle(codeX, codeY, codeDiameter, mPaintC);
 		            	
-                        textPaint = mPaintC;
+                        textPaint = new Paint(mPaintC);
                         
 		            	break;
 		            	
 		            case PaperclickersScanner.ID_ANSWER_D:
 		            	drawRectangle(canvas, codeX, codeY, codeDiameter, codeDiameter, true, mPaintD);
 		            	
-                        textPaint = mPaintD;
+                        textPaint = new Paint(mPaintD);
                         
 		            	break;
 		            }
@@ -247,7 +254,9 @@ public class DrawView extends SurfaceView {
 		                    
 		                textPaint.setTextSize(40);
 		                textPaint.setTextAlign(Align.CENTER);
-		                
+
+						textPaint.setStrokeWidth(mTextStrokeWidth);
+
 		                textPaint.getTextBounds(answerCountdown, 0, 1, textBounds);
 
 		                if (textBounds.height() > codeDiameter) {

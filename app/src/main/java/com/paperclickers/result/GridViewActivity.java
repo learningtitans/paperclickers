@@ -57,8 +57,6 @@ public class GridViewActivity extends Activity {
 
 	private static final String TAG = "GridViewActivity";
 
-	private static final boolean ALLOW_ANSWERS_CHANGING = false;
-
 	private HashMap<Integer, String> mDetectedAnswers;
 	
 	private ArrayList<Entry> mAnswers;
@@ -70,6 +68,7 @@ public class GridViewActivity extends Activity {
 
 	private boolean mHasChangedAnswers = false;
 
+	private SharedPreferences mPreferenceManager = null;
 
 
 	private void checkChangesAndSaveAnswersLog() {
@@ -123,7 +122,11 @@ public class GridViewActivity extends Activity {
 
 		mAnalytics = new Analytics(getApplicationContext());
 
-		if (ALLOW_ANSWERS_CHANGING) {
+		mPreferenceManager = PreferenceManager.getDefaultSharedPreferences(this);
+
+		String allowChangingAnswers = mPreferenceManager.getString("development_allow_answers_changing", "0");
+
+		if (allowChangingAnswers.equals("1")) {
 			imagegrid.setOnItemClickListener(new OnItemClickListener() {
 
 				@Override
@@ -235,9 +238,7 @@ public class GridViewActivity extends Activity {
 			boolean useRegularCamera = true;
 
 			if (SettingsActivity.getDevelopmentMode()) {
-				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-				String useCameraEmulationStr = prefs.getString("development_use_camera_emulation", "0");
+				String useCameraEmulationStr = mPreferenceManager.getString("development_use_camera_emulation", "0");
 
 				useRegularCamera = useCameraEmulationStr.equals("0");
 			}

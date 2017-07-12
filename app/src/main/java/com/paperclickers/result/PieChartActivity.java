@@ -251,10 +251,10 @@ public class PieChartActivity extends Activity {
             }
         });
 
-        data.setValueTextSize(16f);
-        data.setValueTextColor(Color.BLACK);
+        data.setValueTextSize(17f);
+        data.setValueTextColor(Color.WHITE);
         data.setValueTypeface(mTypeFace);
-        
+
         mChart.setData(data);
 
         // undo all highlights

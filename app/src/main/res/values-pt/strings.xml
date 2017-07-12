@@ -10,7 +10,7 @@
     
     <string name="hint1Start">Percorra a sala até detectar todos os códigos:\u0020</string>
     <string name="hint1End">\u0020encontrados</string>
-    <string name="hint2">Para terminar, pressione a tela por dois segundos.</string>
+    <string name="hint2">Para terminar, pressione a tela por dois segundos</string>
 
     <string name="frequencies_debug">[dev] Frequência dos códigos detectados irá aparecer aqui</string>
     
@@ -19,15 +19,15 @@
     <string name="yes">Sim</string>
     <string name="no">Não</string>
 
-    <string name="saved_answers_log">Respostas gravadas no registro.</string>
-    <string name="error_saving_pdf">Erro granvando pdf dos códigos dos estudantes.</string>
-    <string name="error_saving_log">Erro gravando registro de respostas.</string>
+    <string name="saved_answers_log">Respostas gravadas no registro</string>
+    <string name="error_saving_pdf">Erro granvando pdf dos códigos dos estudantes</string>
+    <string name="error_saving_log">Erro gravando registro de respostas</string>
     <string name="file_saved">salvo.</string>
 
     <string name="pie_chart_answers">respostas</string>
     
     <string name="cannot_generate_PDF">Não é possível gerar códigos</string>
-    <string name="visit_project_page_for_topcodes">Geração dos TopCodes requer versão Android 4.4 ou superior.\n\nVisite o GitHub do projeto para obter os códigos dos alunos.</string>
+    <string name="visit_project_page_for_topcodes">Geração dos TopCodes requer versão Android 4.4 ou superior.\n\nVisite o GitHub do projeto para obter os códigos dos alunos</string>
     <string name="go_github">Ir para GitHub</string>    
 
     <string name="hold_area">segure aqui</string>

@@ -105,7 +105,6 @@ public class AudienceResponses {
     Context mContext;
 
     private boolean mIgnoreCall;
-    private boolean mShowingValidation = false;
 
     private SparseArray<TopCode> mFinalTopCodes;
     private SparseArray<TopCodeValidator> mFinalTopCodesValidator;
@@ -349,7 +348,7 @@ public class AudienceResponses {
 
 
 
-    public int onNewFrame(byte[] data, boolean hasRotated, List<TopCode> recognizedValidTopCodes, List<TopCode> topCodes) {
+    public int onNewFrame(byte[] data, boolean hasRotated, List<TopCode> recognizedValidTopCodes, List<TopCode> topCodes, boolean showingValidation) {
 
         int result = DO_NOT_REDRAW;
 
@@ -372,14 +371,14 @@ public class AudienceResponses {
 
         stripLumaFromYUV420SP(mLuma, data, mImageWidth, mImageHeight);
 
-        result = processNewFrame(hasRotated, recognizedValidTopCodes, topCodes);
+        result = processNewFrame(hasRotated, recognizedValidTopCodes, topCodes, showingValidation);
 
         return result;
     }
 
 
 
-    public int onNewFrame(int[] data, boolean hasRotated, List<TopCode> recognizedValidTopCodes, List<TopCode> topCodes) {
+    public int onNewFrame(int[] data, boolean hasRotated, List<TopCode> recognizedValidTopCodes, List<TopCode> topCodes, boolean showingValidation) {
 
         int result = DO_NOT_REDRAW;
 
@@ -402,14 +401,14 @@ public class AudienceResponses {
 
         stripLumaFromYUV420SP(mLuma, data, mImageWidth, mImageHeight);
 
-        result = processNewFrame(hasRotated, recognizedValidTopCodes, topCodes);
+        result = processNewFrame(hasRotated, recognizedValidTopCodes, topCodes, showingValidation);
 
         return result;
     }
 
 
 
-    public int processNewFrame(boolean hasRotated, List<TopCode> recognizedValidTopCodes, List<TopCode> topCodes) {
+    public int processNewFrame(boolean hasRotated, List<TopCode> recognizedValidTopCodes, List<TopCode> topCodes, boolean showingValidation) {
 
         int result = DO_NOT_REDRAW;
 
@@ -449,7 +448,7 @@ public class AudienceResponses {
                             if (continuousDetectionResult == TopCodeValidator.CHANGED_ANSWER) {
                                 log.d(TAG, String.format("Code %d changed orientation: %f to %f", t.getCode(), validTopCode.getOrientation(), t.getOrientation()));
 
-                                if (!ONLY_PREVIEW_VALIDATED_CODES || mShowingValidation) {
+                                if (!ONLY_PREVIEW_VALIDATED_CODES || showingValidation) {
                                     recognizedValidTopCodes.add(t);
                                 }
                             } else if (continuousDetectionResult == TopCodeValidator.TURNED_VALID ||
@@ -461,7 +460,7 @@ public class AudienceResponses {
                                 }
 
                                 recognizedValidTopCodes.add(t);
-                            } else if (!ONLY_PREVIEW_VALIDATED_CODES || mShowingValidation) {
+                            } else if (!ONLY_PREVIEW_VALIDATED_CODES || showingValidation) {
                                 recognizedValidTopCodes.add(t);
                             }
                         } else {

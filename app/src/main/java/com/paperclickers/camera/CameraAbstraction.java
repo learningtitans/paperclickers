@@ -369,7 +369,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         List<TopCode> recognizedValidTopCodes = new ArrayList<TopCode>();
         List<TopCode> topCodes = null;
 
-        int cycleResult = mAudienceResponses.onNewFrame(data, mHasRotated, recognizedValidTopCodes, topCodes);
+        int cycleResult = mAudienceResponses.onNewFrame(data, mHasRotated, recognizedValidTopCodes, topCodes, mShowingValidation);
 
         processNewFrameResult(cycleResult, recognizedValidTopCodes, topCodes);
     }
@@ -381,7 +381,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         List<TopCode> recognizedValidTopCodes = new ArrayList<TopCode>();
         List<TopCode> topCodes = null;
 
-        int cycleResult = mAudienceResponses.onNewFrame(data, mHasRotated, recognizedValidTopCodes, topCodes);
+        int cycleResult = mAudienceResponses.onNewFrame(data, mHasRotated, recognizedValidTopCodes, topCodes, mShowingValidation);
 
         processNewFrameResult(cycleResult, recognizedValidTopCodes, topCodes);
     }
@@ -409,9 +409,9 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
             if (SettingsActivity.getDevelopmentMode()) {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-                String validationThresholdStr = prefs.getString("development_show_validation", "1");
+                String showValidation = prefs.getString("development_show_validation", "1");
 
-                mShowingValidation = validationThresholdStr.equals("1");
+                mShowingValidation = showValidation.equals("1");
             } else {
                 mShowingValidation = false;
             }
