@@ -28,9 +28,10 @@
     android:orientation="horizontal" >
 
 	<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				 android:id="@+id/overlayFragmentContainer"
 				 android:layout_width="match_parent"
 				 android:layout_height="match_parent"
-				 android:layout_below="@+id/appNameText"
+				 android:layout_below="@+id/about_and_title"
 				 android:layout_above="@+id/button_start">
 	</FrameLayout>
 

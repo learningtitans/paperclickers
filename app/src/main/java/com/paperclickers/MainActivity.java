@@ -24,6 +24,8 @@
 package com.paperclickers;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -31,6 +33,7 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -85,6 +88,35 @@ public class MainActivity extends Activity {
 		// Reset previously opened log entry, allowing new question to be registered in the answers' log.
 
         AnswersLog.resetOpenLogEntry();
+
+
+		FrameLayout fragmentLayout = (FrameLayout) findViewById(R.id.overlayFragmentContainer);
+
+		fragmentLayout.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				FragmentManager fragmentManager = getFragmentManager();
+				FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+				fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+
+				OverlayFragment fragment = (OverlayFragment) fragmentManager.findFragmentByTag(OverlayFragment.TAG);
+
+				if (fragment == null) {
+
+					fragment = new OverlayFragment();
+
+					fragmentTransaction.add(R.id.overlayFragmentContainer, fragment, OverlayFragment.TAG);
+				} else {
+					fragmentTransaction.remove(fragment);
+				}
+
+				fragmentTransaction.commit();
+			}
+		});
+
 
         // Adding listener for "about" button
 		Button about = (Button) findViewById(R.id.appIcon);

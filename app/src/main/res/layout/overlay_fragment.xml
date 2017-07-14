@@ -1,15 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginStart="50dp"
+    android:layout_marginEnd="50dp"
+    android:layout_marginBottom="50dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:elevation="20sp"
+    android:background="#dd223823" >
 
     <TextView
-        android:id="@+id/leave_overlay"
+        android:id="@+id/overlay_line_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:text="Exit"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/title_text_size" />
+        android:text="Overlay line 1"
+        android:textColor="@android:color/white"
+        android:textSize="30sp"
+        android:layout_margin="20sp" />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/overlay_line_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/overlay_line_1"
+        android:text="Overlay line 2"
+        android:textColor="@android:color/white"
+        android:textSize="30sp"
+        android:layout_margin="20sp" />
+
+</LinearLayout>
