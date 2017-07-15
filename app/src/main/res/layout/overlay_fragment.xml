@@ -2,11 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="50dp"
-    android:layout_marginEnd="50dp"
-    android:layout_marginBottom="50dp"
+    android:layout_marginBottom="200dp"
     android:orientation="vertical"
-    android:gravity="center"
     android:elevation="20sp"
     android:background="#dd223823" >
 
@@ -17,16 +14,17 @@
         android:text="Overlay line 1"
         android:textColor="@android:color/white"
         android:textSize="30sp"
-        android:layout_margin="20sp" />
+        android:layout_marginTop="60sp"
+        android:layout_marginStart="20sp" />
 
     <TextView
         android:id="@+id/overlay_line_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/overlay_line_1"
         android:text="Overlay line 2"
         android:textColor="@android:color/white"
         android:textSize="30sp"
-        android:layout_margin="20sp" />
+        android:layout_marginTop="60sp"
+        android:layout_marginStart="20sp" />
 
 </LinearLayout>

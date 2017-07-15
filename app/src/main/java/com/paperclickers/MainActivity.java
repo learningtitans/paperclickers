@@ -100,7 +100,7 @@ public class MainActivity extends Activity {
 				FragmentManager fragmentManager = getFragmentManager();
 				FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-				fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+				fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 
 				OverlayFragment fragment = (OverlayFragment) fragmentManager.findFragmentByTag(OverlayFragment.TAG);
 

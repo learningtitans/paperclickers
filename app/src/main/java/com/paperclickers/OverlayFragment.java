@@ -27,7 +27,7 @@ public class OverlayFragment extends Fragment {
 
         TextView line = (TextView) fragmentView.findViewById(R.id.overlay_line_1);
 
-        line.setText("Print codes");
+        line.setText("Access settings \u2192");
 
         Typeface overlayTypeface = Typeface.createFromAsset(getActivity().getAssets(), "ArchitectsDaughter.ttf");
 
@@ -35,7 +35,7 @@ public class OverlayFragment extends Fragment {
 
         line = (TextView) fragmentView.findViewById(R.id.overlay_line_2);
 
-        line.setText("Share answers");
+        line.setText("To print students' codes, share answers and more...");
 
         line.setTypeface(overlayTypeface);
 
