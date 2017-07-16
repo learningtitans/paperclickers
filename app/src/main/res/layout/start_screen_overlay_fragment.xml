@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginBottom="200dp"
+    android:layout_height="300dp"
     android:orientation="vertical"
     android:elevation="20sp"
     android:background="#dd223823" >
@@ -14,17 +13,21 @@
         android:text="Overlay line 1"
         android:textColor="@android:color/white"
         android:textSize="30sp"
+        android:layout_gravity="end"
         android:layout_marginTop="60sp"
-        android:layout_marginStart="20sp" />
+        android:layout_marginEnd="@dimen/settings_icon_left_align" />
 
     <TextView
         android:id="@+id/overlay_line_2"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Overlay line 2"
+        android:text="To print students' codes, share answers and more..."
         android:textColor="@android:color/white"
         android:textSize="30sp"
+        android:gravity="end"
+        android:layout_gravity="end"
         android:layout_marginTop="60sp"
-        android:layout_marginStart="20sp" />
+        android:layout_marginStart="20sp"
+        android:layout_marginEnd="20sp" />
 
 </LinearLayout>

@@ -62,9 +62,9 @@
         android:background="@drawable/sel_button_launcher" />
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                 android:id="@+id/overlayFragmentContainer"
-                 android:layout_width="match_parent"
-                 android:layout_height="match_parent" />
+        android:id="@+id/overlayFragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 
     <Button
@@ -73,8 +73,8 @@
         android:layout_height="@dimen/settings_icon_size"
         android:background="@drawable/sel_button_settings"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="43dp"
-        android:layout_marginEnd="36dp"/>
+        android:layout_marginTop="@dimen/settings_icon_top_margin"
+        android:layout_marginEnd="@dimen/settings_icon_end_margin"/>
 
 
 </RelativeLayout>

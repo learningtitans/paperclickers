@@ -23,7 +23,7 @@ public class OverlayFragment extends Fragment {
 
         // Inflate the layout for this fragment
 
-        View fragmentView = inflater.inflate(R.layout.overlay_fragment, container, false);
+        View fragmentView = inflater.inflate(R.layout.start_screen_overlay_fragment, container, false);
 
         TextView line = (TextView) fragmentView.findViewById(R.id.overlay_line_1);
 
@@ -35,7 +35,7 @@ public class OverlayFragment extends Fragment {
 
         line = (TextView) fragmentView.findViewById(R.id.overlay_line_2);
 
-        line.setText("To print students' codes, share answers and more...");
+        line.setText("To print students' codes,\nshare answers and more...");
 
         line.setTypeface(overlayTypeface);
 
