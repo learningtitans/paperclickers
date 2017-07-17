@@ -27,7 +27,7 @@ public class OverlayFragment extends Fragment {
 
         TextView line = (TextView) fragmentView.findViewById(R.id.overlay_line_1);
 
-        line.setText("Access settings \u2192");
+        line.setText(getResources().getText(R.string.start_overlay_settings_icon));
 
         Typeface overlayTypeface = Typeface.createFromAsset(getActivity().getAssets(), "ArchitectsDaughter.ttf");
 
@@ -35,9 +35,16 @@ public class OverlayFragment extends Fragment {
 
         line = (TextView) fragmentView.findViewById(R.id.overlay_line_2);
 
-        line.setText("To print students' codes,\nshare answers and more...");
+        line.setText(getResources().getText(R.string.start_overlay_settings_text));
 
         line.setTypeface(overlayTypeface);
+
+        line = (TextView) fragmentView.findViewById(R.id.overlay_dont_show_anymore);
+
+        line.setText(getResources().getText(R.string.start_overlay_dont_show_anymore));
+
+        line.setTypeface(overlayTypeface);
+
 
         return fragmentView;
     }

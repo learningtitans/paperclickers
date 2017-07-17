@@ -3,10 +3,7 @@
 	<dimen name="settings_icon_size">50dp</dimen>
 	<dimen name="settings_icon_top_margin">43dp</dimen>
 	<dimen name="settings_icon_end_margin">36dp</dimen>
-	<dimen name="settings_icon_left_align">96dp</dimen>
-
-
-
+	<dimen name="settings_icon_left_align">86dp</dimen>
 
 	<dimen name="icon_margin_left">12dp</dimen>
     <dimen name="icon_margin_top">25dp</dimen>

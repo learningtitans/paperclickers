@@ -8,7 +8,7 @@
     
     <string name="pref_header_answers_log">Registro de respostas</string>
     
-    <string name="pref_title_questions_tagging">Entrar texto para questões?</string>
+    <string name="pref_title_questions_tagging">Entrar texto para registrar questões?</string>
 
     <string-array name="pref_questions_tagging_sequence_titles">
         <item>Não (autonumeradas)</item>

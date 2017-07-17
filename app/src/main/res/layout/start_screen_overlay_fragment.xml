@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="300dp"
+    android:layout_height="310dp"
     android:orientation="vertical"
     android:elevation="20sp"
     android:background="#dd223823" >
@@ -13,6 +13,7 @@
         android:text="Overlay line 1"
         android:textColor="@android:color/white"
         android:textSize="30sp"
+        android:layout_alignParentEnd="true"
         android:layout_gravity="end"
         android:layout_marginTop="60sp"
         android:layout_marginEnd="@dimen/settings_icon_left_align" />
@@ -25,9 +26,34 @@
         android:textColor="@android:color/white"
         android:textSize="30sp"
         android:gravity="end"
-        android:layout_gravity="end"
+        android:layout_below="@+id/overlay_line_1"
         android:layout_marginTop="60sp"
         android:layout_marginStart="20sp"
         android:layout_marginEnd="20sp" />
 
-</LinearLayout>
+    <CheckBox
+              android:id="@+id/checkbox_dont_show_overlay"
+              android:layout_marginBottom="20sp"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginEnd="20dp"
+              android:layout_alignParentEnd="true"
+              android:layout_alignParentBottom="true"
+              android:layout_gravity="end"
+              android:button="@drawable/custom_checkbox"
+              android:onClick="onCheckboxClicked"/>
+
+    <TextView
+        android:id="@+id/overlay_dont_show_anymore"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/checkbox_dont_show_overlay"
+        android:text="Thanks, don't show anymore"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:gravity="end"
+        android:layout_toStartOf="@+id/checkbox_dont_show_overlay"
+        android:layout_marginEnd="5sp" />
+
+
+</RelativeLayout>
