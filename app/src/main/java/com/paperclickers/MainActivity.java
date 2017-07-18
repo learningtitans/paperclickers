@@ -33,7 +33,6 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,12 +40,19 @@ import com.paperclickers.camera.CameraEmulator;
 import com.paperclickers.camera.CameraMain;
 import com.paperclickers.result.AnswersLog;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+
+
 public class MainActivity extends Activity {
 
 	static String TAG = "MainActivity";
 
 	static final int DEVELOPMENT_OPTIONS_ACTIVATION_THRESHOLD = 5;
 	static final int DEVELOPMENT_OPTIONS_ACTIVATION_INTERVAL  = 300;
+
+	static final int SHOW_OVERLAY_TIMER = 3000;
 	
 	int mDebugOptionsActivationTapCounter   = 0;
 	long mDebugOptionsActivationLastTapTime = 0;
@@ -54,7 +60,42 @@ public class MainActivity extends Activity {
 	boolean mManualQuestionsTagging = false;
 	boolean mUseRegularCamera = false;
 
+	boolean mDontShowOverlay = false;
+
 	private Analytics mAnalytics = null;
+
+	private Timer mOpenOverlayTimer = null;
+
+	private SharedPreferences mSharedPreferences = null;
+
+
+
+	void checkAndTurnOnOverlayTimer() {
+		mDontShowOverlay = mSharedPreferences.getBoolean("development_dont_show_help", false);
+
+		if (mOpenOverlayTimer == null) {
+			if (!mDontShowOverlay) {
+				mOpenOverlayTimer = new Timer();
+
+				mOpenOverlayTimer.schedule(new TimerTask() {
+
+					public void run() {
+						FragmentManager fragmentManager = getFragmentManager();
+						FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+						
+						OverlayFragment fragment = new OverlayFragment();
+
+						fragmentTransaction.add(R.id.overlayFragmentContainer, fragment, OverlayFragment.TAG);
+						fragmentTransaction.addToBackStack(OverlayFragment.TAG);
+
+						fragmentTransaction.commit();
+
+						mOpenOverlayTimer = null;
+					}
+				}, (long) SHOW_OVERLAY_TIMER);
+			}
+		}
+	}
 
 
 
@@ -62,6 +103,8 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+
+		mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 		mAnalytics = new Analytics(getApplicationContext());
 
@@ -82,41 +125,14 @@ public class MainActivity extends Activity {
 		    AnswersLog.resetQuestionsSequenceNumber();
 
 		    log.d(TAG, ">>> New execution sequence; restart sequence number in answer log");
+
+			checkAndTurnOnOverlayTimer();
 		}
 
 
 		// Reset previously opened log entry, allowing new question to be registered in the answers' log.
 
         AnswersLog.resetOpenLogEntry();
-
-
-		FrameLayout fragmentLayout = (FrameLayout) findViewById(R.id.overlayFragmentContainer);
-
-		fragmentLayout.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-
-				FragmentManager fragmentManager = getFragmentManager();
-				FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-				fragmentTransaction.setCustomAnimations(R.animator.fragment_slide_up_enter, R.animator.fragment_slide_up_exit,
-						R.animator.fragment_slide_up_enter, R.animator.fragment_slide_up_exit);
-
-				OverlayFragment fragment = (OverlayFragment) fragmentManager.findFragmentByTag(OverlayFragment.TAG);
-
-				if (fragment == null) {
-
-					fragment = new OverlayFragment();
-
-					fragmentTransaction.add(R.id.overlayFragmentContainer, fragment, OverlayFragment.TAG);
-				} else {
-					fragmentTransaction.remove(fragment);
-				}
-
-				fragmentTransaction.commit();
-			}
-		});
 
 
         // Adding listener for "about" button
@@ -137,6 +153,15 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
+
+				if (!SettingsActivity.isDevelopmentMode()) {
+					// Disable help overlay, since has entered settings
+
+					SharedPreferences.Editor editor = mSharedPreferences.edit();
+
+					editor.putBoolean("development_dont_show_help", true);
+					editor.commit();
+				}
 
 				Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
 
@@ -193,7 +218,7 @@ public class MainActivity extends Activity {
                             CharSequence activationText; 
                             boolean newDevelopmentModeStatus;
                             
-                            if (SettingsActivity.getDevelopmentMode()) {
+                            if (SettingsActivity.isDevelopmentMode()) {
                                 activationText = getResources().getText(R.string.development_mode_off);
                                 
                                 newDevelopmentModeStatus = false;
@@ -222,6 +247,22 @@ public class MainActivity extends Activity {
 	}
 	
 
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		log.d(TAG, "onPause");
+
+		if (mOpenOverlayTimer != null) {
+			mOpenOverlayTimer.cancel();
+			mOpenOverlayTimer = null;
+		} else {
+			OverlayFragment.removeFragment(getFragmentManager(), false);
+		}
+	}
+
+
 	
     @Override
     protected void onResume() {
@@ -229,17 +270,17 @@ public class MainActivity extends Activity {
         
         mDebugOptionsActivationTapCounter  = 0;
         mDebugOptionsActivationLastTapTime = 0;
-        
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        
-        String questionsTaggingStr = prefs.getString("questions_tagging", "0");
+
+		checkAndTurnOnOverlayTimer();
+
+        String questionsTaggingStr = mSharedPreferences.getString("questions_tagging", "0");
 
         mManualQuestionsTagging = questionsTaggingStr.equals("1");
 
 		mUseRegularCamera = true;
 
-		if (SettingsActivity.getDevelopmentMode()) {
-			String useCameraEmulationStr = prefs.getString("development_use_camera_emulation", "0");
+		if (SettingsActivity.isDevelopmentMode()) {
+			String useCameraEmulationStr = mSharedPreferences.getString("development_use_camera_emulation", "0");
 
 			mUseRegularCamera = useCameraEmulationStr.equals("0");
 		}

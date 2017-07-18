@@ -46,12 +46,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
+import android.widget.CheckBox;
 import android.widget.Toast;
 import android.support.v4.app.NavUtils;
 
@@ -211,6 +213,7 @@ public class SettingsActivity extends PreferenceActivity {
                     bindPreferenceSummaryToValue(findPreference("development_show_validation"));
 					bindPreferenceSummaryToValue(findPreference("development_allow_answers_changing"));
 					bindPreferenceSummaryToValue(findPreference("development_use_camera_emulation"));
+//					bindPreferenceSummaryToValue(findPreference("development_dont_show_help"));
                 }
             }
         }
@@ -292,28 +295,30 @@ public class SettingsActivity extends PreferenceActivity {
 		// Set the listener to watch for value changes.
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
-        String stringValue = PreferenceManager.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(), "").toString();
+		if (!(preference instanceof CheckBoxPreference)) {
+			String stringValue = PreferenceManager.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(), "").toString();
 
-        if (preference instanceof ListPreference) {
-            // For list preferences, look up the correct display value in
-            // the preference's 'entries' list.
-            ListPreference listPreference = (ListPreference) preference;
-            int index = listPreference.findIndexOfValue(stringValue);
+			if (preference instanceof ListPreference) {
+				// For list preferences, look up the correct display value in
+				// the preference's 'entries' list.
+				ListPreference listPreference = (ListPreference) preference;
+				int index = listPreference.findIndexOfValue(stringValue);
 
-            // Set the summary to reflect the new value.
-            preference.setSummary(index >= 0 ? listPreference.getEntries()[index] : null);
+				// Set the summary to reflect the new value.
+				preference.setSummary(index >= 0 ? listPreference.getEntries()[index] : null);
 
-            if (preference.getKey().equals("questions_tagging")) {
-                mAnalytics.send_answersEnterTextStatus(index == 1);
-            }
-        } else {
-            preference.setSummary(stringValue);
-        }
+				if (preference.getKey().equals("questions_tagging")) {
+					mAnalytics.send_answersEnterTextStatus(index == 1);
+				}
+			} else {
+				preference.setSummary(stringValue);
+			}
+		}
 	}
 
 	
 	
-	public static boolean getDevelopmentMode() {
+	public static boolean isDevelopmentMode() {
 
 	    return mDevelopmentMode;
 	}
@@ -1104,26 +1109,28 @@ public class SettingsActivity extends PreferenceActivity {
 					mAnalytics.send_answersEnterTextStatus(index == 1);
 				}
 			} else {
-				// For all other preferences, set the summary to the value's
-				// simple string representation.
-				
-				if (preference.getKey().equals("students_number")) {
-					
-					int studentsNum = Integer.parseInt(stringValue);
-					
-					if ((studentsNum < 1) || (studentsNum > 99)) {
-						
-						Toast.makeText(preference.getContext(), preference.getContext().getResources().getText(R.string.invalid_students_number),
-								       Toast.LENGTH_LONG).show();
-						
-						updateResult = false;
-					} else {
-						mAnalytics.send_changedClassSize(studentsNum);
+				if (!(preference instanceof CheckBoxPreference)) {
+					// For all other preferences, set the summary to the value's
+					// simple string representation.
+
+					if (preference.getKey().equals("students_number")) {
+
+						int studentsNum = Integer.parseInt(stringValue);
+
+						if ((studentsNum < 1) || (studentsNum > 99)) {
+
+							Toast.makeText(preference.getContext(), preference.getContext().getResources().getText(R.string.invalid_students_number),
+									Toast.LENGTH_LONG).show();
+
+							updateResult = false;
+						} else {
+							mAnalytics.send_changedClassSize(studentsNum);
+						}
 					}
-				}
-				
-				if (updateResult) {
-					preference.setSummary(stringValue);
+
+					if (updateResult) {
+						preference.setSummary(stringValue);
+					}
 				}
 			}
 			return updateResult;
@@ -1148,6 +1155,7 @@ public class SettingsActivity extends PreferenceActivity {
                     bindPreferenceSummaryToValue(mDevelopmentFragment.findPreference("development_show_validation"));
 					bindPreferenceSummaryToValue(mDevelopmentFragment.findPreference("development_allow_answers_changing"));
 					bindPreferenceSummaryToValue(mDevelopmentFragment.findPreference("development_use_camera_emulation"));
+//					bindPreferenceSummaryToValue(mDevelopmentFragment.findPreference("development_dont_show_help"));
                 } else if (mDevelopmentActivity != null) {
                     mDevelopmentActivity.addPreferencesFromResource(R.xml.pref_development);
                     
@@ -1155,6 +1163,7 @@ public class SettingsActivity extends PreferenceActivity {
                     bindPreferenceSummaryToValue(mDevelopmentActivity.findPreference("development_show_validation"));
 					bindPreferenceSummaryToValue(mDevelopmentActivity.findPreference("development_allow_answers_changing"));
 					bindPreferenceSummaryToValue(mDevelopmentActivity.findPreference("development_use_camera_emulation"));
+//					bindPreferenceSummaryToValue(mDevelopmentActivity.findPreference("development_dont_show_help"));
                 }
             } else {
                 if (mDevelopmentFragment != null) {
@@ -1162,11 +1171,13 @@ public class SettingsActivity extends PreferenceActivity {
                     mDevelopmentFragment.getPreferenceScreen().removePreference(mDevelopmentFragment.findPreference("development_show_validation"));
 					mDevelopmentFragment.getPreferenceScreen().removePreference(mDevelopmentFragment.findPreference("development_allow_answers_changing"));
 					mDevelopmentFragment.getPreferenceScreen().removePreference(mDevelopmentFragment.findPreference("development_use_camera_emulation"));
+//					mDevelopmentFragment.getPreferenceScreen().removePreference(mDevelopmentFragment.findPreference("development_dont_show_help"));
                 } else if (mDevelopmentActivity != null) {
                     mDevelopmentActivity.getPreferenceScreen().removePreference(mDevelopmentActivity.findPreference("development_validation_threshold"));
                     mDevelopmentActivity.getPreferenceScreen().removePreference(mDevelopmentActivity.findPreference("development_show_validation"));
 					mDevelopmentActivity.getPreferenceScreen().removePreference(mDevelopmentActivity.findPreference("development_allow_answers_changing"));
 					mDevelopmentActivity.getPreferenceScreen().removePreference(mDevelopmentActivity.findPreference("development_use_camera_emulation"));
+//					mDevelopmentActivity.getPreferenceScreen().removePreference(mDevelopmentActivity.findPreference("development_dont_show_help"));
 				}
             }	    
 	    }
@@ -1241,6 +1252,7 @@ public class SettingsActivity extends PreferenceActivity {
                 bindPreferenceSummaryToValue(findPreference("development_show_validation"));
 				bindPreferenceSummaryToValue(findPreference("development_allow_answers_changing"));
 				bindPreferenceSummaryToValue(findPreference("development_use_camera_emulation"));
+//				bindPreferenceSummaryToValue(findPreference("development_dont_show_help"));
 		    }
 		}
 	}

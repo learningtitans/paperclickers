@@ -46,6 +46,12 @@
 			android:positiveButtonText="@null"
 			android:title="@string/pref_title_use_camera_emulation" />
 
+		<CheckBoxPreference
+			android:key="development_dont_show_help"
+			android:title="@string/pref_dont_show_help_title"
+			android:summary="@string/pref_dont_show_help_summary"
+			android:defaultValue="false"/>
+
     </PreferenceCategory>
 
 </PreferenceScreen>

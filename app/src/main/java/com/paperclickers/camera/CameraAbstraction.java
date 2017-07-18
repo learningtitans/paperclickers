@@ -99,7 +99,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
     protected boolean mShowingValidation = false;
 
-    protected Timer scanDismissTimer = null;
+    protected Timer mScanDismissTimer = null;
 
     boolean mHasRotated = false;
 
@@ -130,9 +130,9 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
                     mTouchStart = System.currentTimeMillis();
 
-                    scanDismissTimer = new Timer();
+                    mScanDismissTimer = new Timer();
 
-                    scanDismissTimer.schedule(new TimerTask() {
+                    mScanDismissTimer.schedule(new TimerTask() {
 
                         public void run() {
                             hasDetectedEnd(true);
@@ -161,9 +161,9 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
                 case MotionEvent.ACTION_CANCEL:
                 default:
 
-                    if (scanDismissTimer != null) {
-                        scanDismissTimer.cancel();
-                        scanDismissTimer = null;
+                    if (mScanDismissTimer != null) {
+                        mScanDismissTimer.cancel();
+                        mScanDismissTimer = null;
                     }
 
                     break;
@@ -227,9 +227,9 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
             }
         }
 
-        if (scanDismissTimer != null) {
-            scanDismissTimer.cancel();
-            scanDismissTimer = null;
+        if (mScanDismissTimer != null) {
+            mScanDismissTimer.cancel();
+            mScanDismissTimer = null;
         }
     }
 
@@ -406,7 +406,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         mStartScanTime = System.currentTimeMillis();
 
         if (SettingsActivity.DEVELOPMENT_OPTIONS) {
-            if (SettingsActivity.getDevelopmentMode()) {
+            if (SettingsActivity.isDevelopmentMode()) {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
                 String showValidation = prefs.getString("development_show_validation", "1");
