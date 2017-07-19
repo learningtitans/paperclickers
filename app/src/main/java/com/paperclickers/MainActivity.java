@@ -82,7 +82,7 @@ public class MainActivity extends Activity {
 					public void run() {
 						FragmentManager fragmentManager = getFragmentManager();
 						FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-						
+
 						OverlayFragment fragment = new OverlayFragment();
 
 						fragmentTransaction.add(R.id.overlayFragmentContainer, fragment, OverlayFragment.TAG);
