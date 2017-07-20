@@ -128,4 +128,10 @@
     <string name="pref_dont_show_help_title">Don\'t show help</string>
     <string name="pref_dont_show_help_summary">Don\'t show instructions overlay</string>
 
+    <string name="pref_use_morpho_title">Use morphological operations</string>
+    <string name="pref_use_morpho_summary">Process images with morphological operations</string>
+
+    <string name="pref_title_morpho_element_size">Morphological element size</string>
+    <string name="pref_default_morpho_element_size">5</string>
+
 </resources>

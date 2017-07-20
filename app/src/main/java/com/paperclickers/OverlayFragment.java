@@ -44,10 +44,13 @@ public class OverlayFragment extends Fragment {
 
     final static String TAG = "overlayFragment";
 
+    private Analytics mAnalytics = null;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        mAnalytics = new Analytics(getActivity().getApplicationContext());
 
         // Inflate the layout for this fragment
 
@@ -102,6 +105,8 @@ public class OverlayFragment extends Fragment {
                     editor.commit();
 
                     removeFragment(getFragmentManager(), true);
+
+                    mAnalytics.send_disabledOverlay();
                 }
             }
         });

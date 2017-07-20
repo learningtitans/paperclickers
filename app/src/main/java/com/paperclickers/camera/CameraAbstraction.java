@@ -35,6 +35,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -98,6 +99,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
     String mHint1StringEnd;
 
     protected boolean mShowingValidation = false;
+    boolean mTerminating = false;
 
     protected Timer mScanDismissTimer = null;
 
@@ -133,9 +135,11 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
                     mScanDismissTimer = new Timer();
 
                     mScanDismissTimer.schedule(new TimerTask() {
-
                         public void run() {
-                            hasDetectedEnd(true);
+
+                            if (!isFinishing()) {
+                                hasDetectedEnd(true);
+                            }
                         }
                     }, (long) SCAN_DISMISS_TIMEOUT);
 
@@ -211,7 +215,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
     private void hasDetectedEnd(boolean timeoutOccurred) {
 
-        if (mTouchStart != -1) {
+        if ((mTouchStart != -1) && (!mTerminating)) {
             if ((timeoutOccurred) || (System.currentTimeMillis() - mTouchStart > SCAN_DISMISS_TIMEOUT)) {
                 if (mVibrator != null) {
                     mVibrator.vibrate(50);
@@ -254,6 +258,13 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        mTerminating = true;
+    }
+
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
 
         super.onConfigurationChanged(newConfig);
@@ -272,8 +283,10 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        mTerminating = false;
 
         mContext = getApplicationContext();
         mVibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
@@ -360,6 +373,11 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         log.d(TAG, "===> onPause()");
 
         mOrientationManager.disable();
+
+        if (mScanDismissTimer != null) {
+            mScanDismissTimer.cancel();
+            mScanDismissTimer = null;
+        }
     }
 
 
@@ -445,13 +463,18 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         super.onStop();
 
         log.d(TAG, "===> onStop()");
+
+        if (mScanDismissTimer != null) {
+            mScanDismissTimer.cancel();
+            mScanDismissTimer = null;
+        }
     }
 
 
 
     public void processNewFrameResult(int cycleResult, List<TopCode> recognizedValidTopCodes, List<TopCode> topCodes) {
 
-        if (cycleResult == AudienceResponses.COMPLETLY_IGNORE_CYCLE) {
+        if (cycleResult == AudienceResponses.COMPLETELY_IGNORE_CYCLE) {
             return;
         } else if (cycleResult == AudienceResponses.NEED_TO_REDRAW) {
 
@@ -479,7 +502,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         }
 
         if (mUserRequestedEnd) {
-            if (AudienceResponses.SAVE_LAST_IMAGE) {
+            if (AudienceResponses.SAVE_LAST_IMAGE || SettingsActivity.isDevelopmentMode()) {
                 mAudienceResponses.saveLastImage();
             }
 
@@ -495,11 +518,20 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
     }
 
 
-    protected void setTopCodesFeedbackPreview() {
+    protected void setTopCodesFeedbackPreview(boolean forceSize) {
 
         mDraw = new DrawView(mContext, mAudienceResponses.getTopCodesValidator(), mImageWidth, mImageHeight, mShowingValidation);
 
         mPreview.addView(mDraw);
+
+        if (forceSize) {
+            ViewGroup.LayoutParams layoutParams = mDraw.getLayoutParams();
+
+            layoutParams.width = mImageWidth;
+            layoutParams.height = mImageHeight;
+
+            mDraw.setLayoutParams(layoutParams);
+        }
     }
 }
 

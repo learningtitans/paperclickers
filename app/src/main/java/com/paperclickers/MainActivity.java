@@ -235,6 +235,8 @@ public class MainActivity extends Activity {
                             mDebugOptionsActivationTapCounter = 0;
 
 							mAnalytics.send_debugMode(newDevelopmentModeStatus);
+
+							updateRegularCameraUsage();
                         }
                     } else {
                         mDebugOptionsActivationTapCounter = 1;
@@ -277,6 +279,12 @@ public class MainActivity extends Activity {
 
         mManualQuestionsTagging = questionsTaggingStr.equals("1");
 
+		updateRegularCameraUsage();
+    }
+
+
+
+    private void updateRegularCameraUsage() {
 		mUseRegularCamera = true;
 
 		if (SettingsActivity.isDevelopmentMode()) {
@@ -284,6 +292,5 @@ public class MainActivity extends Activity {
 
 			mUseRegularCamera = useCameraEmulationStr.equals("0");
 		}
-
-    }
+	}
 }

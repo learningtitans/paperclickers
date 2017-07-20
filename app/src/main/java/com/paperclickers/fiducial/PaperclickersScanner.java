@@ -27,8 +27,10 @@ import java.util.List;
 import com.paperclickers.log;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 
+import android.preference.PreferenceManager;
 import android.renderscript.RenderScript;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
@@ -65,7 +67,6 @@ public class PaperclickersScanner extends Scanner {
 	public static final boolean APPLY_OPENING = true;
 
 	public static final boolean APPLY_MEDIAN_FILTER = false;
-	public static final boolean APPLY_MORPHO_OPERATIONS = true;
 
 
 
@@ -103,8 +104,8 @@ public class PaperclickersScanner extends Scanner {
 	public static final int ID_NO_ANSWER = NUM_OF_VALID_ANSWERS;
 	
 	
-	public static final int MORPHO_DILATION_STRUCT_SIZE = 5;
-	public static final int MORPHO_EROSION_STRUCT_SIZE  = 5;
+	public static final int MORPHO_DILATION_STRUCT_SIZE = 3;
+	public static final int MORPHO_EROSION_STRUCT_SIZE  = 3;
 
 	public static final int MORPHO_HALF_DILATION_STRUCT_SIZE = (MORPHO_DILATION_STRUCT_SIZE - 1) / 2;
 	public static final int MORPHO_HALF_EROSION_STRUCT_SIZE  = (MORPHO_EROSION_STRUCT_SIZE - 1) / 2;
@@ -114,7 +115,11 @@ public class PaperclickersScanner extends Scanner {
 
 	public static final int PIXEL_COLOR_MASK = 0x01000000;
 	
-	
+
+	boolean mUseMorphoOperations = true;
+	int mMorphoElementSize = MORPHO_DILATION_STRUCT_SIZE;
+
+
 	
 	long mStartThresholdTime;
 	long mEndThresholdTime;
@@ -238,7 +243,9 @@ public class PaperclickersScanner extends Scanner {
 
 
 	public void finalize() {
-        renderscriptFinalize();
+		if (USE_RENDERSCRIPT) {
+			renderscriptFinalize();
+		}
     }
 
 
@@ -316,20 +323,6 @@ public class PaperclickersScanner extends Scanner {
 		                    		 spots.add(spot);
 		                    	 }
 
-//		                    	 int diameter = (int) spot.unit * spot.WIDTH;
-//
-//								 for (int x = 0; x < diameter / 2; x++) {
-//									 data[k + x] &= ~CANDIDATE_MASK;
-//								 }
-//
-//								 int begin = k - diameter / 2;
-//
-//								 for (int y = 0; y < diameter / 2 - 1; y++) {
-//									 for (int x = 0; x < diameter; x++) {
-//										 data[begin + y * w + x] &= ~CANDIDATE_MASK;
-//									 }
-//								 }
-
 								 spot = new TopCode();
 		                     }
 						}
@@ -386,54 +379,54 @@ public class PaperclickersScanner extends Scanner {
 
 	
 	protected void morphoDilation() {
-	    
+
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
-                
+
                 boolean hasHit = false;
-                
+
                 int startHeight = i - MORPHO_HALF_DILATION_STRUCT_SIZE;
                 int startWidth  = j - MORPHO_HALF_DILATION_STRUCT_SIZE;
-                
+
                 int totalHeight = MORPHO_DILATION_STRUCT_SIZE;
                 int totalWidth  = MORPHO_DILATION_STRUCT_SIZE;
-                        
-                
+
+
                 if (startHeight < 0) {
                     totalHeight += startHeight;
                     startHeight = i;
                 } else if (i + MORPHO_HALF_DILATION_STRUCT_SIZE >= h) {
                 	totalHeight = totalHeight - (MORPHO_HALF_DILATION_STRUCT_SIZE + 1 - h + i);
                 }
-                
+
                 if (startWidth < 0) {
                     totalWidth += startWidth;
                     startWidth = j;
                 } else if (j + MORPHO_HALF_DILATION_STRUCT_SIZE >= w) {
                     totalWidth = totalWidth - (MORPHO_HALF_DILATION_STRUCT_SIZE + 1 - w + j);
                 }
-                
+
                 // Analyze the pixels under the mask, looking for a hit
-                
+
                 for (int y = 0; y < totalHeight; y++) {
                     for (int x = 0; x < totalWidth; x++) {
-                        
+
                         // Check if the pixel under the mask position is BLACK...
-                        
+
 //                        log.d(TAG, String.format("i=%d, j=%d, startHeight=%d, startWidth=%d, totalHeight=%d, totalWidth=%d, y=%d, x=%d", i, j, startHeight, startWidth, totalHeight, totalWidth, y, x));
-                        
-                        
+
+
                         if ((data[(startHeight + y) * w + startWidth + x] & PIXEL_COLOR_MASK) == 0){
-                            
+
                             // ...if so, has a hit
-                            
+
                             hasHit = true;
-                            
+
                             break;
                         }
                     }
                 }
-                
+
                 if (hasHit) {
                     // If it has a hit, set the current image pixel as BLACK
 					mWorkingDataInt[i * w + j] = 0;
@@ -444,55 +437,55 @@ public class PaperclickersScanner extends Scanner {
             }
         }
 	}
-	
-	
+
+
 
     protected void morphoErosion() {
-        
+
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
-                
+
                 boolean hasFit = true;
-                
+
                 int startHeight = i - MORPHO_HALF_EROSION_STRUCT_SIZE;
                 int startWidth  = j - MORPHO_HALF_EROSION_STRUCT_SIZE;
-                
+
                 int totalHeight = MORPHO_EROSION_STRUCT_SIZE;
                 int totalWidth  = MORPHO_EROSION_STRUCT_SIZE;
-                        
-                
+
+
                 if (startHeight < 0) {
                     totalHeight += startHeight;
                     startHeight = i;
                 } else if (i + MORPHO_HALF_EROSION_STRUCT_SIZE >= h) {
                     totalHeight = totalHeight - (MORPHO_HALF_EROSION_STRUCT_SIZE + 1 - h + i);
                 }
-                
+
                 if (startWidth < 0) {
                     totalWidth += startWidth;
                     startWidth = j;
                 } else if (j + MORPHO_HALF_EROSION_STRUCT_SIZE >= w) {
                     totalWidth = totalWidth - (MORPHO_HALF_EROSION_STRUCT_SIZE + 1 - w + j);
                 }
-                
+
                 // Analyze the pixels under the mask, looking for a hit
-                
+
                 for (int y = 0; y < totalHeight; y++) {
                     for (int x = 0; x < totalWidth; x++) {
-                        
+
                         // Check if the pixel under the mask position is WHITE...
-                        
+
                         if ((data[(startHeight + y) * w + startWidth + x] & PIXEL_COLOR_MASK) != 0){
-                            
+
                             // ...if so, does not has a fit
-                            
+
                             hasFit = false;
-                            
+
                             break;
                         }
                     }
                 }
-                
+
                 if (hasFit) {
                     // If it has a fit, set the current image pixel as BLACK
 					mWorkingDataInt[i * w + j] = 0;
@@ -537,6 +530,17 @@ public class PaperclickersScanner extends Scanner {
 
 	public PaperclickersScanner(int width, int height, Context context) {
 		super();
+
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+		mUseMorphoOperations = preferences.getBoolean("development_use_morpho", true);
+
+		if (mUseMorphoOperations) {
+			String elementSize = preferences.getString("development_morpho_element_size", String.valueOf(MORPHO_DILATION_STRUCT_SIZE));
+			mMorphoElementSize = Integer.parseInt(elementSize);
+		}
+
+		log.d(TAG, String.format("PaperclickersScanner: %d x %d, morpho: %b, morpho size: %d", width, height, mUseMorphoOperations, mMorphoElementSize));
 
 		this.w = width;
 		this.h = height;
@@ -588,8 +592,8 @@ public class PaperclickersScanner extends Scanner {
 
         mMorphoOperationsScript.set_width(w);
         mMorphoOperationsScript.set_height(h);
-        mMorphoOperationsScript.set_elementSize(MORPHO_DILATION_STRUCT_SIZE);
-        mMorphoOperationsScript.set_halfElementSize(MORPHO_HALF_DILATION_STRUCT_SIZE);
+        mMorphoOperationsScript.set_elementSize(mMorphoElementSize);
+        mMorphoOperationsScript.set_halfElementSize((mMorphoElementSize - 1)/2);
 
         mLaunchOptions = new Script.LaunchOptions();
 
@@ -597,8 +601,8 @@ public class PaperclickersScanner extends Scanner {
             mLaunchOptions.setX(MEDIAN_FILTER_HALF_ELEMENT_SIZE, w - MEDIAN_FILTER_HALF_ELEMENT_SIZE);
             mLaunchOptions.setY(MEDIAN_FILTER_HALF_ELEMENT_SIZE, h - MEDIAN_FILTER_HALF_ELEMENT_SIZE);
         } else {
-            mLaunchOptions.setX(MORPHO_HALF_DILATION_STRUCT_SIZE, w - MORPHO_HALF_DILATION_STRUCT_SIZE);
-            mLaunchOptions.setY(MORPHO_HALF_DILATION_STRUCT_SIZE, h - MORPHO_HALF_DILATION_STRUCT_SIZE);
+            mLaunchOptions.setX((mMorphoElementSize - 1)/2, w - (mMorphoElementSize - 1)/2);
+            mLaunchOptions.setY((mMorphoElementSize - 1)/2, h - (mMorphoElementSize - 1)/2);
         }
 
 
@@ -615,45 +619,45 @@ public class PaperclickersScanner extends Scanner {
 
 
 
-    /**
-     * New scan method to allow directly sending lumma buffer instead of a Bitmap
-     * 
-     * @param image
-     * @param width
-     * @param height
-     * @return
-     */
-	public List<TopCode> scan(int[] image, int width, int height, boolean hasRotated) {
-	    
-		this.w    = width;
-		this.h    = height;
-		this.data = image;
-	
-		
-		if (LOG_EXECUTION_TIMES) {
-			mStartThresholdTime = System.currentTimeMillis();
-		}		
-			
-		threshold(); // run the adaptive threshold filter
-
-		if (LOG_EXECUTION_TIMES) {
-			mEndThresholdTime = System.currentTimeMillis();
-			
-			mStartFindCodesTime = System.currentTimeMillis();
-		}
-		
-		// scan for topcodes
-		List<TopCode> codesFound = findCodes(hasRotated);
-
-		if (LOG_EXECUTION_TIMES) {
-			mEndFindCodesTime = System.currentTimeMillis();
-			
-			log.d(TAG, String.format("Threshold execution time(ms): %d, FindCodes execution time(ms): %d", mEndThresholdTime - mStartThresholdTime, 
-					                 mEndFindCodesTime - mStartFindCodesTime));
-		}
-		
-		return codesFound; 
-	}
+//    /**
+//     * New scan method to allow directly sending lumma buffer instead of a Bitmap
+//     *
+//     * @param image
+//     * @param width
+//     * @param height
+//     * @return
+//     */
+//	public List<TopCode> scan(int[] image, int width, int height, boolean hasRotated) {
+//
+//		this.w    = width;
+//		this.h    = height;
+//		this.data = image;
+//
+//
+//		if (LOG_EXECUTION_TIMES) {
+//			mStartThresholdTime = System.currentTimeMillis();
+//		}
+//
+//		threshold(); // run the adaptive threshold filter
+//
+//		if (LOG_EXECUTION_TIMES) {
+//			mEndThresholdTime = System.currentTimeMillis();
+//
+//			mStartFindCodesTime = System.currentTimeMillis();
+//		}
+//
+//		// scan for topcodes
+//		List<TopCode> codesFound = findCodes(hasRotated);
+//
+//		if (LOG_EXECUTION_TIMES) {
+//			mEndFindCodesTime = System.currentTimeMillis();
+//
+//			log.d(TAG, String.format("Threshold execution time(ms): %d, FindCodes execution time(ms): %d", mEndThresholdTime - mStartThresholdTime,
+//					                 mEndFindCodesTime - mStartFindCodesTime));
+//		}
+//
+//		return codesFound;
+//	}
 	
 	
 	
@@ -701,7 +705,7 @@ public class PaperclickersScanner extends Scanner {
 			adaptiveThreshold(); // run the adaptive threshold filter
 		}
 
-		if (APPLY_MORPHO_OPERATIONS) {
+		if (mUseMorphoOperations) {
 			if (USE_RENDERSCRIPT) {
 				if (LOG_EXECUTION_TIMES) {
 					mEndThresholdTime = System.currentTimeMillis();
@@ -811,7 +815,7 @@ public class PaperclickersScanner extends Scanner {
             
             log.d(TAG, String.format("Threshold execution time(ms): %d", mEndThresholdTime - mStartThresholdTime));
 
-			if (APPLY_MORPHO_OPERATIONS) {
+			if (mUseMorphoOperations) {
 				if (USE_RENDERSCRIPT) {
 					log.d(TAG, String.format("Closing execution time(ms): %d, Opening execution time(ms): %d",
 							mEndClosingTime - mStartClosingTime, mEndOpeningTime - mStartOpeningTime));
@@ -1222,41 +1226,41 @@ public class PaperclickersScanner extends Scanner {
 
 
 
-	/**
-	 * Counts the number of horizontal pixels in direction (d) from (x,y) until a color change is
-	 * perceived.
-	 */
-
-	@Override
-	protected int xdist(int x, int y, int d) {
-		int sample;
-		int start = getBW7x7(x, y);
-
-		for (int i = x + d; i > 1 && i < w - 1; i += d) {
-			sample = getBW7x7(i, y);
-			if (start + sample == 1) {
-				return (d > 0) ? i - x : x - i;
-			}
-		}
-		return -1;
-	}
-
-
-	@Override
-	protected int ydist(int x, int y, int d) {
-		int sample;
-		int start = getBW7x7(x, y);
-
-		for (int j = y + d; j > 1 && j < h - 1; j += d) {
-
-			sample = getBW7x7(x, j);
-
-			// Check if new position has different color than start position
-
-			if (start + sample == 1) {
-				return (d > 0) ? j - y : y - j;
-			}
-		}
-		return -1;
-	}
+//	/**
+//	 * Counts the number of horizontal pixels in direction (d) from (x,y) until a color change is
+//	 * perceived.
+//	 */
+//
+//	@Override
+//	protected int xdist(int x, int y, int d) {
+//		int sample;
+//		int start = getBW7x7(x, y);
+//
+//		for (int i = x + d; i > 1 && i < w - 1; i += d) {
+//			sample = getBW7x7(i, y);
+//			if (start + sample == 1) {
+//				return (d > 0) ? i - x : x - i;
+//			}
+//		}
+//		return -1;
+//	}
+//
+//
+//	@Override
+//	protected int ydist(int x, int y, int d) {
+//		int sample;
+//		int start = getBW7x7(x, y);
+//
+//		for (int j = y + d; j > 1 && j < h - 1; j += d) {
+//
+//			sample = getBW7x7(x, j);
+//
+//			// Check if new position has different color than start position
+//
+//			if (start + sample == 1) {
+//				return (d > 0) ? j - y : y - j;
+//			}
+//		}
+//		return -1;
+//	}
 }

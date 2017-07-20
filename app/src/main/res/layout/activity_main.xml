@@ -27,8 +27,9 @@
 
     <FrameLayout
         android:id="@+id/camera_preview"
+        android:background="@android:color/black"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
     <TextView
         android:id="@+id/txt_hint1"

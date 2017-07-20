@@ -22,6 +22,7 @@
 
 package com.paperclickers.camera;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
@@ -29,7 +30,10 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Surface;
 import android.view.TextureView;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
+import com.paperclickers.R;
 import com.paperclickers.result.AnswersLog;
 
 import java.io.IOException;
@@ -66,7 +70,10 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
 
         super.onCreate(savedInstanceState);
 
+//        mTextureView = (TextureView) findViewById(R.id.media_player_view);
+
         mTextureView = new TextureView(this);
+
         mTextureView.setSurfaceTextureListener(this);
 
         mTextureView.setOnTouchListener(new TouchListener(mTextureView));
@@ -152,12 +159,12 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
 
         log.d(TAG, "===> onSurfaceTextureAvailable");
 
-        mImageWidth  = width;
-        mImageHeight = height;
-
-        mAudienceResponses.setImageSize(mImageWidth, mImageHeight);
-
-        mData = new int[mImageWidth * mImageHeight];
+//        mImageWidth  = width;
+//        mImageHeight = height;
+//
+//        mAudienceResponses.setImageSize(mImageWidth, mImageHeight);
+//
+//        mData = new int[mImageWidth * mImageHeight];
 
         Surface surface = new Surface(surfaceTexture);
 
@@ -172,6 +179,7 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
             mVideoIsPrepared = false;
 
             // Play video when the media source is ready for playback.
+
             mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {
@@ -183,9 +191,29 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
                     } else if (!mActivityPauseIndicated) {
                         mVideoIsPrepared = true;
 
+                        int width  = mMediaPlayer.getVideoWidth();
+                        int height = mMediaPlayer.getVideoHeight();
+
+                        if (width != mImageWidth) {
+
+                            ViewGroup.LayoutParams layoutParams = mTextureView.getLayoutParams();
+
+                            layoutParams.width  = width;
+                            layoutParams.height = height;
+
+                            mTextureView.setLayoutParams(layoutParams);
+
+                            mImageWidth  = width;
+                            mImageHeight = height;
+
+                            mAudienceResponses.setImageSize(mImageWidth, mImageHeight);
+
+                            mData = new int[mImageWidth * mImageHeight];
+                        }
+
                         mediaPlayer.start();
 
-                        setTopCodesFeedbackPreview();
+                        setTopCodesFeedbackPreview(true);
                     }
                 }
             });

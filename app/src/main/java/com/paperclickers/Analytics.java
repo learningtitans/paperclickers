@@ -42,12 +42,16 @@ public class Analytics {
     final static String ANALYTICS_CLEARED_ANSWERS_LOG_EVENT = "pce_cleared_answers_log";
     final static String ANALYTICS_SHARED_ANSWERS_LOG_EVENT  = "pce_shared_answers_log";
 
+    final static String ANALYTICS_PRINTED_CODES_EVENT = "pce_printed_codes";
+
+    final static String ANALYTICS_DISABLED_OVERLAY_EVENT = "pce_disabled_overlay";
+
     final static String ANALYTICS_SCAN_CYCLE_EVENT                = "pce_scan_cycle";
     final static String ANALYTICS_SCAN_CYCLE_ALL_STUDENTS_EVENT   = "pce_scan_cycle_all";
     final static String ANALYTICS_RESCAN_CYCLE_EVENT              = "pce_rescan_cycle";
     final static String ANALYTICS_RESCAN_CYCLE_ALL_STUDENTS_EVENT = "pce_rescan_cycle_all";
 
-    final static String ANALYTICS_ENTERED_ANSWERS_EVENT = "pce_entered_answers";
+    final static String ANALYTICS_CHANGED_ANSWERS_EVENT = "pce_changed_answers";
 
     final static String ANALYTICS_DEBUG_MODE_EVENT = "pce_debug_mode";
 
@@ -124,6 +128,15 @@ public class Analytics {
 
 
 
+    public void send_disabledOverlay() {
+
+        if (mAnalyticsEnabled) {
+            mFirebaseAnalytics.logEvent(ANALYTICS_DISABLED_OVERLAY_EVENT, null);
+        }
+    }
+
+
+
     public void send_enteredAnswers(int answersCount) {
 
         if (mAnalyticsEnabled) {
@@ -131,7 +144,16 @@ public class Analytics {
 
             bundle.putLong(ANALYTICS_ANSWERS_COUNT_PARAM, answersCount);
 
-            mFirebaseAnalytics.logEvent(ANALYTICS_ENTERED_ANSWERS_EVENT, bundle);
+            mFirebaseAnalytics.logEvent(ANALYTICS_CHANGED_ANSWERS_EVENT, bundle);
+        }
+    }
+
+
+
+    public void send_printedCodes() {
+
+        if (mAnalyticsEnabled) {
+            mFirebaseAnalytics.logEvent(ANALYTICS_PRINTED_CODES_EVENT, null);
         }
     }
 

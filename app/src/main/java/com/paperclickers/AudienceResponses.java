@@ -30,6 +30,7 @@ import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.SparseArray;
+import android.widget.Toast;
 
 import com.paperclickers.fiducial.PaperclickersScanner;
 import com.paperclickers.fiducial.TopCode;
@@ -38,6 +39,8 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -55,6 +58,9 @@ public class AudienceResponses {
     public static String RECALL_CODES_INTENT = "com.paperclickers.intent.action.RECALL_CODES";
 
     final static String TAG = "paperclickers.AudienceResponses";
+
+    final static String LAST_IMAGE_FILENAME = "lastImage_";
+    final static String LAST_IMAGE_FILE_EXTENSION = ".pgm";
 
     // Use this constant to enable saving the last analyzed image, right after user requesting to
     // carry on to the Grid View
@@ -81,7 +87,7 @@ public class AudienceResponses {
     final static boolean ONLY_PREVIEW_VALIDATED_CODES = true;
 
 
-    public final static int COMPLETLY_IGNORE_CYCLE = -1;
+    public final static int COMPLETELY_IGNORE_CYCLE = -1;
     public final static int DO_NOT_REDRAW = 0;
     public final static int NEED_TO_REDRAW = 1;
 
@@ -122,7 +128,6 @@ public class AudienceResponses {
         int[] mThresholdData;
         int mWidth;
         int mHeight;
-
 
 
         public SaveLastProcessedFrame(String filename, int[] threshold, int width, int height) {
@@ -186,7 +191,6 @@ public class AudienceResponses {
                 fout.close();
 
                 log.d(TAG, String.format("Total %d (%d) - time: %d", total, width * height, System.currentTimeMillis() - startTime));
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -287,7 +291,7 @@ public class AudienceResponses {
             float currentValidationStep = (float) TopCodeValidator.VALIDATION_THRESHOLD_INCREASE_STEP;
 
             if (SettingsActivity.DEVELOPMENT_OPTIONS) {
-                String validationThresholdStr = mSharedPreferences.getString("validation_threshold", String.valueOf(TopCodeValidator.VALIDATION_THRESHOLD_INCREASE_STEP));
+                String validationThresholdStr = mSharedPreferences.getString("development_validation_threshold", String.valueOf(TopCodeValidator.VALIDATION_THRESHOLD_INCREASE_STEP));
                 currentValidationStep         = (float) Integer.parseInt(validationThresholdStr);
             }
 
@@ -357,14 +361,14 @@ public class AudienceResponses {
             mIgnoreCall = !mIgnoreCall;
 
             if (mIgnoreCall) {
-                return COMPLETLY_IGNORE_CYCLE;
+                return COMPLETELY_IGNORE_CYCLE;
             }
         }
 
         if (mLuma == null) {
             // Still initializing; ignore call...
 
-            return COMPLETLY_IGNORE_CYCLE;
+            return COMPLETELY_IGNORE_CYCLE;
         }
 
         mStartOnPreviewTime = System.currentTimeMillis();
@@ -387,14 +391,14 @@ public class AudienceResponses {
             mIgnoreCall = !mIgnoreCall;
 
             if (mIgnoreCall) {
-                return COMPLETLY_IGNORE_CYCLE;
+                return COMPLETELY_IGNORE_CYCLE;
             }
         }
 
         if (mLuma == null) {
             // Still initializing; ignore call...
 
-            return COMPLETLY_IGNORE_CYCLE;
+            return COMPLETELY_IGNORE_CYCLE;
         }
 
         mStartOnPreviewTime = System.currentTimeMillis();
@@ -606,7 +610,13 @@ public class AudienceResponses {
 
 
     public void saveLastImage() {
-        SaveLastProcessedFrame saveImage = new SaveLastProcessedFrame("lastfile.pgm", mLuma, mImageWidth, mImageHeight);
+
+        //.replaceAll(",\\s*", "_").replaceAll("[:|\\s]", "")
+
+        String filename = LAST_IMAGE_FILENAME + DateFormat.getDateInstance().format(new Date()).replaceAll("\\s", "_").replaceAll(",", "") + "_"
+                + DateFormat.getTimeInstance().format(new Date()).replaceAll(":", ".")+ LAST_IMAGE_FILE_EXTENSION;
+
+        SaveLastProcessedFrame saveImage = new SaveLastProcessedFrame(filename, mLuma, mImageWidth, mImageHeight);
 
         saveImage.execute();
     }

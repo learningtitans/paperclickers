@@ -121,4 +121,10 @@
     <string name="pref_dont_show_help_title">Não apresentar ajuda</string>
     <string name="pref_dont_show_help_summary">Não apresentar camada de instruções</string>
 
+    <string name="pref_use_morpho_title">Usar operações morfológicas</string>
+    <string name="pref_use_morpho_summary">Processar imagem com operações morfológicas</string>
+
+    <string name="pref_title_morpho_element_size">Tamanho do elemento morfológico</string>
+    <string name="pref_default_morpho_element_size">5</string>
+
 </resources>

@@ -197,7 +197,7 @@ public class CameraMain extends CameraAbstraction implements Camera.PreviewCallb
 			mCameraPreview = new CameraPreview(this, mCamera, this);
 			mPreview.addView(mCameraPreview);
 
-			setTopCodesFeedbackPreview();
+			setTopCodesFeedbackPreview(false);
 
 			mCameraPreview.setOnClickListener(new OnClickListener() {
 

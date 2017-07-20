@@ -213,7 +213,7 @@ public class SettingsActivity extends PreferenceActivity {
                     bindPreferenceSummaryToValue(findPreference("development_show_validation"));
 					bindPreferenceSummaryToValue(findPreference("development_allow_answers_changing"));
 					bindPreferenceSummaryToValue(findPreference("development_use_camera_emulation"));
-//					bindPreferenceSummaryToValue(findPreference("development_dont_show_help"));
+					bindPreferenceSummaryToValue(findPreference("development_morpho_element_size"));
                 }
             }
         }
@@ -613,6 +613,8 @@ public class SettingsActivity extends PreferenceActivity {
     		if (savedFileUri != null) {
     			startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.share_topcodes_using)));
     		}
+
+    		mAnalytics.send_printedCodes();
         }
 	}
 	
@@ -1119,8 +1121,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 						if ((studentsNum < 1) || (studentsNum > 99)) {
 
-							Toast.makeText(preference.getContext(), preference.getContext().getResources().getText(R.string.invalid_students_number),
-									Toast.LENGTH_LONG).show();
+							Toast.makeText(preference.getContext(), preference.getContext().getResources().getText(R.string.invalid_students_number), Toast.LENGTH_LONG).show();
 
 							updateResult = false;
 						} else {
@@ -1155,7 +1156,7 @@ public class SettingsActivity extends PreferenceActivity {
                     bindPreferenceSummaryToValue(mDevelopmentFragment.findPreference("development_show_validation"));
 					bindPreferenceSummaryToValue(mDevelopmentFragment.findPreference("development_allow_answers_changing"));
 					bindPreferenceSummaryToValue(mDevelopmentFragment.findPreference("development_use_camera_emulation"));
-//					bindPreferenceSummaryToValue(mDevelopmentFragment.findPreference("development_dont_show_help"));
+					bindPreferenceSummaryToValue(mDevelopmentFragment.findPreference("development_morpho_element_size"));
                 } else if (mDevelopmentActivity != null) {
                     mDevelopmentActivity.addPreferencesFromResource(R.xml.pref_development);
                     
@@ -1163,7 +1164,7 @@ public class SettingsActivity extends PreferenceActivity {
                     bindPreferenceSummaryToValue(mDevelopmentActivity.findPreference("development_show_validation"));
 					bindPreferenceSummaryToValue(mDevelopmentActivity.findPreference("development_allow_answers_changing"));
 					bindPreferenceSummaryToValue(mDevelopmentActivity.findPreference("development_use_camera_emulation"));
-//					bindPreferenceSummaryToValue(mDevelopmentActivity.findPreference("development_dont_show_help"));
+					bindPreferenceSummaryToValue(mDevelopmentActivity.findPreference("development_morpho_element_size"));
                 }
             } else {
                 if (mDevelopmentFragment != null) {
@@ -1171,13 +1172,13 @@ public class SettingsActivity extends PreferenceActivity {
                     mDevelopmentFragment.getPreferenceScreen().removePreference(mDevelopmentFragment.findPreference("development_show_validation"));
 					mDevelopmentFragment.getPreferenceScreen().removePreference(mDevelopmentFragment.findPreference("development_allow_answers_changing"));
 					mDevelopmentFragment.getPreferenceScreen().removePreference(mDevelopmentFragment.findPreference("development_use_camera_emulation"));
-//					mDevelopmentFragment.getPreferenceScreen().removePreference(mDevelopmentFragment.findPreference("development_dont_show_help"));
+					mDevelopmentFragment.getPreferenceScreen().removePreference(mDevelopmentFragment.findPreference("development_morpho_element_size"));
                 } else if (mDevelopmentActivity != null) {
                     mDevelopmentActivity.getPreferenceScreen().removePreference(mDevelopmentActivity.findPreference("development_validation_threshold"));
                     mDevelopmentActivity.getPreferenceScreen().removePreference(mDevelopmentActivity.findPreference("development_show_validation"));
 					mDevelopmentActivity.getPreferenceScreen().removePreference(mDevelopmentActivity.findPreference("development_allow_answers_changing"));
 					mDevelopmentActivity.getPreferenceScreen().removePreference(mDevelopmentActivity.findPreference("development_use_camera_emulation"));
-//					mDevelopmentActivity.getPreferenceScreen().removePreference(mDevelopmentActivity.findPreference("development_dont_show_help"));
+					mDevelopmentActivity.getPreferenceScreen().removePreference(mDevelopmentActivity.findPreference("development_morpho_element_size"));
 				}
             }	    
 	    }
@@ -1252,7 +1253,7 @@ public class SettingsActivity extends PreferenceActivity {
                 bindPreferenceSummaryToValue(findPreference("development_show_validation"));
 				bindPreferenceSummaryToValue(findPreference("development_allow_answers_changing"));
 				bindPreferenceSummaryToValue(findPreference("development_use_camera_emulation"));
-//				bindPreferenceSummaryToValue(findPreference("development_dont_show_help"));
+				bindPreferenceSummaryToValue(findPreference("development_morpho_element_size"));
 		    }
 		}
 	}
