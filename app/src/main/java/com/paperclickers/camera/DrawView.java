@@ -50,6 +50,13 @@ public class DrawView extends SurfaceView {
 	// Use this constant to enable drawing the topcodes validation countdown during camera scan
 	// Enabling this disables the CameraMain.ONLY_PREVIEW_VALIDATED_CODES feature
 	final static boolean DRAW_VALIDATION_COUNTDOWN = true;
+
+	final static float REDUCED_STROKE_USAGE_DIAMETER_LIMIT = 15.0f;
+	final static float VERY_REDUCED_STROKE = 3.0f;
+
+	final static int NORMAL_TEXT_SIZE  = 40;
+	final static int REDUCED_TEXT_SIZE = 20;
+	final static int VERY_REDUCED_TEXT_SIZE = 10;
 	
 	private SparseArray<TopCodeValidator> mValidatorsList;
 	
@@ -58,21 +65,27 @@ public class DrawView extends SurfaceView {
 	
 	private List<TopCode> mValidTopcodesList;
 	
-	private float strokeWidth;
-	
 	private Paint mPaintA;
 	private Paint mPaintB;
 	private Paint mPaintC;
 	private Paint mPaintD;
 
-	private Float mTextStrokeWidth;
+	private float mStrokeWidth;
+	private float mTextStrokeWidth;
 
 	private boolean mShowingValidation;
 
 	
 	
 	private void drawRectangle(Canvas whichCanvas, float x, float y, float halfWidth, float halfHeight, boolean rounded, Paint whichPaint) {
-        
+
+		if (halfHeight <= REDUCED_STROKE_USAGE_DIAMETER_LIMIT) {
+			whichPaint.setStrokeWidth(VERY_REDUCED_STROKE);
+		} else {
+			whichPaint.setStrokeWidth(mStrokeWidth);
+		}
+
+
         RectF corners = new RectF(x - halfWidth,  y - halfHeight, x + halfWidth, y + halfHeight);
         
         if (rounded) {  
@@ -87,10 +100,20 @@ public class DrawView extends SurfaceView {
 	
 	
 	private void drawTriangle(Canvas whichCanvas, float x, float y, float radius, Paint whichPaint) {
-			
-		whichCanvas.drawLine(x - radius - strokeWidth / 2, y + radius, x + radius + strokeWidth / 2, y + radius, whichPaint);
-		whichCanvas.drawLine(x - radius, y + radius, x + strokeWidth / 8, y - radius, whichPaint);
-		whichCanvas.drawLine(x + radius, y + radius, x - strokeWidth / 8, y - radius, whichPaint);		
+
+		float whichStroke = mStrokeWidth;
+
+		if (radius <= REDUCED_STROKE_USAGE_DIAMETER_LIMIT) {
+			whichStroke = VERY_REDUCED_STROKE;
+
+			whichPaint.setStrokeWidth(VERY_REDUCED_STROKE);
+		} else {
+			whichPaint.setStrokeWidth(mStrokeWidth);
+		}
+
+		whichCanvas.drawLine(x - radius - whichStroke / 2, y + radius, x + radius + whichStroke / 2, y + radius, whichPaint);
+		whichCanvas.drawLine(x - radius, y + radius, x + whichStroke / 8, y - radius, whichPaint);
+		whichCanvas.drawLine(x + radius, y + radius, x - whichStroke / 8, y - radius, whichPaint);
 	}
 	
 	
@@ -130,19 +153,19 @@ public class DrawView extends SurfaceView {
 		DisplayMetrics display = getResources().getDisplayMetrics();
 
 		if (display.densityDpi > DisplayMetrics.DENSITY_XHIGH) {
-			strokeWidth = 10.0f;
+			mStrokeWidth = 10.0f;
 			mTextStrokeWidth = 5.0f;
 		} else if (display.densityDpi > DisplayMetrics.DENSITY_HIGH) {
-			strokeWidth = 3.5f;
+			mStrokeWidth = 3.5f;
 			mTextStrokeWidth = 3.5f;
 		} else {
-			strokeWidth = 2.0f;
+			mStrokeWidth = 2.0f;
 			mTextStrokeWidth = 1.0f;
 		}
 
-		log.d(TAG, "StrokeWidth: " + strokeWidth);
+		log.d(TAG, "StrokeWidth: " + mStrokeWidth);
 
-		mPaintA.setStrokeWidth(strokeWidth);			
+		mPaintA.setStrokeWidth(mStrokeWidth);
 
 		
 		mPaintA.setAntiAlias(true);
@@ -226,6 +249,13 @@ public class DrawView extends SurfaceView {
 		            	break;
 		            	
 		            case PaperclickersScanner.ID_ANSWER_C:
+
+		            	if (codeDiameter <= REDUCED_STROKE_USAGE_DIAMETER_LIMIT) {
+							mPaintC.setStrokeWidth(VERY_REDUCED_STROKE);
+						} else {
+							mPaintC.setStrokeWidth(mStrokeWidth);
+						}
+
 		            	canvas.drawCircle(codeX, codeY, codeDiameter, mPaintC);
 		            	
                         textPaint = new Paint(mPaintC);
@@ -252,17 +282,21 @@ public class DrawView extends SurfaceView {
 		                    answerCountdown = String.valueOf(TopCodeValidator.getCurrentValidationThrehshold() - whichValidator.getAnswerValidationCounter(bestAnswer));
 		                }
 		                    
-		                textPaint.setTextSize(40);
+		                textPaint.setTextSize(NORMAL_TEXT_SIZE);
 		                textPaint.setTextAlign(Align.CENTER);
 
-						textPaint.setStrokeWidth(mTextStrokeWidth);
+						if (textPaint.getStrokeWidth() == VERY_REDUCED_STROKE) {
+							textPaint.setTextSize(VERY_REDUCED_TEXT_SIZE);
+						} else {
+							textPaint.setStrokeWidth(mTextStrokeWidth);
+
+							if (textBounds.height() > codeDiameter) {
+								textPaint.setTextSize(REDUCED_TEXT_SIZE);
+							}
+						}
 
 		                textPaint.getTextBounds(answerCountdown, 0, 1, textBounds);
 
-		                if (textBounds.height() > codeDiameter) {
-		                    textPaint.setTextSize(20);
-		                }
-		                
 		                canvas.drawText(answerCountdown, codeX, codeY + codeDiameter / 3, textPaint);
 		            }
 				}
