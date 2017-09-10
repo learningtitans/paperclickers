@@ -269,8 +269,13 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        
-        mDebugOptionsActivationTapCounter  = 0;
+
+		// Reset previously opened log entry: it can be returning from completed detection before this activity has died.
+
+		AnswersLog.resetOpenLogEntry();
+
+
+		mDebugOptionsActivationTapCounter  = 0;
         mDebugOptionsActivationLastTapTime = 0;
 
 		checkAndTurnOnOverlayTimer();
