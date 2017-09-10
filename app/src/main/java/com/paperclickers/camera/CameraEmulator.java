@@ -22,7 +22,6 @@
 
 package com.paperclickers.camera;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
@@ -31,9 +30,7 @@ import android.os.Bundle;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
-import com.paperclickers.R;
 import com.paperclickers.result.AnswersLog;
 
 import java.io.IOException;
@@ -69,8 +66,6 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
-//        mTextureView = (TextureView) findViewById(R.id.media_player_view);
 
         mTextureView = new TextureView(this);
 
@@ -158,13 +153,6 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
     public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
 
         log.d(TAG, "===> onSurfaceTextureAvailable");
-
-//        mImageWidth  = width;
-//        mImageHeight = height;
-//
-//        mAudienceResponses.setImageSize(mImageWidth, mImageHeight);
-//
-//        mData = new int[mImageWidth * mImageHeight];
 
         Surface surface = new Surface(surfaceTexture);
 

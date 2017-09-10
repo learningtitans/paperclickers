@@ -36,7 +36,6 @@ import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.Script;
 import android.renderscript.Type;
-//import android.renderscript.Script.LaunchOptions;
 
 
 
@@ -64,15 +63,11 @@ public class PaperclickersScanner extends Scanner {
 
 	public static final boolean USE_RENDERSCRIPT = true;
 
-	public static final boolean APPLY_OPENING = true;
-
 	public static final boolean APPLY_MEDIAN_FILTER = false;
 
 
 
 	public static final float INVALID_TOPCODE_ORIENTATION = Float.NaN;
-	
-	public static final float SAME_ANSWER_THRESHOLD = 1.0f;
 	
 	public static final float ANSWER_A_VALID_ORIENTATION = 0;
 	public static final float ANSWER_D_VALID_ORIENTATION = (float) (Math.PI / 2.0f);
@@ -344,26 +339,6 @@ public class PaperclickersScanner extends Scanner {
 	}
 
 
-	/**
-	 * Average of thresholded pixels in a 7x7 region around (x,y). Returned
-	 * value is either 0 (black) or 1 (white).
-	 */
-	protected int getBW7x7(int x, int y) {
-		if (x < 3 || x > w - 4 || y < 3 || y >= h - 4)
-			return 0;
-
-		int pixel, sum = 0;
-
-		for (int j = y - 3; j <= y + 3; j++) {
-			for (int i = x - 3; i <= x + 3; i++) {
-				pixel = data[j * w + i];
-				sum += ((pixel >> 24) & 0x01);
-			}
-		}
-		return (sum >= 24) ? 1 : 0;
-	}
-
-
 
 	public int getCandidatesCount() {
 		return ccount;
@@ -617,48 +592,6 @@ public class PaperclickersScanner extends Scanner {
         mTmpData    = Allocation.createTyped(mRs, array2D);
     }
 
-
-
-//    /**
-//     * New scan method to allow directly sending lumma buffer instead of a Bitmap
-//     *
-//     * @param image
-//     * @param width
-//     * @param height
-//     * @return
-//     */
-//	public List<TopCode> scan(int[] image, int width, int height, boolean hasRotated) {
-//
-//		this.w    = width;
-//		this.h    = height;
-//		this.data = image;
-//
-//
-//		if (LOG_EXECUTION_TIMES) {
-//			mStartThresholdTime = System.currentTimeMillis();
-//		}
-//
-//		threshold(); // run the adaptive threshold filter
-//
-//		if (LOG_EXECUTION_TIMES) {
-//			mEndThresholdTime = System.currentTimeMillis();
-//
-//			mStartFindCodesTime = System.currentTimeMillis();
-//		}
-//
-//		// scan for topcodes
-//		List<TopCode> codesFound = findCodes(hasRotated);
-//
-//		if (LOG_EXECUTION_TIMES) {
-//			mEndFindCodesTime = System.currentTimeMillis();
-//
-//			log.d(TAG, String.format("Threshold execution time(ms): %d, FindCodes execution time(ms): %d", mEndThresholdTime - mStartThresholdTime,
-//					                 mEndFindCodesTime - mStartFindCodesTime));
-//		}
-//
-//		return codesFound;
-//	}
-	
 	
 	
     public List<TopCode> scanProcessing(int[] image, boolean hasRotated) {
@@ -667,7 +600,7 @@ public class PaperclickersScanner extends Scanner {
 		this.ccount = 0;
 
 
-		log.d(TAG, String.format("++++> START SCAN", ccount));
+		//log.d(TAG, String.format("++++> START SCAN", ccount));
 
 
         if (USE_RENDERSCRIPT) {
@@ -747,33 +680,26 @@ public class PaperclickersScanner extends Scanner {
 				System.arraycopy(mWorkingDataInt, 0, data, 0, mWorkingDataInt.length);
 
 				if (LOG_EXECUTION_TIMES) {
-					mEndErosionTime = System.currentTimeMillis();
-
-					if (APPLY_OPENING) {
-						mStartErosion2Time = System.currentTimeMillis();
-					} else {
-						mStartHorizontalScanTime = System.currentTimeMillis();
-					}
+					mEndErosionTime    = System.currentTimeMillis();
+					mStartErosion2Time = System.currentTimeMillis();
 				}
 
-				if (APPLY_OPENING) {
-					morphoErosion();
+				morphoErosion();
 
-					System.arraycopy(mWorkingDataInt, 0, data, 0, mWorkingDataInt.length);
+				System.arraycopy(mWorkingDataInt, 0, data, 0, mWorkingDataInt.length);
 
-					if (LOG_EXECUTION_TIMES) {
-						mEndErosion2Time    = System.currentTimeMillis();
-						mStartDilation2Time = System.currentTimeMillis();
-					}
+				if (LOG_EXECUTION_TIMES) {
+					mEndErosion2Time    = System.currentTimeMillis();
+					mStartDilation2Time = System.currentTimeMillis();
+				}
 
-					morphoDilation();
+				morphoDilation();
 
-					System.arraycopy(mWorkingDataInt, 0, data, 0, mWorkingDataInt.length);
+				System.arraycopy(mWorkingDataInt, 0, data, 0, mWorkingDataInt.length);
 
-					if (LOG_EXECUTION_TIMES) {
-						mEndDilation2Time        = System.currentTimeMillis();
-						mStartHorizontalScanTime = System.currentTimeMillis();
-					}
+				if (LOG_EXECUTION_TIMES) {
+					mEndDilation2Time        = System.currentTimeMillis();
+					mStartHorizontalScanTime = System.currentTimeMillis();
 				}
 			}
 		} else {
@@ -823,10 +749,8 @@ public class PaperclickersScanner extends Scanner {
 					log.d(TAG, String.format("Closing Dilation execution time(ms): %d, Closing Erosion execution time(ms): %d",
 							mEndDilationTime - mStartDilationTime, mEndErosionTime - mStartErosionTime));
 
-					if (APPLY_OPENING) {
-						log.d(TAG, String.format("Opening Dilation execution time(ms): %d, Opening Erosion execution time(ms): %d",
-								mEndDilation2Time - mStartDilation2Time, mEndErosion2Time - mStartErosion2Time));
-					}
+					log.d(TAG, String.format("Opening Dilation execution time(ms): %d, Opening Erosion execution time(ms): %d",
+							mEndDilation2Time - mStartDilation2Time, mEndErosion2Time - mStartErosion2Time));
 				}
 			}
 
@@ -1223,44 +1147,4 @@ public class PaperclickersScanner extends Scanner {
 	    
 	    return answerIDToString[PaperclickersScanner.translateOrientationToID(orientation)];
 	}
-
-
-
-//	/**
-//	 * Counts the number of horizontal pixels in direction (d) from (x,y) until a color change is
-//	 * perceived.
-//	 */
-//
-//	@Override
-//	protected int xdist(int x, int y, int d) {
-//		int sample;
-//		int start = getBW7x7(x, y);
-//
-//		for (int i = x + d; i > 1 && i < w - 1; i += d) {
-//			sample = getBW7x7(i, y);
-//			if (start + sample == 1) {
-//				return (d > 0) ? i - x : x - i;
-//			}
-//		}
-//		return -1;
-//	}
-//
-//
-//	@Override
-//	protected int ydist(int x, int y, int d) {
-//		int sample;
-//		int start = getBW7x7(x, y);
-//
-//		for (int j = y + d; j > 1 && j < h - 1; j += d) {
-//
-//			sample = getBW7x7(x, j);
-//
-//			// Check if new position has different color than start position
-//
-//			if (start + sample == 1) {
-//				return (d > 0) ? j - y : y - j;
-//			}
-//		}
-//		return -1;
-//	}
 }
