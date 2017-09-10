@@ -4,8 +4,7 @@
 
 static uint32_t const PIXEL_COLOR_MASK = 0x01000000;
 
-static uint32_t const MEDIAN_FILTER_ELEMENT_SIZE = 7;
-static uint32_t const MEDIAN_FILTER_HALF_ELEMENT_SIZE = (MEDIAN_FILTER_ELEMENT_SIZE - 1) / 2;
+static uint32_t const MEDIAN_FILTER_MAX_ELEMENT_SIZE = 7;
 
 uint32_t width;
 uint32_t height;
@@ -226,14 +225,14 @@ uint RS_KERNEL median(uint in, uint32_t x, uint32_t y) {
 
     bool hasHit = false;
 
-    int32_t startHeight = y - MEDIAN_FILTER_HALF_ELEMENT_SIZE;
-    int32_t startWidth  = x - MEDIAN_FILTER_HALF_ELEMENT_SIZE;
+    int32_t startHeight = y - halfElementSize;
+    int32_t startWidth  = x - halfElementSize;
 
-    int32_t totalHeight = MEDIAN_FILTER_ELEMENT_SIZE;
-    int32_t totalWidth  = MEDIAN_FILTER_ELEMENT_SIZE;
+    int32_t totalHeight = elementSize;
+    int32_t totalWidth  = elementSize;
 
     uint element;
-    uint pixels[MEDIAN_FILTER_ELEMENT_SIZE * MEDIAN_FILTER_ELEMENT_SIZE];
+    uint pixels[MEDIAN_FILTER_MAX_ELEMENT_SIZE * MEDIAN_FILTER_MAX_ELEMENT_SIZE];
     uint out;
 
     uchar pixelsCount = 0;
@@ -246,9 +245,9 @@ uint RS_KERNEL median(uint in, uint32_t x, uint32_t y) {
         }
     }
 
-    quickSort(pixels, MEDIAN_FILTER_ELEMENT_SIZE * MEDIAN_FILTER_ELEMENT_SIZE, 0, (MEDIAN_FILTER_ELEMENT_SIZE * MEDIAN_FILTER_ELEMENT_SIZE) - 1);
+    quickSort(pixels, elementSize * elementSize, 0, (elementSize * elementSize) - 1);
 
-    out = pixels[(MEDIAN_FILTER_ELEMENT_SIZE * MEDIAN_FILTER_ELEMENT_SIZE - 1) / 2];
+    out = pixels[(elementSize * elementSize - 1) / 2];
 
     return out;
 }

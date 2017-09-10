@@ -63,6 +63,9 @@ public class PaperclickersScanner extends Scanner {
 
 	public static final boolean USE_RENDERSCRIPT = true;
 
+	// The median filter has been implemented as an option for dealing with corrupted TopCodes; however, morphological
+	// operations ended up with better performance.
+
 	public static final boolean APPLY_MEDIAN_FILTER = false;
 
 
@@ -105,7 +108,9 @@ public class PaperclickersScanner extends Scanner {
 	public static final int MORPHO_HALF_DILATION_STRUCT_SIZE = (MORPHO_DILATION_STRUCT_SIZE - 1) / 2;
 	public static final int MORPHO_HALF_EROSION_STRUCT_SIZE  = (MORPHO_EROSION_STRUCT_SIZE - 1) / 2;
 
-	public static final int MEDIAN_FILTER_ELEMENT_SIZE = 7;
+	// Median filter size can be up to 7 - there is a constant defined in renderscript code.
+
+	public static final int MEDIAN_FILTER_ELEMENT_SIZE = 5;
 	public static final int MEDIAN_FILTER_HALF_ELEMENT_SIZE = (MEDIAN_FILTER_ELEMENT_SIZE - 1) / 2;
 
 	public static final int PIXEL_COLOR_MASK = 0x01000000;
@@ -567,15 +572,19 @@ public class PaperclickersScanner extends Scanner {
 
         mMorphoOperationsScript.set_width(w);
         mMorphoOperationsScript.set_height(h);
-        mMorphoOperationsScript.set_elementSize(mMorphoElementSize);
-        mMorphoOperationsScript.set_halfElementSize((mMorphoElementSize - 1)/2);
 
         mLaunchOptions = new Script.LaunchOptions();
 
         if (APPLY_MEDIAN_FILTER) {
+			mMorphoOperationsScript.set_elementSize(MEDIAN_FILTER_ELEMENT_SIZE);
+			mMorphoOperationsScript.set_halfElementSize(MEDIAN_FILTER_HALF_ELEMENT_SIZE);
+
             mLaunchOptions.setX(MEDIAN_FILTER_HALF_ELEMENT_SIZE, w - MEDIAN_FILTER_HALF_ELEMENT_SIZE);
             mLaunchOptions.setY(MEDIAN_FILTER_HALF_ELEMENT_SIZE, h - MEDIAN_FILTER_HALF_ELEMENT_SIZE);
         } else {
+			mMorphoOperationsScript.set_elementSize(mMorphoElementSize);
+			mMorphoOperationsScript.set_halfElementSize((mMorphoElementSize - 1)/2);
+
             mLaunchOptions.setX((mMorphoElementSize - 1)/2, w - (mMorphoElementSize - 1)/2);
             mLaunchOptions.setY((mMorphoElementSize - 1)/2, h - (mMorphoElementSize - 1)/2);
         }
