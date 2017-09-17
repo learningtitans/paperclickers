@@ -503,7 +503,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         }
 
         if (mUserRequestedEnd) {
-            if (AudienceResponses.SAVE_LAST_IMAGE || SettingsActivity.isDevelopmentMode()) {
+            if (mSharedPreferences.getBoolean("development_save_last_image", false)) {
                 mAudienceResponses.saveLastImage();
             }
 

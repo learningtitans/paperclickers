@@ -31,6 +31,12 @@
 			android:defaultValue="false"/>
 
 		<CheckBoxPreference
+			android:key="development_save_last_image"
+			android:title="@string/pref_save_last_image_title"
+			android:summary="@string/pref_save_last_image_summary"
+			android:defaultValue="false"/>
+
+		<CheckBoxPreference
 			android:key="development_use_camera_emulation"
 			android:title="@string/pref_use_camera_emulation_title"
 			android:summary="@string/pref_use_camera_emulation_summary"

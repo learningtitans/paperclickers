@@ -68,17 +68,26 @@
     <string name="pref_title_validation_threshold">Limite de validação</string>
     <string name="pref_default_validation_threshold">32</string>
 
+
     <string name="pref_show_topcodes_validation_title">Mostrar validação dos TopCodes</string>
     <string name="pref_show_topcodes_validation_summary">Incluir indicação AR para processo de validação dos TopCodes</string>
+
 
     <string name="pref_allow_answers_changing_title">Permitir alteração de respostas</string>
     <string name="pref_allow_answers_changing_summary">Permitir que o usuário altere respostas na lista de resultados</string>
 
+
+    <string name="pref_save_last_image_title">Gravar última imagem</string>
+    <string name="pref_save_last_image_summary">Gravar última imagem capturada na tela de detecção de TopCodes</string>
+
+
     <string name="pref_use_camera_emulation_title">Usar emulação da câmera a partir de arquivo</string>
     <string name="pref_use_camera_emulation_summary">Obter sequência de imagens do arquivo testVideo.mp4</string>
 
+
     <string name="pref_force_max_emulation_size_title">Limitar dimensão máxima</string>
     <string name="pref_force_max_emulation_size_summary">Forçar dimensão máxima da emulação em 1280x720</string>
+
 
     <string name="development_mode_on">Modo desenvolvimento LIGADO</string>
     <string name="development_mode_off">Modo desenvolvimento DESLIGADO</string>

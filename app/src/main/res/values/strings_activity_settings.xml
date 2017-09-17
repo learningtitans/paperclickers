@@ -76,11 +76,18 @@
     <string name="pref_show_topcodes_validation_title">Show TopCodes validation process</string>
     <string name="pref_show_topcodes_validation_summary">Include AR indication of TopCodes validation process</string>
 
+
     <string name="pref_allow_answers_changing_title">Allow answers changing</string>
     <string name="pref_allow_answers_changing_summary">Allow user changing the answers in grid view</string>
 
+
+    <string name="pref_save_last_image_title">Save last image</string>
+    <string name="pref_save_last_image_summary">Save last image from TopCodes detection screen</string>
+
+
     <string name="pref_use_camera_emulation_title">Use camera emulation from file</string>
     <string name="pref_use_camera_emulation_summary">Get images stream from testVideo.mp4 file</string>
+
 
     <string name="pref_force_max_emulation_size_title">Limit emulation max size</string>
     <string name="pref_force_max_emulation_size_summary">Force the emulation max size to 1280x720</string>
