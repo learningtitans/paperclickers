@@ -78,8 +78,8 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
     protected Vibrator mVibrator;
     protected long mTouchStart = -1;
 
-    protected int mImageWidth;
-    protected int mImageHeight;
+    protected int mImageWidth  = 0;
+    protected int mImageHeight = 0;
 
     protected boolean mUserRequestedEnd = false;
 
@@ -110,6 +110,8 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
     AudienceResponses mAudienceResponses = null;
 
     Analytics mAnalytics = null;
+
+    SharedPreferences mSharedPreferences = null;
 
 
     protected class TouchListener implements View.OnTouchListener {
@@ -264,6 +266,8 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         mTerminating = true;
     }
 
+
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
 
@@ -271,7 +275,6 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
         log.d(TAG, "onConfigurationChanged");
     }
-
 
 
 
@@ -329,6 +332,8 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         mUserRequestedEnd = false;
 
         mAnalytics = new Analytics(getApplicationContext());
+
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
 
@@ -425,9 +430,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
         if (SettingsActivity.DEVELOPMENT_OPTIONS) {
             if (SettingsActivity.isDevelopmentMode()) {
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-                String showValidation = prefs.getString("development_show_validation", "1");
+                String showValidation = mSharedPreferences.getString("development_show_validation", "1");
 
                 mShowingValidation = showValidation.equals("1");
             } else {
@@ -516,6 +519,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
         mPreview.removeView(mDraw);
     }
+
 
 
     protected void setTopCodesFeedbackPreview(boolean forceSize) {

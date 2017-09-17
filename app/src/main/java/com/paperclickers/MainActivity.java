@@ -293,9 +293,7 @@ public class MainActivity extends Activity {
 		mUseRegularCamera = true;
 
 		if (SettingsActivity.isDevelopmentMode()) {
-			String useCameraEmulationStr = mSharedPreferences.getString("development_use_camera_emulation", "0");
-
-			mUseRegularCamera = useCameraEmulationStr.equals("0");
+			mUseRegularCamera = !mSharedPreferences.getBoolean("development_use_camera_emulation", false);
 		}
 	}
 }

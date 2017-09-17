@@ -96,17 +96,11 @@
         <item >1</item>
     </string-array>
 
+    <string name="pref_use_camera_emulation_title">Use camera emulation from file</string>
+    <string name="pref_use_camera_emulation_summary">Get images stream from testVideo.mp4 file</string>
 
-    <string name="pref_title_use_camera_emulation">Use camera emulation from file</string>
-    <string-array name="pref_use_camera_emulation_titles">
-        <item >No</item>
-        <item >Yes</item>
-    </string-array>
-
-    <string-array name="pref_use_camera_emulation_values">
-        <item >0</item>
-        <item >1</item>
-    </string-array>
+    <string name="pref_force_max_emulation_size_title">Limit emulation max size</string>
+    <string name="pref_force_max_emulation_size_summary">Force the emulation max size to 1280x720</string>
 
 
     <string name="development_mode_on">Development mode ON</string>

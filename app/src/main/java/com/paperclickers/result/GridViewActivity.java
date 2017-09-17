@@ -238,9 +238,7 @@ public class GridViewActivity extends Activity {
 			boolean useRegularCamera = true;
 
 			if (SettingsActivity.isDevelopmentMode()) {
-				String useCameraEmulationStr = mPreferenceManager.getString("development_use_camera_emulation", "0");
-
-				useRegularCamera = useCameraEmulationStr.equals("0");
+				useRegularCamera = !mPreferenceManager.getBoolean("development_use_camera_emulation", false);
 			}
 
 			if (useRegularCamera) {

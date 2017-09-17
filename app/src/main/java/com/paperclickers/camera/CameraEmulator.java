@@ -50,6 +50,9 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
     final static String TAG = "paperclickers.CameraEmulator";
     final static String TEST_VIDEO_FILENAME = "testVideo.mp4";
 
+    final static int MAX_IMAGE_WIDTH  = 1280;
+    final static int MAX_IMAGE_HEIGHT = 720;
+
 
     MediaPlayer mMediaPlayer = null;
     TextureView mTextureView = null;
@@ -183,6 +186,11 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
                         int height = mMediaPlayer.getVideoHeight();
 
                         if (width != mImageWidth) {
+
+                            if (mSharedPreferences.getBoolean("development_force_max_emulation_size", true)) {
+                                width  = 1280;
+                                height = 720;
+                            }
 
                             ViewGroup.LayoutParams layoutParams = mTextureView.getLayoutParams();
 

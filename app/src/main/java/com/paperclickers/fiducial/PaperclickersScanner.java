@@ -37,6 +37,7 @@ import android.renderscript.Element;
 import android.renderscript.Script;
 import android.renderscript.Type;
 
+import static java.lang.Math.min;
 
 
 /**
@@ -511,6 +512,8 @@ public class PaperclickersScanner extends Scanner {
 	public PaperclickersScanner(int width, int height, Context context) {
 		super();
 
+		this.maxu = min(width / TopCode.WIDTH, height / TopCode.WIDTH);
+
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
 		mUseMorphoOperations = preferences.getBoolean("development_use_morpho", true);
@@ -520,7 +523,7 @@ public class PaperclickersScanner extends Scanner {
 			mMorphoElementSize = Integer.parseInt(elementSize);
 		}
 
-		log.d(TAG, String.format("PaperclickersScanner: %d x %d, morpho: %b, morpho size: %d", width, height, mUseMorphoOperations, mMorphoElementSize));
+		log.d(TAG, String.format("PaperclickersScanner: %d x %d, morpho: %b, morpho size: %d, maxu: %d", width, height, mUseMorphoOperations, mMorphoElementSize, maxu));
 
 		this.w = width;
 		this.h = height;
