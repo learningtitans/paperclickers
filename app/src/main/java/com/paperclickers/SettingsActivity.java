@@ -210,8 +210,6 @@ public class SettingsActivity extends PreferenceActivity {
                     addPreferencesFromResource(R.xml.pref_development);
                     
                     bindPreferenceSummaryToValue(findPreference("development_validation_threshold"));
-                    bindPreferenceSummaryToValue(findPreference("development_show_validation"));
-					bindPreferenceSummaryToValue(findPreference("development_allow_answers_changing"));
 					bindPreferenceSummaryToValue(findPreference("development_morpho_element_size"));
                 }
             }
@@ -1152,27 +1150,19 @@ public class SettingsActivity extends PreferenceActivity {
                     mDevelopmentFragment.addPreferencesFromResource(R.xml.pref_development);
                     
                     bindPreferenceSummaryToValue(mDevelopmentFragment.findPreference("development_validation_threshold"));
-                    bindPreferenceSummaryToValue(mDevelopmentFragment.findPreference("development_show_validation"));
-					bindPreferenceSummaryToValue(mDevelopmentFragment.findPreference("development_allow_answers_changing"));
 					bindPreferenceSummaryToValue(mDevelopmentFragment.findPreference("development_morpho_element_size"));
                 } else if (mDevelopmentActivity != null) {
                     mDevelopmentActivity.addPreferencesFromResource(R.xml.pref_development);
                     
                     bindPreferenceSummaryToValue(mDevelopmentActivity.findPreference("development_validation_threshold"));
-                    bindPreferenceSummaryToValue(mDevelopmentActivity.findPreference("development_show_validation"));
-					bindPreferenceSummaryToValue(mDevelopmentActivity.findPreference("development_allow_answers_changing"));
 					bindPreferenceSummaryToValue(mDevelopmentActivity.findPreference("development_morpho_element_size"));
                 }
             } else {
                 if (mDevelopmentFragment != null) {
                     mDevelopmentFragment.getPreferenceScreen().removePreference(mDevelopmentFragment.findPreference("development_validation_threshold"));
-                    mDevelopmentFragment.getPreferenceScreen().removePreference(mDevelopmentFragment.findPreference("development_show_validation"));
-					mDevelopmentFragment.getPreferenceScreen().removePreference(mDevelopmentFragment.findPreference("development_allow_answers_changing"));
 					mDevelopmentFragment.getPreferenceScreen().removePreference(mDevelopmentFragment.findPreference("development_morpho_element_size"));
                 } else if (mDevelopmentActivity != null) {
                     mDevelopmentActivity.getPreferenceScreen().removePreference(mDevelopmentActivity.findPreference("development_validation_threshold"));
-                    mDevelopmentActivity.getPreferenceScreen().removePreference(mDevelopmentActivity.findPreference("development_show_validation"));
-					mDevelopmentActivity.getPreferenceScreen().removePreference(mDevelopmentActivity.findPreference("development_allow_answers_changing"));
 					mDevelopmentActivity.getPreferenceScreen().removePreference(mDevelopmentActivity.findPreference("development_morpho_element_size"));
 				}
             }	    
@@ -1245,8 +1235,6 @@ public class SettingsActivity extends PreferenceActivity {
                 addPreferencesFromResource(R.xml.pref_development);
                 
                 bindPreferenceSummaryToValue(findPreference("development_validation_threshold"));
-                bindPreferenceSummaryToValue(findPreference("development_show_validation"));
-				bindPreferenceSummaryToValue(findPreference("development_allow_answers_changing"));
 				bindPreferenceSummaryToValue(findPreference("development_morpho_element_size"));
 		    }
 		}

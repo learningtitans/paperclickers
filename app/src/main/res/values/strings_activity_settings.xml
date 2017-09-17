@@ -73,28 +73,11 @@
     <string name="pref_default_validation_threshold">32</string>
 
 
-    <string name="pref_title_show_topcodes_validation">Show TopCodes validation process</string>
-    <string-array name="pref_show_topcodes_validation_titles">
-        <item >No</item>
-        <item >Yes</item>
-    </string-array>
+    <string name="pref_show_topcodes_validation_title">Show TopCodes validation process</string>
+    <string name="pref_show_topcodes_validation_summary">Include AR indication of TopCodes validation process</string>
 
-    <string-array name="pref_show_topcodes_validation_values">
-        <item >0</item>
-        <item >1</item>
-    </string-array>
-
-
-    <string name="pref_title_allow_answers_changing">Allow answers changing</string>
-    <string-array name="pref_allow_answers_changing_titles">
-        <item >No</item>
-        <item >Yes</item>
-    </string-array>
-
-    <string-array name="pref_allow_answers_changing_values">
-        <item >0</item>
-        <item >1</item>
-    </string-array>
+    <string name="pref_allow_answers_changing_title">Allow answers changing</string>
+    <string name="pref_allow_answers_changing_summary">Allow user changing the answers in grid view</string>
 
     <string name="pref_use_camera_emulation_title">Use camera emulation from file</string>
     <string name="pref_use_camera_emulation_summary">Get images stream from testVideo.mp4 file</string>

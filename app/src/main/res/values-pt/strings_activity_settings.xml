@@ -68,28 +68,11 @@
     <string name="pref_title_validation_threshold">Limite de validação</string>
     <string name="pref_default_validation_threshold">32</string>
 
+    <string name="pref_show_topcodes_validation_title">Mostrar validação dos TopCodes</string>
+    <string name="pref_show_topcodes_validation_summary">Incluir indicação AR para processo de validação dos TopCodes</string>
 
-    <string name="pref_title_show_topcodes_validation">Mostrar validação dos TopCodes</string>
-    <string-array name="pref_show_topcodes_validation_titles">
-        <item >Não</item>
-        <item >Sim</item>
-    </string-array>
-    <string-array name="pref_show_topcodes_validation_values">
-        <item >0</item>
-        <item >1</item>
-    </string-array>
-
-
-    <string name="pref_title_allow_answers_changing">Permitir alteração de respostas</string>
-    <string-array name="pref_allow_answers_changing_titles">
-        <item >Não</item>
-        <item >Sim</item>
-    </string-array>
-
-    <string-array name="pref_allow_answers_changing_values">
-        <item >0</item>
-        <item >1</item>
-    </string-array>
+    <string name="pref_allow_answers_changing_title">Permitir alteração de respostas</string>
+    <string name="pref_allow_answers_changing_summary">Permitir que o usuário altere respostas na lista de resultados</string>
 
     <string name="pref_use_camera_emulation_title">Usar emulação da câmera a partir de arquivo</string>
     <string name="pref_use_camera_emulation_summary">Obter sequência de imagens do arquivo testVideo.mp4</string>

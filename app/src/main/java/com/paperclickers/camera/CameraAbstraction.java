@@ -430,9 +430,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
         if (SettingsActivity.DEVELOPMENT_OPTIONS) {
             if (SettingsActivity.isDevelopmentMode()) {
-                String showValidation = mSharedPreferences.getString("development_show_validation", "1");
-
-                mShowingValidation = showValidation.equals("1");
+                mShowingValidation = mSharedPreferences.getBoolean("development_show_validation", true);
             } else {
                 mShowingValidation = false;
             }

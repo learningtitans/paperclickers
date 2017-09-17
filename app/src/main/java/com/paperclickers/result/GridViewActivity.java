@@ -124,9 +124,7 @@ public class GridViewActivity extends Activity {
 
 		mPreferenceManager = PreferenceManager.getDefaultSharedPreferences(this);
 
-		String allowChangingAnswers = mPreferenceManager.getString("development_allow_answers_changing", "0");
-
-		if (allowChangingAnswers.equals("1")) {
+		if (mPreferenceManager.getBoolean("development_allow_answers_changing", false)) {
 			imagegrid.setOnItemClickListener(new OnItemClickListener() {
 
 				@Override
