@@ -7,16 +7,21 @@
 	         NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
 	         dismiss it.
 	    -->
-	    
-	    <EditTextPreference
+		<CheckBoxPreference
+			android:key="development_enable_validation"
+			android:title="@string/pref_enable_validation_title"
+			android:summary="@string/pref_enable_validation_summary"
+			android:defaultValue="true"/>
+
+		<EditTextPreference
 	        android:defaultValue="@string/pref_default_validation_threshold"
 	        android:inputType="number"
 	        android:key="development_validation_threshold"
 	        android:maxLines="1"
 	        android:selectAllOnFocus="true"
 	        android:singleLine="true"
-	        android:title="@string/pref_title_validation_threshold" />	    
-	    
+	        android:title="@string/pref_title_validation_threshold"
+			android:dependency="development_enable_validation"/>
 	    
 		<CheckBoxPreference
 			android:key="development_show_validation"

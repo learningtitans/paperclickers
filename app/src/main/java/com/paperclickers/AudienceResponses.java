@@ -62,16 +62,9 @@ public class AudienceResponses {
     final static String LAST_IMAGE_FILENAME = "lastImage_";
     final static String LAST_IMAGE_FILE_EXTENSION = ".pgm";
 
-    // Use this constant to enable saving the last analyzed image, right after user requesting to
-    // carry on to the Grid View
-    public final static boolean SAVE_LAST_IMAGE = true;
-
     // Use this constant to enable showing the class topcodes detection raw (regardless validation)
     // frequencies as an overlay in camera capture
     public final static boolean SHOW_CODE_FREQUENCY_DEBUG = false;
-
-    // Use this constant to enable the overall topcodes validation mechanism
-    public final static boolean AVOID_PARTIAL_READINGS = true;
 
     // Use this constant to enable the detailed debug log, showing every topcodes detection and validation
     // data
@@ -111,6 +104,8 @@ public class AudienceResponses {
     Context mContext;
 
     private boolean mIgnoreCall;
+
+    private boolean mAvoidPartialReadings;
 
     private SparseArray<TopCode> mFinalTopCodes;
     private SparseArray<TopCodeValidator> mFinalTopCodesValidator;
@@ -204,6 +199,8 @@ public class AudienceResponses {
         mContext = context;
         mSharedPreferences = sharedPreferences;
 
+        mAvoidPartialReadings = mSharedPreferences.getBoolean("development_enable_validation", true);
+
         mIgnoreCall = true;
     }
 
@@ -295,7 +292,7 @@ public class AudienceResponses {
                 currentValidationStep         = (float) Integer.parseInt(validationThresholdStr);
             }
 
-            TopCodeValidator validator = new TopCodeValidator(newTopCode, currentValidationStep);
+            TopCodeValidator validator = new TopCodeValidator(newTopCode, currentValidationStep, mAvoidPartialReadings);
             mFinalTopCodesValidator.put(SettingsActivity.validTopCodes[i], validator);
 
             log.d(TAG, "> Adding topcode (" + SettingsActivity.validTopCodes[i] + ") to the valid list. Total of: " + mFinalTopCodes.size());
@@ -446,7 +443,7 @@ public class AudienceResponses {
 
                         currentValidator.incFrequency(translatedAnswer);
 
-                        if (AVOID_PARTIAL_READINGS) {
+                        if (mAvoidPartialReadings) {
                             continuousDetectionResult = currentValidator.checkContinousDetection(mScanCycle, translatedAnswer, validTopCode);
 
                             if (continuousDetectionResult == TopCodeValidator.CHANGED_ANSWER) {
@@ -484,7 +481,7 @@ public class AudienceResponses {
 
                         // Only logging debug information...
                         if (DEBUG_DETECTION_CYCLE_RAW_DATA) {
-                            if (AVOID_PARTIAL_READINGS) {
+                            if (mAvoidPartialReadings) {
                                 scanDebug = String.format("Cycle: %d, Code: %d,  orientation: %f, frequency: %d(A), %d(B), %d(C), %d(D), isValid: %b, lastDetectedScanCycle: "
                                                 + "%d(A), %d(B), %d(C), %d(D), numberOfContinuousDetection: %d(A), %d(B), %d(C), %d(D)",
                                         mScanCycle, t.getCode(), t.getOrientation(),
@@ -572,7 +569,7 @@ public class AudienceResponses {
 
                 String translatedAnswer;
 
-                if (AVOID_PARTIAL_READINGS) {
+                if (mAvoidPartialReadings) {
                     int bestAnswer = validator.getBestValidAnswer();
 
                     translatedAnswer = PaperclickersScanner.translateOrientationIDToString(bestAnswer);
@@ -582,7 +579,7 @@ public class AudienceResponses {
 
                 detectedTopcodes.put(i + 1, translatedAnswer);
 
-                if (AVOID_PARTIAL_READINGS) {
+                if (mAvoidPartialReadings) {
                     log.d(TAG, String.format("> Translated code: %d, Answer: %s, Orientation: %s, Frequency: %d(A), %d(B), %d(C), %d(D), isValid: %b, lastDetectedScanCycle: "
                                     + "%d(A), %d(B), %d(C), %d(D), numberOfContinuousDetection: %d(A), %d(B), %d(C), %d(D)",
                             i + 1, translatedAnswer, String.valueOf(t.getOrientation()),

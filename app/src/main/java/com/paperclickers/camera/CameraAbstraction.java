@@ -113,6 +113,8 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
     SharedPreferences mSharedPreferences = null;
 
+    boolean mAvoidPartialReadings = true;
+
 
     protected class TouchListener implements View.OnTouchListener {
 
@@ -187,7 +189,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
         int topCodesFound = 0;
 
-        if (AudienceResponses.AVOID_PARTIAL_READINGS) {
+        if (mAvoidPartialReadings) {
             topCodesFound = mAudienceResponses.getValidTopCodesCount();
         } else {
             topCodesFound = mAudienceResponses.getRecognizedTopCodesCount();
@@ -334,6 +336,8 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         mAnalytics = new Analytics(getApplicationContext());
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        mAvoidPartialReadings = mSharedPreferences.getBoolean("development_enable_validation", true);
     }
 
 
@@ -420,7 +424,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
         hideStatusBar();
 
-        if (AudienceResponses.AVOID_PARTIAL_READINGS) {
+        if (mAvoidPartialReadings) {
             mHint1TextView.setText(mHint1StringStart + mAudienceResponses.getValidTopCodesCount() + mHint1StringEnd);
         } else {
             mHint1TextView.setText(mHint1StringStart + mAudienceResponses.getRecognizedTopCodesCount() + mHint1StringEnd);
@@ -479,19 +483,17 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
             return;
         } else if (cycleResult == AudienceResponses.NEED_TO_REDRAW) {
 
-            if (AudienceResponses.AVOID_PARTIAL_READINGS) {
-                mHint1TextView.setText(mHint1StringStart + mAudienceResponses.getValidTopCodesCount() + mHint1StringEnd);
-            } else {
-                mHint1TextView.setText(mHint1StringStart + mAudienceResponses.getRecognizedTopCodesCount() + mHint1StringEnd);
-            }
-
             if (AudienceResponses.SHOW_CODE_FREQUENCY_DEBUG) {
                 mFreqDebugTextView.setText(Arrays.toString(mAudienceResponses.getFinalTopCodesFrequency()));
             }
 
-            if (AudienceResponses.AVOID_PARTIAL_READINGS) {
+            if (mAvoidPartialReadings) {
+                mHint1TextView.setText(mHint1StringStart + mAudienceResponses.getValidTopCodesCount() + mHint1StringEnd);
+
                 mDraw.updateValidTopcodesList(recognizedValidTopCodes);
             } else {
+                mHint1TextView.setText(mHint1StringStart + mAudienceResponses.getRecognizedTopCodesCount() + mHint1StringEnd);
+
                 mDraw.updateValidTopcodesList(topCodes);
             }
 
@@ -522,7 +524,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
     protected void setTopCodesFeedbackPreview(boolean forceSize) {
 
-        mDraw = new DrawView(mContext, mAudienceResponses.getTopCodesValidator(), mImageWidth, mImageHeight, mShowingValidation);
+        mDraw = new DrawView(mContext, mAudienceResponses.getTopCodesValidator(), mImageWidth, mImageHeight, mShowingValidation && mAvoidPartialReadings);
 
         mPreview.addView(mDraw);
 

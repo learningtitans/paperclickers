@@ -200,7 +200,7 @@ public class DrawView extends SurfaceView {
 				
 				int bestAnswer = PaperclickersScanner.ID_NO_ANSWER;
 				
-				if (AudienceResponses.AVOID_PARTIAL_READINGS && DRAW_VALIDATION_COUNTDOWN && mShowingValidation) {
+				if (DRAW_VALIDATION_COUNTDOWN && mShowingValidation) {
 				    
 				    bestAnswer = whichValidator.getDuplicatedAnswerInLastScanCycle();
 				    
@@ -271,7 +271,7 @@ public class DrawView extends SurfaceView {
 		            	break;
 		            }
 		            
-		            if (AudienceResponses.AVOID_PARTIAL_READINGS && DRAW_VALIDATION_COUNTDOWN && mShowingValidation) {
+		            if (DRAW_VALIDATION_COUNTDOWN && mShowingValidation) {
 		                
 		                String answerCountdown = null;
 		                

@@ -31,11 +31,11 @@ public class TopCodeValidator {
 	
 	// Use this constant to enable the topcode validation using the most frequent answer criteria, in
 	// Opposition to the last valid answer criteria
-	final static boolean VALID_BY_FREQUENCY = AudienceResponses.AVOID_PARTIAL_READINGS & false;
+	final static boolean VALID_BY_FREQUENCY = false;
 	
 	// Use this constant to enable the moving validation threshold, which is increased according to the
 	// scan time
-	public final static boolean MOVING_VALIDATION_THRESHOLD = AudienceResponses.AVOID_PARTIAL_READINGS & true;
+	public final static boolean MOVING_VALIDATION_THRESHOLD = true;
 		
 	final static int INITIAL_VALIDATION_THRESHOLD = 3;
 	final static int MAXIMUM_VALIDATION_THRESHOLD = 100;
@@ -78,6 +78,7 @@ public class TopCodeValidator {
 	
 	private TopCode mHandledTopcode;
 
+	private boolean mAvoidPartialReadings = true;
 	
 	
 	public int checkContinousDetection(int currentScanCycle, int translatedAnswer, TopCode whichTopCode) {
@@ -86,7 +87,7 @@ public class TopCodeValidator {
 
 		mHandledTopcode = whichTopCode;
 		
-		if (AudienceResponses.AVOID_PARTIAL_READINGS) {
+		if (mAvoidPartialReadings) {
 		    
             // Resets this duplicate indication for this scan cycle
             mDuplicateAnswerInLastScanCycle = PaperclickersScanner.ID_NO_ANSWER;
@@ -215,7 +216,7 @@ public class TopCodeValidator {
 		int bestAnswerFrequency = 0;
 		int bestAnswerLastDetectedScanCycle = -1;
 		
-		if (AudienceResponses.AVOID_PARTIAL_READINGS) {
+		if (mAvoidPartialReadings) {
 			for (int i = 0; i < PaperclickersScanner.NUM_OF_VALID_ANSWERS; i++) {
 				if (mValidTopcode[i]) {
 					if (VALID_BY_FREQUENCY) {
@@ -313,8 +314,10 @@ public class TopCodeValidator {
 	
 	
 	
-	public TopCodeValidator(TopCode whichTopCode, float currentValidationThreshold) {
-					
+	public TopCodeValidator(TopCode whichTopCode, float currentValidationThreshold, boolean avoidPartialReadings) {
+
+		mAvoidPartialReadings = avoidPartialReadings;
+
 		mFrequency                   = new int[PaperclickersScanner.NUM_OF_VALID_ANSWERS];
 		mNumberOfContinuousDetection = new int[PaperclickersScanner.NUM_OF_VALID_ANSWERS];
 		mLastDetectedScanCycle       = new int[PaperclickersScanner.NUM_OF_VALID_ANSWERS];

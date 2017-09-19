@@ -69,6 +69,11 @@
     
     <string name="pref_header_development">Development</string>
 
+
+    <string name="pref_enable_validation_title">Enable TopCodes validation</string>
+    <string name="pref_enable_validation_summary">Use time-consistency to validate the TopCodes during detection</string>
+
+
     <string name="pref_title_validation_threshold">Validation threshold</string>
     <string name="pref_default_validation_threshold">32</string>
 
