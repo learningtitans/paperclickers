@@ -25,6 +25,7 @@ package com.paperclickers.camera;
 
 import java.util.List;
 
+import com.paperclickers.AudienceResponses;
 import com.paperclickers.TopCodeValidator;
 import com.paperclickers.log;
 import com.paperclickers.fiducial.PaperclickersScanner;
@@ -199,7 +200,7 @@ public class DrawView extends SurfaceView {
 				
 				int bestAnswer = PaperclickersScanner.ID_NO_ANSWER;
 				
-				if (DRAW_VALIDATION_COUNTDOWN && mShowingValidation) {
+				if (AudienceResponses.AVOID_PARTIAL_READINGS && DRAW_VALIDATION_COUNTDOWN && mShowingValidation) {
 				    
 				    bestAnswer = whichValidator.getDuplicatedAnswerInLastScanCycle();
 				    
@@ -270,7 +271,7 @@ public class DrawView extends SurfaceView {
 		            	break;
 		            }
 		            
-		            if (DRAW_VALIDATION_COUNTDOWN && mShowingValidation) {
+		            if (AudienceResponses.AVOID_PARTIAL_READINGS && DRAW_VALIDATION_COUNTDOWN && mShowingValidation) {
 		                
 		                String answerCountdown = null;
 		                

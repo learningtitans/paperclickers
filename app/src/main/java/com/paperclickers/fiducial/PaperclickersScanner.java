@@ -255,12 +255,11 @@ public class PaperclickersScanner extends Scanner {
 	 * Scan the image line by line looking for marked topcodes
 	 * candidates
 	 */
-	protected List<TopCode> findCodes(boolean hasRotated) {
+	protected List<TopCode> findCodes(boolean hasRotated, List<TopCode> spots) {
 		
 		int effectiveCandidatesCount = 0;
 		
 		this.tcount = 0;
-		List<TopCode> spots = new java.util.ArrayList<TopCode>();
 
 		TopCode spot = new TopCode();
 		
@@ -606,7 +605,7 @@ public class PaperclickersScanner extends Scanner {
 
 	
 	
-    public List<TopCode> scanProcessing(int[] image, boolean hasRotated) {
+    public void scanProcessing(int[] image, boolean hasRotated, List<TopCode> codesFound) {
         
         this.data = image;
 		this.ccount = 0;
@@ -746,7 +745,7 @@ public class PaperclickersScanner extends Scanner {
 		}
 
         // scan for topcodes
-        List<TopCode> codesFound = findCodes(hasRotated);
+        findCodes(hasRotated, codesFound);
 
         if (LOG_EXECUTION_TIMES) {
             mEndFindCodesTime = System.currentTimeMillis();
@@ -773,8 +772,6 @@ public class PaperclickersScanner extends Scanner {
             log.d(TAG, String.format("Horizontal scan execution time(ms): %d, Vertical scan execution time(ms): %d", mEndHorizontalScanTime - mStartHorizontalScanTime, mEndVerticalScanTime - mStartVerticalScanTime));
             log.d(TAG, String.format("FindCodes execution time(ms): %d", mEndFindCodesTime - mStartFindCodesTime));
         }
-        
-        return codesFound; 
     }
 	
 	

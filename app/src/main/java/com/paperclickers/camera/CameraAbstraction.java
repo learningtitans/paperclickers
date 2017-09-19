@@ -390,7 +390,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
     public void onNewFrame(byte[] data) {
 
         List<TopCode> recognizedValidTopCodes = new ArrayList<TopCode>();
-        List<TopCode> topCodes = null;
+        List<TopCode> topCodes = new ArrayList<TopCode>();
 
         int cycleResult = mAudienceResponses.onNewFrame(data, mHasRotated, recognizedValidTopCodes, topCodes, mShowingValidation);
 
@@ -402,7 +402,7 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
     public void onNewFrame(int[] data) {
 
         List<TopCode> recognizedValidTopCodes = new ArrayList<TopCode>();
-        List<TopCode> topCodes = null;
+        List<TopCode> topCodes = new ArrayList<TopCode>();
 
         int cycleResult = mAudienceResponses.onNewFrame(data, mHasRotated, recognizedValidTopCodes, topCodes, mShowingValidation);
 

@@ -419,7 +419,7 @@ public class AudienceResponses {
         try {
             mStartFiducialTime = System.currentTimeMillis();
 
-            topCodes = mScan.scanProcessing(mLuma, hasRotated);
+            mScan.scanProcessing(mLuma, hasRotated, topCodes);
 
             mEndFiducialTime = System.currentTimeMillis();
         } catch (Resources.NotFoundException e1) {

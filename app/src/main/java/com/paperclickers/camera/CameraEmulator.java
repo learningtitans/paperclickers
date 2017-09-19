@@ -188,8 +188,14 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
                         if (width != mImageWidth) {
 
                             if (mSharedPreferences.getBoolean("development_force_max_emulation_size", true)) {
-                                width  = 1280;
-                                height = 720;
+
+                                if (width > height) {
+                                    width  = 1280;
+                                    height = 720;
+                                } else {
+                                    width  = 720;
+                                    height = 1280;
+                                }
                             }
 
                             ViewGroup.LayoutParams layoutParams = mTextureView.getLayoutParams();

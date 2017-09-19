@@ -86,7 +86,7 @@ public class SettingsActivity extends PreferenceActivity {
 	static String TAG = "SettingsActivity";
 	
 	// Use this constant to enable a development options in settings
-	public static final boolean DEVELOPMENT_OPTIONS = AudienceResponses.AVOID_PARTIAL_READINGS & true;
+	public static final boolean DEVELOPMENT_OPTIONS = true;
 	
 	// Use this constant to enable the holding area print on codes verso
 	public static final boolean SHOW_CODES_HOLD_AREA = true;
