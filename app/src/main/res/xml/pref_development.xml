@@ -27,7 +27,8 @@
 			android:key="development_show_validation"
 			android:title="@string/pref_show_topcodes_validation_title"
 			android:summary="@string/pref_show_topcodes_validation_summary"
-			android:defaultValue="true"/>
+			android:defaultValue="true"
+			android:dependency="development_enable_validation"/>
 
 		<CheckBoxPreference
 			android:key="development_allow_answers_changing"
