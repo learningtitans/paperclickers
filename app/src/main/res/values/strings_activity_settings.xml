@@ -121,6 +121,6 @@
     <string name="pref_use_morpho_summary">Process images with morphological operations</string>
 
     <string name="pref_title_morpho_element_size">Morphological element size</string>
-    <string name="pref_default_morpho_element_size">5</string>
+    <string name="pref_default_morpho_element_size">3</string>
 
 </resources>
