@@ -62,6 +62,8 @@ public class PaperclickersScanner extends Scanner {
 	// Use this constant to enable testing vertically the image for topcode candidates
 	public static final boolean TEST_VERTICAL_CANDIDATES = true;
 
+	// Enable using renderscript to accelerate morphological operations
+
 	public static final boolean USE_RENDERSCRIPT = true;
 
 	// The median filter has been implemented as an option for dealing with corrupted TopCodes; however, morphological
@@ -192,7 +194,6 @@ public class PaperclickersScanner extends Scanner {
 				nextPos = 1;
 			}
 
-//            k = (j % 2 == 0) ? 0 : w - 1;
             k += currentLineOffset;
             
             for (int i = 0; i < w; i++) {
@@ -234,7 +235,6 @@ public class PaperclickersScanner extends Scanner {
                 data[k] = (a << 24) + (sum & 0xffffff);
 
 				k += nextPos;
-//                k += (j % 2 == 0) ? 1 : -1;
             }
 
             currentLineOffset += w;
@@ -605,7 +605,7 @@ public class PaperclickersScanner extends Scanner {
 
 	
 	
-    public void scanProcessing(int[] image, boolean hasRotated, List<TopCode> codesFound) {
+    public void scanProcessing(int[] image, boolean hasRotated, List<TopCode> codesFound, boolean useMorpho) {
         
         this.data = image;
 		this.ccount = 0;
@@ -649,7 +649,7 @@ public class PaperclickersScanner extends Scanner {
 			adaptiveThreshold(); // run the adaptive threshold filter
 		}
 
-		if (mUseMorphoOperations) {
+		if (mUseMorphoOperations && useMorpho) {
 			if (USE_RENDERSCRIPT) {
 				if (LOG_EXECUTION_TIMES) {
 					mEndThresholdTime = System.currentTimeMillis();
@@ -752,7 +752,7 @@ public class PaperclickersScanner extends Scanner {
             
             log.d(TAG, String.format("Threshold execution time(ms): %d", mEndThresholdTime - mStartThresholdTime));
 
-			if (mUseMorphoOperations) {
+			if (mUseMorphoOperations && useMorpho) {
 				if (USE_RENDERSCRIPT) {
 					log.d(TAG, String.format("Closing execution time(ms): %d, Opening execution time(ms): %d",
 							mEndClosingTime - mStartClosingTime, mEndOpeningTime - mStartOpeningTime));

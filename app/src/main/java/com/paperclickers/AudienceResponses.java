@@ -349,7 +349,7 @@ public class AudienceResponses {
 
 
 
-    public int onNewFrame(byte[] data, boolean hasRotated, List<TopCode> recognizedValidTopCodes, List<TopCode> topCodes, boolean showingValidation) {
+    public int onNewFrame(byte[] data, boolean hasRotated, List<TopCode> recognizedValidTopCodes, List<TopCode> topCodes, boolean showingValidation, boolean useMorpho) {
 
         int result = DO_NOT_REDRAW;
 
@@ -372,14 +372,14 @@ public class AudienceResponses {
 
         stripLumaFromYUV420SP(mLuma, data, mImageWidth, mImageHeight);
 
-        result = processNewFrame(hasRotated, recognizedValidTopCodes, topCodes, showingValidation);
+        result = processNewFrame(hasRotated, recognizedValidTopCodes, topCodes, showingValidation, useMorpho);
 
         return result;
     }
 
 
 
-    public int onNewFrame(int[] data, boolean hasRotated, List<TopCode> recognizedValidTopCodes, List<TopCode> topCodes, boolean showingValidation) {
+    public int onNewFrame(int[] data, boolean hasRotated, List<TopCode> recognizedValidTopCodes, List<TopCode> topCodes, boolean showingValidation, boolean useMorpho) {
 
         int result = DO_NOT_REDRAW;
 
@@ -402,21 +402,21 @@ public class AudienceResponses {
 
         stripLumaFromYUV420SP(mLuma, data, mImageWidth, mImageHeight);
 
-        result = processNewFrame(hasRotated, recognizedValidTopCodes, topCodes, showingValidation);
+        result = processNewFrame(hasRotated, recognizedValidTopCodes, topCodes, showingValidation, useMorpho);
 
         return result;
     }
 
 
 
-    public int processNewFrame(boolean hasRotated, List<TopCode> recognizedValidTopCodes, List<TopCode> topCodes, boolean showingValidation) {
+    public int processNewFrame(boolean hasRotated, List<TopCode> recognizedValidTopCodes, List<TopCode> topCodes, boolean showingValidation, boolean useMorpho) {
 
         int result = DO_NOT_REDRAW;
 
         try {
             mStartFiducialTime = System.currentTimeMillis();
 
-            mScan.scanProcessing(mLuma, hasRotated, topCodes);
+            mScan.scanProcessing(mLuma, hasRotated, topCodes, useMorpho);
 
             mEndFiducialTime = System.currentTimeMillis();
         } catch (Resources.NotFoundException e1) {

@@ -56,12 +56,6 @@
 			android:dependency="development_use_camera_emulation"/>
 
 		<CheckBoxPreference
-			android:key="development_dont_show_help"
-			android:title="@string/pref_dont_show_help_title"
-			android:summary="@string/pref_dont_show_help_summary"
-			android:defaultValue="false"/>
-
-		<CheckBoxPreference
 			android:key="development_use_morpho"
 			android:title="@string/pref_use_morpho_title"
 			android:summary="@string/pref_use_morpho_summary"
@@ -76,6 +70,19 @@
 			android:selectAllOnFocus="true"
 			android:singleLine="true"
 			android:title="@string/pref_title_morpho_element_size" />
+
+		<CheckBoxPreference
+			android:key="development_distance_enabled_morpho"
+			android:title="@string/pref_distance_enabled_morpho_title"
+			android:summary="@string/pref_distance_enabled_morpho_summary"
+			android:defaultValue="false"
+			android:dependency="development_use_morpho"/>
+
+		<CheckBoxPreference
+			android:key="development_dont_show_help"
+			android:title="@string/pref_dont_show_help_title"
+			android:summary="@string/pref_dont_show_help_summary"
+			android:defaultValue="false"/>
 
 	</PreferenceCategory>
 

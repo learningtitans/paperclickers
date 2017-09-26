@@ -26,6 +26,7 @@ package com.paperclickers.camera;
 import java.util.List;
 import android.content.pm.ActivityInfo;
 import android.hardware.Camera;
+import android.os.Bundle;
 import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -45,8 +46,12 @@ public class CameraMain extends CameraAbstraction implements Camera.PreviewCallb
 	private Camera mCamera;
 	private CameraPreview mCameraPreview;
 
-	
-	
+	float[] mFocusDistances = new float[3];
+
+	boolean mUseDistanceEnabledMorpho = false;
+
+
+
 	/** A safe way to get an instance of the Camera object. */
 	public static Camera getCameraInstance() {
 		Camera c = null;
@@ -66,6 +71,14 @@ public class CameraMain extends CameraAbstraction implements Camera.PreviewCallb
 
 
 	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		mUseDistanceEnabledMorpho = mSharedPreferences.getBoolean("development_distance_enabled_morpho", false);
+	}
+
+
+	@Override
 	protected void onPause() {
 		super.onPause();
 
@@ -77,7 +90,19 @@ public class CameraMain extends CameraAbstraction implements Camera.PreviewCallb
 	@Override
 	public void onPreviewFrame(byte[] data, Camera camera) {
 
-		onNewFrame(data);
+		boolean useMorpho = true;
+
+		if (mUseDistanceEnabledMorpho) {
+			mCamera.getParameters().getFocusDistances(mFocusDistances);
+
+			log.d(TAG, String.format("Focus distances: %f, %f, %f", mFocusDistances[0], mFocusDistances[1], mFocusDistances[2]));
+
+			if (mFocusDistances[1] > 1.0f) {
+				useMorpho = false;
+			}
+		}
+
+		onNewFrame(data, useMorpho);
 	}
 
 	

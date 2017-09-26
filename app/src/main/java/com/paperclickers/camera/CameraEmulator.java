@@ -264,7 +264,7 @@ public class CameraEmulator extends CameraAbstraction implements TextureView.Sur
 
             imageBitmap.getPixels(mData, 0, mImageWidth, 0, 0, mImageWidth, mImageHeight);
 
-            onNewFrame(mData);
+            onNewFrame(mData, true);
         }
     }
 }

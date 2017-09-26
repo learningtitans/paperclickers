@@ -123,4 +123,7 @@
     <string name="pref_title_morpho_element_size">Morphological element size</string>
     <string name="pref_default_morpho_element_size">3</string>
 
+    <string name="pref_distance_enabled_morpho_title">Distance enabled morpho</string>
+    <string name="pref_distance_enabled_morpho_summary">Only enable morphological operations for distant camera focus</string>
+
 </resources>

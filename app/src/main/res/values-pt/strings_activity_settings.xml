@@ -119,4 +119,7 @@
     <string name="pref_title_morpho_element_size">Tamanho do elemento morfológico</string>
     <string name="pref_default_morpho_element_size">5</string>
 
+    <string name="pref_distance_enabled_morpho_title">Operações morfológicas ativadas por distância</string>
+    <string name="pref_distance_enabled_morpho_summary">Somente ative as operações quando a câmera estiver como foco distante</string>
+
 </resources>

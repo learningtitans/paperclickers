@@ -391,24 +391,24 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
 
 
-    public void onNewFrame(byte[] data) {
+    public void onNewFrame(byte[] data, boolean useMorpho) {
 
         List<TopCode> recognizedValidTopCodes = new ArrayList<TopCode>();
         List<TopCode> topCodes = new ArrayList<TopCode>();
 
-        int cycleResult = mAudienceResponses.onNewFrame(data, mHasRotated, recognizedValidTopCodes, topCodes, mShowingValidation);
+        int cycleResult = mAudienceResponses.onNewFrame(data, mHasRotated, recognizedValidTopCodes, topCodes, mShowingValidation, useMorpho);
 
         processNewFrameResult(cycleResult, recognizedValidTopCodes, topCodes);
     }
 
 
 
-    public void onNewFrame(int[] data) {
+    public void onNewFrame(int[] data, boolean useMorpho) {
 
         List<TopCode> recognizedValidTopCodes = new ArrayList<TopCode>();
         List<TopCode> topCodes = new ArrayList<TopCode>();
 
-        int cycleResult = mAudienceResponses.onNewFrame(data, mHasRotated, recognizedValidTopCodes, topCodes, mShowingValidation);
+        int cycleResult = mAudienceResponses.onNewFrame(data, mHasRotated, recognizedValidTopCodes, topCodes, mShowingValidation, useMorpho);
 
         processNewFrameResult(cycleResult, recognizedValidTopCodes, topCodes);
     }
