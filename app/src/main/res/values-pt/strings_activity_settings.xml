@@ -55,7 +55,8 @@
         <item >0</item>
         <item >1</item>
     </string-array>
-    <string name="pref_title_share_printed_codes">Imprimir códigos</string>
+
+    <string name="pref_title_share_printed_codes">Imprimir ou exportar códigos</string>
     <string name="share_answers_log_using">Exportar registro de respostas usando</string>
     <string name="no_answers_log">Não existe registro de respostas</string>
     <string name="delete_answers_log_dialog_title">Confirme exclusão</string>
@@ -94,10 +95,21 @@
     <string name="pref_force_max_emulation_size_summary">Forçar dimensão máxima da emulação em 1280x720</string>
 
 
+    <string name="pref_use_morpho_title">Usar operações morfológicas</string>
+    <string name="pref_use_morpho_summary">Processar imagem com operações morfológicas</string>
+
+    <string name="pref_title_morpho_element_size">Tamanho do elemento morfológico</string>
+    <string name="pref_default_morpho_element_size">5</string>
+
+    <string name="pref_distance_enabled_morpho_title">Operações morfológicas ativadas por distância</string>
+    <string name="pref_distance_enabled_morpho_summary">Somente ative as operações quando a câmera estiver como foco distante</string>
+
+
+
     <string name="development_mode_on">Modo desenvolvimento LIGADO</string>
     <string name="development_mode_off">Modo desenvolvimento DESLIGADO</string>
 
-    <string name="pref_header_usage_analytics">Desenvolvimento da aplicação</string>
+    <string name="pref_header_usage_analytics">Análise da aplicação</string>
 
     <string name="pref_title_usage_analytics">Coleta de dados de uso</string>
 
@@ -112,14 +124,5 @@
 
     <string name="pref_dont_show_help_title">Não apresentar ajuda</string>
     <string name="pref_dont_show_help_summary">Não apresentar camada de instruções</string>
-
-    <string name="pref_use_morpho_title">Usar operações morfológicas</string>
-    <string name="pref_use_morpho_summary">Processar imagem com operações morfológicas</string>
-
-    <string name="pref_title_morpho_element_size">Tamanho do elemento morfológico</string>
-    <string name="pref_default_morpho_element_size">5</string>
-
-    <string name="pref_distance_enabled_morpho_title">Operações morfológicas ativadas por distância</string>
-    <string name="pref_distance_enabled_morpho_summary">Somente ative as operações quando a câmera estiver como foco distante</string>
 
 </resources>

@@ -98,6 +98,17 @@
     <string name="pref_force_max_emulation_size_summary">Force the emulation max size to 1280x720</string>
 
 
+    <string name="pref_use_morpho_title">Use morphological operations</string>
+    <string name="pref_use_morpho_summary">Process images with morphological operations</string>
+
+    <string name="pref_title_morpho_element_size">Morphological element size</string>
+    <string name="pref_default_morpho_element_size">3</string>
+
+    <string name="pref_distance_enabled_morpho_title">Distance enabled morpho</string>
+    <string name="pref_distance_enabled_morpho_summary">Only enable morphological operations for distant camera focus</string>
+
+
+
     <string name="development_mode_on">Development mode ON</string>
     <string name="development_mode_off">Development mode OFF</string>
 
@@ -116,14 +127,5 @@
 
     <string name="pref_dont_show_help_title">Don\'t show help</string>
     <string name="pref_dont_show_help_summary">Don\'t show instructions overlay</string>
-
-    <string name="pref_use_morpho_title">Use morphological operations</string>
-    <string name="pref_use_morpho_summary">Process images with morphological operations</string>
-
-    <string name="pref_title_morpho_element_size">Morphological element size</string>
-    <string name="pref_default_morpho_element_size">3</string>
-
-    <string name="pref_distance_enabled_morpho_title">Distance enabled morpho</string>
-    <string name="pref_distance_enabled_morpho_summary">Only enable morphological operations for distant camera focus</string>
 
 </resources>

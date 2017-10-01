@@ -1,0 +1,127 @@
+<resources>
+
+    <string name="title_activity_settings">Paramètres</string>
+
+    <string name="pref_header_general">Général</string>
+    <string name="pref_title_number_of_students">Nombre d\'étudiants</string>
+    <string name="pref_default_number_of_students">40</string>
+    
+    <string name="pref_header_answers_log">Journal des réponses</string>
+    
+    <string name="pref_title_questions_tagging">Entrez le texte des questions pour le journal?</string>
+
+    <string-array name="pref_questions_tagging_sequence_titles">
+        <item>Non (auto-signalé)</item>
+        <item>Oui</item>
+    </string-array>
+    <string-array name="pref_questions_tagging_sequence_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    
+    <string name="pref_title_clear_answers_log">Supprimer le journal des réponses</string>
+    <string name="pref_title_share_answers_log">Partager le journal des réponses</string>
+    
+    <string name="pref_header_print_codes">Imprimez les codes des étudiants</string>
+    <string name="pref_summary_print_codes">Mieux si imprimé en papier lourd (120gsm/80lb ou plus)</string>
+    <string name="pref_title_print_codes_page_format">Format de la page</string>
+
+    <string-array name="pref_print_codes_page_format_titles">
+        <item>A4</item>
+        <item>Lettre US</item>
+    </string-array>
+    <string-array name="pref_print_codes_page_format_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+    <string name="pref_title_print_codes_per_page">Nombre de codes par page</string>
+    <string-array name="pref_print_codes_per_page_titles">
+        <item >1 par page</item>
+        <item >2 par page (recommandé)</item>
+        <item >4 par page</item>
+    </string-array>
+    <string-array name="pref_print_codes_per_page_values">
+        <item >1</item>
+        <item >2</item>
+        <item >4</item>
+    </string-array>
+    <string name="pref_title_recto_verso_print_sequence">Recto/verso</string>
+    <string-array name="pref_print_recto_verso_print_sequence_titles">
+        <item >Mon imprimante fait automatiquement recto/verso</item>
+        <item >Je dois faire recto/verso manuellement</item>
+    </string-array>
+    <string-array name="pref_print_recto_verso_print_sequence_values">
+        <item >0</item>
+        <item >1</item>
+    </string-array>
+    <string name="pref_title_share_printed_codes">Imprimer ou partager des codes</string>
+    <string name="share_answers_log_using">Partager le journal des réponses en utilisant</string>
+    <string name="no_answers_log">Il n\'y a pas encore de réponses</string>
+    <string name="delete_answers_log_dialog_title">Confirmer la suppression</string>
+    <string name="delete_answers_log_dialog_text">Effacer le journal des réponses?</string>
+    <string name="share_topcodes_using">Partager TopCodes en utilisant</string>
+    <string name="invalid_students_number">Le nombre d\'étudiants doit être compris entre 1 et 99</string>
+    
+    <string name="pref_header_development">Développement</string>
+
+
+    <string name="pref_enable_validation_title">Activer la validation TopCodes</string>
+    <string name="pref_enable_validation_summary">Utilisez la cohérence du temps pour valider les TopCodes pendant la détection</string>
+
+
+    <string name="pref_title_validation_threshold">Seuil de validation</string>
+    <string name="pref_default_validation_threshold">32</string>
+
+
+    <string name="pref_show_topcodes_validation_title">Afficher le processus de validation TopCodes</string>
+    <string name="pref_show_topcodes_validation_summary">Inclure l\'indication AR du processus de validation TopCodes</string>
+
+
+    <string name="pref_allow_answers_changing_title">Autoriser les réponses à changer</string>
+    <string name="pref_allow_answers_changing_summary">Autoriser l\'utilisateur à modifier les réponses en vue de grille</string>
+
+
+    <string name="pref_save_last_image_title">Sauvegarder la dernière image</string>
+    <string name="pref_save_last_image_summary">Enregistrer la dernière image depuis l\'écran de détection TopCodes</string>
+
+
+    <string name="pref_use_camera_emulation_title">Utilisez l\'émulation de caméra à partir du fichier</string>
+    <string name="pref_use_camera_emulation_summary">Obtenir des images à partir du fichier testVideo.mp4</string>
+
+
+    <string name="pref_force_max_emulation_size_title">Limite de la taille maximale de l\'émulation</string>
+    <string name="pref_force_max_emulation_size_summary">Forcer la taille maximale de l\'émulation à 1280x720</string>
+
+
+    <string name="pref_use_morpho_title">Utiliser des opérations morphologiques</string>
+    <string name="pref_use_morpho_summary">Traiter des images avec des opérations morphologiques</string>
+
+    <string name="pref_title_morpho_element_size">Taille de l\'élément morphologique</string>
+    <string name="pref_default_morpho_element_size">5</string>
+
+    <string name="pref_distance_enabled_morpho_title">Distance activée opérations morphologiques</string>
+    <string name="pref_distance_enabled_morpho_summary">Ne permettez pas des opérations morphologiques pour la caméra distante</string>
+
+
+
+    <string name="development_mode_on">Mode de développement ON</string>
+    <string name="development_mode_off">Mode de développement OFF</string>
+
+    <string name="pref_header_usage_analytics">Analyse d\'application</string>
+
+    <string name="pref_title_usage_analytics">Collecte d\'informations d\'utilisation</string>
+
+    <string-array name="pref_usage_analytics_sequence_titles">
+        <item>Activé</item>
+        <item>Désactivé</item>
+    </string-array>
+    <string-array name="pref_usage_analytics_sequence_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+    <string name="pref_dont_show_help_title">Ne montre pas d\'aide</string>
+    <string name="pref_dont_show_help_summary">Ne pas montrer la superposition d\'instructions</string>
+
+</resources>

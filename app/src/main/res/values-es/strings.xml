@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">paper\u200bclickers</string>
+    <string name="app_title">paperclickers</string>
+
+    <string name="start_button">inicio</string>
+    <string name="save_question_title">Pregunta para la clase</string>
+    <string name="done_button">nueva pregunta</string>
+    
+    <string name="hint1Start">Desplácese a la sala hasta detectar todos los códigos:\u0020</string>
+    <string name="hint1End">\u0020encontrados</string>
+    <string name="hint2">Para terminar, presione la pantalla durante dos segundos</string>
+
+    <string name="frequencies_debug">[dev] La frecuencia de los códigos detectados aparecerá aquí</string>
+    
+    <string name="title_activity_about">Acerca de paperclickers</string>
+
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
+
+    <string name="saved_answers_log">Respuestas grabadas en el registro</string>
+    <string name="error_saving_pdf">Error grabando pdf de los códigos de los estudiantes</string>
+    <string name="error_saving_log">Error grabando el registro de respuestas</string>
+    <string name="file_saved">salvo</string>
+
+    <string name="pie_chart_answers">respuestas</string>
+    
+    <string name="cannot_generate_PDF">No se pueden generar códigos</string>
+    <string name="visit_project_page_for_topcodes">Generación de los TopCodes requiere versión Android 4.4 o superior.\n\nVisite el GitHub del proyecto para obtener los códigos de los alumnos</string>
+    <string name="go_github">Ir a GitHub</string>
+
+    <string name="hold_area">sostén aquí</string>
+    
+    <string name="development_current_cycle">ciclo:</string>
+    <string name="development_current_threshold">limite:</string>
+    
+    <string name="auto_promotion_1">nos sigue en</string>
+    <string name="auto_promotion_2">github.com/learningtitans/paperclickers</string>
+
+    <string name="paperclickers_about">file:///android_asset/paperclickers_about_es-es.html</string>
+
+    <string name="start_overlay_settings_icon">Utilizar configuraciones\u2192</string>
+    <string name="start_overlay_settings_text">Para imprimir códigos de los alumnos, exportar respuestas y más\u2026</string>
+    <string name="start_overlay_dont_show_anymore">Gracias, no muestre más</string>
+
+</resources>
