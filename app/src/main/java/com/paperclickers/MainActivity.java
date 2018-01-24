@@ -85,6 +85,9 @@ public class MainActivity extends Activity {
 
 						OverlayFragment fragment = new OverlayFragment();
 
+						fragmentTransaction.setCustomAnimations(R.animator.fragment_slide_up_enter, R.animator.fragment_slide_up_exit,
+								R.animator.fragment_slide_up_enter, R.animator.fragment_slide_up_exit);
+
 						fragmentTransaction.add(R.id.overlayFragmentContainer, fragment, OverlayFragment.TAG);
 						fragmentTransaction.addToBackStack(OverlayFragment.TAG);
 

@@ -1,15 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+ Paperclickers - Affordable solution for classroom response system.
+
+ Copyright (C) 2015-2018 Eduardo Valle Jr <dovalle@dca.fee.unicamp.br>
+ Copyright (C) 2015-2018 Eduardo Seiti de Oliveira <eduseiti@dca.fee.unicamp.br>
+
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2
+ of the License, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-->
 <set xmlns:android="http://schemas.android.com/apk/res/android">
    <objectAnimator
-      android:interpolator="@android:interpolator/decelerate_quint"
-      android:valueFrom="-200dp" android:valueTo="0dp"
+      android:interpolator="@android:interpolator/accelerate_decelerate"
+      android:valueFrom="-1.0"
+      android:valueTo="0"
       android:valueType="floatType"
-      android:propertyName="translationY"
-      android:duration="@android:integer/config_mediumAnimTime" />
+      android:propertyName="yFraction"
+      android:duration="@android:integer/config_longAnimTime" />
    
    <objectAnimator
-      android:interpolator="@android:interpolator/decelerate_quint"
-      android:valueFrom="0.0" android:valueTo="1.0"
+      android:interpolator="@android:interpolator/accelerate_decelerate"
+      android:valueFrom="0.0"
+      android:valueTo="1.0"
       android:valueType="floatType"
       android:propertyName="alpha"
       android:duration="@android:integer/config_longAnimTime" />
