@@ -120,8 +120,6 @@ public class OverlayFragment extends Fragment {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         if (animate) {
-//            fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-
             fragmentTransaction.setCustomAnimations(R.animator.fragment_slide_up_enter, R.animator.fragment_slide_up_exit,
                                                     R.animator.fragment_slide_up_enter, R.animator.fragment_slide_up_exit);
         }

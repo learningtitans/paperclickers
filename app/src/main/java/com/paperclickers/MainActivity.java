@@ -38,6 +38,7 @@ import android.widget.Toast;
 
 import com.paperclickers.camera.CameraEmulator;
 import com.paperclickers.camera.CameraMain;
+import com.paperclickers.onboarding.OnboardingActivity;
 import com.paperclickers.result.AnswersLog;
 
 import java.util.Timer;
@@ -144,7 +145,10 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(getApplicationContext(), AboutActivity.class);
+//				Intent i = new Intent(getApplicationContext(), AboutActivity.class);
+
+				Intent i = new Intent(getApplicationContext(), OnboardingActivity.class);
+
 				startActivity(i);
 			}
 		});
