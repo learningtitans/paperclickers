@@ -4,7 +4,7 @@
     android:useLevel="true"
     android:dither="true">
 
-    <size android:height="5dp" android:width="5dp"/>
+    <size android:height="10dp" android:width="10dp"/>
 
     <solid android:color="@android:color/black"/>
 </shape>

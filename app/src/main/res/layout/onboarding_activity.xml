@@ -28,7 +28,16 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/onboarding_carousel"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_above="@+id/onboarding_page_indicators" />
 
-
+    <LinearLayout
+        android:id="@+id/onboarding_page_indicators"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginBottom="20dp"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="horizontal">
+    </LinearLayout>
 </RelativeLayout>

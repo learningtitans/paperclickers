@@ -29,6 +29,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.Gravity;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.paperclickers.R;
 
@@ -54,16 +57,71 @@ public class OnboardingActivity extends FragmentActivity {
      */
     private PagerAdapter mPagerAdapter;
 
+    private ImageView[] mOnboarding_page_indicators;
+    private LinearLayout mOnboarding_indicators;
+
+    private int mCurrentPage;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.onboarding_activity);
 
         // Instantiate a ViewPager and a PagerAdapter.
+
+        mOnboarding_indicators = (LinearLayout) findViewById(R.id.onboarding_page_indicators);
+
         mPager = (ViewPager) findViewById(R.id.onboarding_carousel);
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+
         mPager.setAdapter(mPagerAdapter);
-//        mPager.setCurrentItem(0);
+
+        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+                mOnboarding_page_indicators[mCurrentPage].setImageDrawable(getResources().getDrawable(R.drawable.onboarding_page_indicator_off));
+                mOnboarding_page_indicators[position].setImageDrawable(getResources().getDrawable(R.drawable.onboarding_page_indicator_on));
+
+                mCurrentPage = position;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+
+        mCurrentPage = 0;
+
+        mPager.setCurrentItem(mCurrentPage);
+
+        mOnboarding_page_indicators = new ImageView[NUM_PAGES];
+
+        for (int page = 0; page < NUM_PAGES; page++) {
+            mOnboarding_page_indicators[page] = new ImageView(getApplicationContext());
+
+            if (page != mCurrentPage) {
+                mOnboarding_page_indicators[page].setImageDrawable(getResources().getDrawable(R.drawable.onboarding_page_indicator_off));
+            } else {
+                mOnboarding_page_indicators[page].setImageDrawable(getResources().getDrawable(R.drawable.onboarding_page_indicator_on));
+            }
+
+            mOnboarding_page_indicators[page].setPadding(5, 5, 5, 5);
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+            params.gravity = Gravity.CENTER;
+
+            mOnboarding_indicators.addView(mOnboarding_page_indicators[page], params);
+        }
     }
 
 
