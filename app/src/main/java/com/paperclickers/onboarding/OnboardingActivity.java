@@ -34,6 +34,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.paperclickers.R;
+import com.paperclickers.log;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by eduseiti on 04/02/18.
@@ -44,7 +48,12 @@ public class OnboardingActivity extends FragmentActivity {
     /**
      * The number of pages (wizard steps) to show in this demo.
      */
-    private static final int NUM_PAGES = 3;
+    private static final int NUM_PAGES = 4;
+
+    private static final int ONBOARDING_SHOW_TIMER = 4000;
+
+    final static String TAG = "OnboardingActivity";
+
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -61,6 +70,11 @@ public class OnboardingActivity extends FragmentActivity {
     private LinearLayout mOnboarding_indicators;
 
     private int mCurrentPage;
+
+    private Timer mOnboardingPageSwitcherTimer = null;
+
+    private boolean mTimerRunning = false;
+
 
 
     @Override
@@ -90,6 +104,8 @@ public class OnboardingActivity extends FragmentActivity {
                 mOnboarding_page_indicators[position].setImageDrawable(getResources().getDrawable(R.drawable.onboarding_page_indicator_on));
 
                 mCurrentPage = position;
+
+                schedulePageSwitcherTimer();
             }
 
             @Override
@@ -137,6 +153,68 @@ public class OnboardingActivity extends FragmentActivity {
             mPager.setCurrentItem(mPager.getCurrentItem() - 1);
         }
     }
+
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        log.d(TAG, "onPause");
+
+        if (mOnboardingPageSwitcherTimer != null) {
+            mOnboardingPageSwitcherTimer.cancel();
+            mOnboardingPageSwitcherTimer = null;
+        }
+    }
+
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        schedulePageSwitcherTimer();
+    }
+
+
+
+    private void schedulePageSwitcherTimer() {
+
+        log.d(TAG, "schedulePageSwitcherTimer. mTimerRunning = " + mTimerRunning);
+
+        if (mCurrentPage < NUM_PAGES - 1) {
+
+            if (mOnboardingPageSwitcherTimer != null) {
+                mOnboardingPageSwitcherTimer.cancel();
+                mOnboardingPageSwitcherTimer = null;
+            }
+
+            mOnboardingPageSwitcherTimer = new Timer();
+
+            mOnboardingPageSwitcherTimer.schedule(new TimerTask() {
+
+                public void run() {
+
+                    if ((mPager != null) && (mCurrentPage < NUM_PAGES - 1)) {
+                        runOnUiThread(switchPage);
+                    }
+                }
+            }, (long) ONBOARDING_SHOW_TIMER);
+        }
+    }
+
+
+
+    final Runnable switchPage = new Runnable() {
+        public void run() {
+
+            mOnboardingPageSwitcherTimer = null;
+
+            mPager.setCurrentItem(mCurrentPage + 1);
+        }
+    };
+
 
 
 

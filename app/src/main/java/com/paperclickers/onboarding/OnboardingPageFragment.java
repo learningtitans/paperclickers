@@ -68,6 +68,11 @@ public class OnboardingPageFragment extends Fragment {
 
                 break;
 
+            case 3:
+                imageToUse = getResources().getDrawable(R.drawable.icon_d);
+
+                break;
+
             default:
                 imageToUse = getResources().getDrawable(R.drawable.icon_a);
         }

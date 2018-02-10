@@ -42,7 +42,7 @@ import android.widget.TextView;
 
 public class OverlayFragment extends Fragment {
 
-    final static String TAG = "overlayFragment";
+    final static String TAG = "OverlayFragment";
 
     private Analytics mAnalytics = null;
 
