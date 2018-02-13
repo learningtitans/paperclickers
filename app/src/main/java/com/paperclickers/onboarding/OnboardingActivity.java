@@ -50,7 +50,7 @@ public class OnboardingActivity extends FragmentActivity {
      */
     private static final int NUM_PAGES = 4;
 
-    private static final int ONBOARDING_SHOW_TIMER = 4000;
+    private static final int ONBOARDING_SHOW_TIMER = 3000;
 
     final static String TAG = "OnboardingActivity";
 
@@ -183,8 +183,8 @@ public class OnboardingActivity extends FragmentActivity {
 
         log.d(TAG, "schedulePageSwitcherTimer. mTimerRunning = " + mTimerRunning);
 
-        if (mCurrentPage < NUM_PAGES - 1) {
-
+//        if (mCurrentPage < NUM_PAGES - 1) {
+//
             if (mOnboardingPageSwitcherTimer != null) {
                 mOnboardingPageSwitcherTimer.cancel();
                 mOnboardingPageSwitcherTimer = null;
@@ -196,12 +196,12 @@ public class OnboardingActivity extends FragmentActivity {
 
                 public void run() {
 
-                    if ((mPager != null) && (mCurrentPage < NUM_PAGES - 1)) {
+                    if (mPager != null) {
                         runOnUiThread(switchPage);
                     }
                 }
             }, (long) ONBOARDING_SHOW_TIMER);
-        }
+//        }
     }
 
 
@@ -211,7 +211,11 @@ public class OnboardingActivity extends FragmentActivity {
 
             mOnboardingPageSwitcherTimer = null;
 
-            mPager.setCurrentItem(mCurrentPage + 1);
+            if (mCurrentPage == NUM_PAGES - 1) {
+                mPager.setCurrentItem(0);
+            } else {
+                mPager.setCurrentItem(mCurrentPage + 1);
+            }
         }
     };
 

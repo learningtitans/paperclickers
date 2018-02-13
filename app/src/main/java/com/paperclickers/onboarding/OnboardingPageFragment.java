@@ -30,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.paperclickers.R;
 import com.paperclickers.log;
@@ -51,7 +52,12 @@ public class OnboardingPageFragment extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(
                 R.layout.onboarding_page, container, false);
 
-        ImageView pageImage = (ImageView) rootView.findViewById(R.id.onboarding_page_image);
+
+        /* Set the onboarding page information */
+
+        ImageView pageImage       = (ImageView) rootView.findViewById(R.id.onboarding_page_image);
+        TextView pageHeader       = (TextView) rootView.findViewById(R.id.onboarding_page_header);
+        TextView pageDescriptionr = (TextView) rootView.findViewById(R.id.onboarding_page_description);
 
         Context appContext = getActivity().getApplicationContext();
 
@@ -61,23 +67,37 @@ public class OnboardingPageFragment extends Fragment {
             case 1:
                 imageToUse = getResources().getDrawable(R.drawable.icon_b);
 
+                pageHeader.setVisibility(View.GONE);
+                pageDescriptionr.setText(R.string.onboarding_page_2_description);
+
                 break;
 
             case 2:
                 imageToUse = getResources().getDrawable(R.drawable.icon_c);
+
+                pageHeader.setVisibility(View.GONE);
+                pageDescriptionr.setText(R.string.onboarding_page_3_description);
 
                 break;
 
             case 3:
                 imageToUse = getResources().getDrawable(R.drawable.icon_d);
 
+                pageHeader.setVisibility(View.GONE);
+                pageDescriptionr.setText(R.string.onboarding_page_4_description);
+
                 break;
 
             default:
-                imageToUse = getResources().getDrawable(R.drawable.icon_a);
+                imageToUse = getResources().getDrawable(R.drawable.appicon_512);
+
+                pageHeader.setVisibility(View.VISIBLE);
+                pageHeader.setText(R.string.app_title);
+                pageDescriptionr.setText(R.string.onboarding_page_1_description);
         }
 
         pageImage.setImageDrawable(imageToUse);
+
 
         log.d(TAG, "onCreateView - Created the onboarding fragment!!! Position: " + position);
 

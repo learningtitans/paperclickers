@@ -26,41 +26,53 @@
     android:layout_height="match_parent" >
 
     <LinearLayout
-        android:layout_gravity="center"
+        android:layout_gravity="bottom"
         android:gravity="center"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:id="@+id/onboarding_page_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <LinearLayout
+            android:layout_weight="0.1"
+            android:id="@+id/onboarding_page_info"
+            android:layout_gravity="center"
             android:gravity="center"
-            android:src="@drawable/icon_a" />
-
-        <TextView
-            android:id="@+id/onboarding_page_header"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="PAGE HEADER"
-            android:textAllCaps="true"
-            android:textColor="@android:color/black"
-            android:textSize="25dp" />
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/onboarding_page_image"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingBottom="8dp"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:src="@drawable/appicon_512" />
+
+            <TextView
+                android:id="@+id/onboarding_page_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="PAGE HEADER"
+                android:textColor="@android:color/black"
+                android:textSize="30dp" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/onboarding_page_description"
+            android:layout_weight="1.0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:gravity="center"
+            android:gravity="center_horizontal"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:lineSpacingMultiplier="1.2"
