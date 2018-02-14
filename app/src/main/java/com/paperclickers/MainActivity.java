@@ -24,8 +24,6 @@
 package com.paperclickers;
 
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -39,11 +37,10 @@ import android.widget.Toast;
 import com.paperclickers.camera.CameraEmulator;
 import com.paperclickers.camera.CameraMain;
 import com.paperclickers.onboarding.OnboardingActivity;
+import com.paperclickers.overlay.OverlayManager;
 import com.paperclickers.result.AnswersLog;
 
 import java.util.Timer;
-import java.util.TimerTask;
-
 
 
 public class MainActivity extends Activity {
@@ -53,53 +50,49 @@ public class MainActivity extends Activity {
 	static final int DEVELOPMENT_OPTIONS_ACTIVATION_THRESHOLD = 5;
 	static final int DEVELOPMENT_OPTIONS_ACTIVATION_INTERVAL  = 300;
 
-	static final int SHOW_OVERLAY_TIMER = 3000;
-	
 	int mDebugOptionsActivationTapCounter   = 0;
 	long mDebugOptionsActivationLastTapTime = 0;
 	
 	boolean mManualQuestionsTagging = false;
 	boolean mUseRegularCamera = false;
 
-	boolean mDontShowOverlay = false;
-
 	private Analytics mAnalytics = null;
 
-	private Timer mOpenOverlayTimer = null;
+	private OverlayManager mOverlayManager = null;
 
 	private SharedPreferences mSharedPreferences = null;
 
 
 
-	void checkAndTurnOnOverlayTimer() {
-		mDontShowOverlay = mSharedPreferences.getBoolean("development_dont_show_help", false);
-
-		if (mOpenOverlayTimer == null) {
-			if (!mDontShowOverlay) {
-				mOpenOverlayTimer = new Timer();
-
-				mOpenOverlayTimer.schedule(new TimerTask() {
-
-					public void run() {
-						FragmentManager fragmentManager = getFragmentManager();
-						FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-						OverlayFragment fragment = new OverlayFragment();
-
-						fragmentTransaction.setCustomAnimations(R.animator.fragment_slide_up_enter, R.animator.fragment_slide_up_exit,
-								R.animator.fragment_slide_up_enter, R.animator.fragment_slide_up_exit);
-
-						fragmentTransaction.add(R.id.overlayFragmentContainer, fragment, OverlayFragment.TAG);
-						fragmentTransaction.addToBackStack(OverlayFragment.TAG);
-
-						fragmentTransaction.commit();
-
-						mOpenOverlayTimer = null;
-					}
-				}, (long) SHOW_OVERLAY_TIMER);
-			}
-		}
-	}
+//	void checkAndTurnOnOverlayTimer() {
+//		mDontShowOverlay = mSharedPreferences.getBoolean("development_dont_show_help", false);
+//
+//		if (mOpenOverlayTimer == null) {
+//			if (!mDontShowOverlay) {
+//				mOpenOverlayTimer = new Timer();
+//
+//				mOpenOverlayTimer.schedule(new TimerTask() {
+//
+//					public void run() {
+//						FragmentManager fragmentManager = getFragmentManager();
+//						FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//
+//						OverlayFragment fragment = new OverlayFragment();
+//
+//						fragmentTransaction.setCustomAnimations(R.animator.fragment_slide_up_enter, R.animator.fragment_slide_up_exit,
+//								R.animator.fragment_slide_up_enter, R.animator.fragment_slide_up_exit);
+//
+//						fragmentTransaction.add(R.id.overlayFragmentContainer, fragment, OverlayFragment.TAG);
+//						fragmentTransaction.addToBackStack(OverlayFragment.TAG);
+//
+//						fragmentTransaction.commit();
+//
+//						mOpenOverlayTimer = null;
+//					}
+//				}, (long) SHOW_OVERLAY_TIMER);
+//			}
+//		}
+//	}
 
 
 
@@ -111,6 +104,8 @@ public class MainActivity extends Activity {
 		mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 		mAnalytics = new Analytics(getApplicationContext());
+
+		mOverlayManager = new OverlayManager(getApplicationContext(), getFragmentManager());
 
 		setContentView(R.layout.start_activity);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -130,7 +125,7 @@ public class MainActivity extends Activity {
 
 		    log.d(TAG, ">>> New execution sequence; restart sequence number in answer log");
 
-			checkAndTurnOnOverlayTimer();
+			mOverlayManager.checkAndTurnOnOverlayTimer(OverlayManager.INITIAL_SCREEN);
 		}
 
 
@@ -263,12 +258,7 @@ public class MainActivity extends Activity {
 
 		log.d(TAG, "onPause");
 
-		if (mOpenOverlayTimer != null) {
-			mOpenOverlayTimer.cancel();
-			mOpenOverlayTimer = null;
-		} else {
-			OverlayFragment.removeFragment(getFragmentManager(), false);
-		}
+		mOverlayManager.removeOverlay();
 	}
 
 
@@ -285,7 +275,7 @@ public class MainActivity extends Activity {
 		mDebugOptionsActivationTapCounter  = 0;
         mDebugOptionsActivationLastTapTime = 0;
 
-		checkAndTurnOnOverlayTimer();
+		mOverlayManager.checkAndTurnOnOverlayTimer(OverlayManager.INITIAL_SCREEN);
 
         String questionsTaggingStr = mSharedPreferences.getString("questions_tagging", "0");
 

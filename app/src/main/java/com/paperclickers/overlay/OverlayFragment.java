@@ -20,11 +20,9 @@
  *
  */
 
-package com.paperclickers;
+package com.paperclickers.overlay;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -35,6 +33,9 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.paperclickers.Analytics;
+import com.paperclickers.R;
 
 /**
  * Created by eduseiti on 13/07/17.
@@ -87,7 +88,7 @@ public class OverlayFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                removeFragment(getFragmentManager(), true);
+                OverlayManager.removeFragment(getFragmentManager(), true);
             }
         });
 
@@ -104,7 +105,7 @@ public class OverlayFragment extends Fragment {
                     editor.putBoolean("development_dont_show_help", true);
                     editor.commit();
 
-                    removeFragment(getFragmentManager(), true);
+                    OverlayManager.removeFragment(getFragmentManager(), true);
 
                     mAnalytics.send_disabledOverlay();
                 }
@@ -112,26 +113,5 @@ public class OverlayFragment extends Fragment {
         });
 
         return fragmentView;
-    }
-
-
-
-    static void removeFragment(FragmentManager fragmentManager, boolean animate) {
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-        if (animate) {
-            fragmentTransaction.setCustomAnimations(R.animator.fragment_slide_up_enter, R.animator.fragment_slide_up_exit,
-                                                    R.animator.fragment_slide_up_enter, R.animator.fragment_slide_up_exit);
-        }
-
-        OverlayFragment fragment = (OverlayFragment) fragmentManager.findFragmentByTag(OverlayFragment.TAG);
-
-        if (fragment != null) {
-            fragmentTransaction.remove(fragment);
-
-            fragmentTransaction.commit();
-
-            fragmentManager.popBackStack();
-        }
     }
 }

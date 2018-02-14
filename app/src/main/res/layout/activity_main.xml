@@ -80,6 +80,11 @@
         android:text="@string/development_current_cycle"
         android:textColor="@android:color/white"
         android:textSize="10sp" >
-    </TextView>    
+    </TextView>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/container_overlay_capture"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

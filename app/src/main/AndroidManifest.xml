@@ -135,6 +135,7 @@
             android:name=".onboarding.OnboardingActivity"
             android:theme="@style/OnboardingTheme"
             android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
             android:label="Onboarding" >
         </activity>
     </application>

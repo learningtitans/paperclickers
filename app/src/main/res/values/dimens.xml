@@ -17,7 +17,7 @@
 	<dimen name="buttonStart_margin_top">50dp</dimen>
 	<dimen name="buttonStart_text_size">18sp</dimen>
     
-	<dimen name="buttonContainer_width">55dp</dimen>
+	<dimen name="buttonContainer_width">56dp</dimen>
 
 	<dimen name="img_answer_width">60dp</dimen>
 	<dimen name="img_answer_height">60dp</dimen>
@@ -30,10 +30,11 @@
 	<dimen name="button_finish_width">160dp</dimen>
 	<dimen name="button_finish_text_size">18sp</dimen>
     <dimen name="answer_icon_size">40dp</dimen>
-    <dimen name="grid_view_buttons_size">45dp</dimen>
-    <dimen name="grid_view_buttons_margin">10dp</dimen>
-    <dimen name="grid_view_icons_margin">20dp</dimen>
 
+    <dimen name="grid_view_buttons_size">45dp</dimen>
+    <dimen name="grid_view_buttons_margin">5dp</dimen>
+	<dimen name="grid_view_answers_icons_margin">8dp</dimen>
+    <dimen name="grid_view_icons_margin">20dp</dimen>
     <dimen name="grid_view_answers_margin">5dp</dimen>
     <dimen name="debug_code_frequencies_horizontal_margin">50dp</dimen>
     

@@ -183,25 +183,22 @@ public class OnboardingActivity extends FragmentActivity {
 
         log.d(TAG, "schedulePageSwitcherTimer. mTimerRunning = " + mTimerRunning);
 
-//        if (mCurrentPage < NUM_PAGES - 1) {
-//
-            if (mOnboardingPageSwitcherTimer != null) {
-                mOnboardingPageSwitcherTimer.cancel();
-                mOnboardingPageSwitcherTimer = null;
-            }
+        if (mOnboardingPageSwitcherTimer != null) {
+            mOnboardingPageSwitcherTimer.cancel();
+            mOnboardingPageSwitcherTimer = null;
+        }
 
-            mOnboardingPageSwitcherTimer = new Timer();
+        mOnboardingPageSwitcherTimer = new Timer();
 
-            mOnboardingPageSwitcherTimer.schedule(new TimerTask() {
+        mOnboardingPageSwitcherTimer.schedule(new TimerTask() {
 
-                public void run() {
+            public void run() {
 
-                    if (mPager != null) {
-                        runOnUiThread(switchPage);
-                    }
+                if (mPager != null) {
+                    runOnUiThread(switchPage);
                 }
-            }, (long) ONBOARDING_SHOW_TIMER);
-//        }
+            }
+        }, (long) ONBOARDING_SHOW_TIMER);
     }
 
 

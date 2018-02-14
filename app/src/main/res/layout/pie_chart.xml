@@ -25,40 +25,58 @@
     android:layout_height="match_parent"
     android:background="@android:color/background_light" >
 
-    <RelativeLayout
-        android:id="@+id/buttonContainer"
-        android:layout_width="@dimen/buttonContainer_width"
-        android:layout_height="fill_parent"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:background="#d4d1d1" >
+	<RelativeLayout
+		android:id="@+id/buttonContainer"
+		android:layout_width="@dimen/buttonContainer_width"
+		android:layout_height="fill_parent"
+		android:layout_alignParentStart="true"
+		android:layout_alignParentTop="true"
+		android:background="#d4d1d1" >
+	</RelativeLayout>
 
-        <Button
-            android:id="@+id/button_back"
-            style="@android:attr/buttonBarButtonStyle"
-            android:layout_width="@dimen/grid_view_buttons_size"
-            android:layout_height="@dimen/grid_view_buttons_size"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/grid_view_buttons_margin"
-            android:background="@drawable/sel_button_back"
-            android:visibility="visible" />        
-        
-    </RelativeLayout>
-    
-    <TextView
-        android:id="@+id/txtTotal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="@dimen/txt_total_margin_right"
-        android:layout_marginTop="@dimen/txt_total_margin_top"
-        android:singleLine="false"
-        android:text="@string/pie_chart_answers"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/txt_total_text_size" />
+	<LinearLayout
+		android:id="@+id/chart_container"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:gravity="start|center"
+		android:layout_toEndOf="@id/buttonContainer" >
+
+		<com.github.mikephil.charting.charts.PieChart
+			android:id="@+id/chart1"
+			android:layout_gravity="start"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" />
+	</LinearLayout>
+
+	<TextView
+		android:id="@+id/txtTotal"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentEnd="true"
+		android:layout_alignParentTop="true"
+		android:layout_centerVertical="true"
+		android:layout_marginEnd="@dimen/txt_total_margin_right"
+		android:layout_marginTop="@dimen/txt_total_margin_top"
+		android:singleLine="false"
+		android:text="@string/pie_chart_answers"
+		android:textColor="@android:color/black"
+		android:textSize="@dimen/txt_total_text_size" />
+
+
+	<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/container_overlay_chart"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent" />
+
+	<Button
+		android:id="@+id/button_back"
+		android:layout_width="@dimen/grid_view_buttons_size"
+		android:layout_height="@dimen/grid_view_buttons_size"
+		android:layout_alignParentTop="true"
+		android:layout_alignParentStart="true"
+		android:layout_marginStart="@dimen/grid_view_buttons_margin"
+		android:layout_marginTop="@dimen/grid_view_buttons_margin"
+		android:background="@drawable/sel_button_back" />
 
 	<Button
 	    android:id="@+id/button_finish"
@@ -72,19 +90,5 @@
 	    android:textColor="@drawable/press_button_text_color"
 	    android:textSize="@dimen/button_finish_text_size"
 	    android:fontFamily="sans-serif-medium"
-        android:background="@drawable/press_button"  />
-    
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="start|center"
-        android:layout_toEndOf="@id/buttonContainer"
-        android:layout_above="@id/button_finish">
-
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/chart1"
-            android:layout_gravity="start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+        android:background="@drawable/press_button" />
 </RelativeLayout>
