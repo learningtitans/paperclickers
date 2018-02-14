@@ -26,6 +26,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 
 import com.paperclickers.Analytics;
@@ -74,34 +75,55 @@ public class OverlayManager {
                         fragmentTransaction.setCustomAnimations(R.animator.fragment_slide_up_enter, R.animator.fragment_slide_up_exit,
                                 R.animator.fragment_slide_up_enter, R.animator.fragment_slide_up_exit);
 
-                        int containerViewId = 0;
+                        int containerViewId = -1;
+                        int overlayLayoutId = -1;
+                        int overlayViewId   = -1;
 
                         switch (whichOverlay) {
                             case INITIAL_SCREEN:
 
-                                containerViewId = R.id.container_overlay_start_print;
-                                containerViewId = R.id.container_overlay_start_share;
+                                containerViewId = R.id.overlay_container_start_print;
+                                overlayLayoutId = R.layout.overlay_start_screen_print;
+                                overlayViewId   = R.id.overlay_start_screen_print;
+
+                                containerViewId = R.id.overlay_container_start_share;
+                                overlayLayoutId = R.layout.overlay_start_screen_share;
+                                overlayViewId   = R.id.overlay_start_screen_share;
 
                                 break;
 
                             case CAPTURING_SCREEN:
 
-                                containerViewId = R.id.container_overlay_capture;
+                                containerViewId = R.id.overlay_container_capture;
+                                overlayLayoutId = R.layout.overlay_capture_screen;
+                                overlayViewId   = R.id.overlay_capture_screen;
 
                                 break;
 
                             case ANSWERS_SCREEN:
 
-                                containerViewId = R.id.container_overlay_answers;
+                                containerViewId = R.id.overlay_container_answers;
+                                overlayLayoutId = R.layout.overlay_answers_screen;
+                                overlayViewId   = R.id.overlay_answers_screen;
 
                                 break;
 
                             case CHART_SCREEN:
 
-                                containerViewId = R.id.container_overlay_chart;
+                                containerViewId = R.id.overlay_container_chart;
+                                overlayLayoutId = R.layout.overlay_chart_screen;
+                                overlayViewId   = R.id.overlay_chart_screen;
 
                                 break;
                         }
+
+                        Bundle args = new Bundle();
+
+                        args.putInt("overlay", whichOverlay);
+                        args.putInt("layout_id", overlayLayoutId);
+                        args.putInt("view_id", overlayViewId);
+
+                        fragment.setArguments(args);
 
                         fragmentTransaction.add(containerViewId, fragment, OverlayFragment.TAG);
                         fragmentTransaction.addToBackStack(OverlayFragment.TAG);

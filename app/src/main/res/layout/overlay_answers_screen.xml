@@ -20,7 +20,7 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 <com.paperclickers.CustomRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/overlay_main_view"
+    android:id="@+id/overlay_answers_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -28,52 +28,41 @@
     android:background="#dd223823" >
 
     <TextView
-        android:id="@+id/overlay_line_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Overlay line 1"
-        android:textColor="@android:color/white"
-        android:textSize="30sp"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="end"
-        android:layout_marginTop="60sp"
-        android:layout_marginEnd="@dimen/settings_icon_left_align" />
-
-    <TextView
-        android:id="@+id/overlay_line_2"
+        android:id="@+id/overlay_return_capture_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="To print students' codes, share answers and more..."
+        android:text="@string/overlay_answers_screen_return_txt"
         android:textColor="@android:color/white"
-        android:textSize="30sp"
+        android:textSize="@dimen/overlay_text_size"
+        android:gravity="start"
+        android:layout_marginTop="70sp"
+        android:layout_marginStart="40sp"
+        android:layout_marginEnd="30sp" />
+
+    <TextView
+        android:id="@+id/overlay_scroll_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:text="@string/overlay_answers_screen_scroll_txt"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/overlay_text_size"
         android:gravity="end"
-        android:layout_below="@+id/overlay_line_1"
-        android:layout_marginTop="60sp"
         android:layout_marginStart="20sp"
-        android:layout_marginEnd="20sp" />
-
-    <CheckBox
-              android:id="@+id/checkbox_dont_show_overlay"
-              android:layout_marginBottom="20sp"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginEnd="20dp"
-              android:layout_alignParentEnd="true"
-              android:layout_alignParentBottom="true"
-              android:layout_gravity="end"
-              android:button="@drawable/custom_checkbox" />
+        android:layout_marginEnd="80sp" />
 
     <TextView
-        android:id="@+id/overlay_dont_show_anymore"
+        android:id="@+id/overlay_chart_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/checkbox_dont_show_overlay"
-        android:text="Thanks, don't show anymore"
+        android:text="@string/overlay_answers_screen_chart_txt"
         android:textColor="@android:color/white"
-        android:textSize="20sp"
-        android:gravity="end"
-        android:layout_toStartOf="@+id/checkbox_dont_show_overlay"
-        android:layout_marginEnd="5sp" />
-
+        android:textSize="@dimen/overlay_text_size"
+        android:gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="70sp"
+        android:layout_marginTop="60sp"
+        android:layout_marginStart="40sp"
+        android:layout_marginEnd="20sp" />
 
 </com.paperclickers.CustomRelativeLayout>

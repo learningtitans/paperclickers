@@ -37,7 +37,9 @@
     <dimen name="grid_view_icons_margin">20dp</dimen>
     <dimen name="grid_view_answers_margin">5dp</dimen>
     <dimen name="debug_code_frequencies_horizontal_margin">50dp</dimen>
-    
+
+	<dimen name="overlay_text_size">25sp</dimen>
+
     <integer name="question_tag_max_length">256</integer>
 	
 </resources>

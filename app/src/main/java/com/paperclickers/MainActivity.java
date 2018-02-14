@@ -64,38 +64,6 @@ public class MainActivity extends Activity {
 
 
 
-//	void checkAndTurnOnOverlayTimer() {
-//		mDontShowOverlay = mSharedPreferences.getBoolean("development_dont_show_help", false);
-//
-//		if (mOpenOverlayTimer == null) {
-//			if (!mDontShowOverlay) {
-//				mOpenOverlayTimer = new Timer();
-//
-//				mOpenOverlayTimer.schedule(new TimerTask() {
-//
-//					public void run() {
-//						FragmentManager fragmentManager = getFragmentManager();
-//						FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//
-//						OverlayFragment fragment = new OverlayFragment();
-//
-//						fragmentTransaction.setCustomAnimations(R.animator.fragment_slide_up_enter, R.animator.fragment_slide_up_exit,
-//								R.animator.fragment_slide_up_enter, R.animator.fragment_slide_up_exit);
-//
-//						fragmentTransaction.add(R.id.overlayFragmentContainer, fragment, OverlayFragment.TAG);
-//						fragmentTransaction.addToBackStack(OverlayFragment.TAG);
-//
-//						fragmentTransaction.commit();
-//
-//						mOpenOverlayTimer = null;
-//					}
-//				}, (long) SHOW_OVERLAY_TIMER);
-//			}
-//		}
-//	}
-
-
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 

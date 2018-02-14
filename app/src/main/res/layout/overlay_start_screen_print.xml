@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Paperclickers - Affordable solution for classroom response system.
+
+ Copyright (C) 2015-2018 Eduardo Valle Jr <dovalle@dca.fee.unicamp.br>
+ Copyright (C) 2015-2018 Eduardo Seiti de Oliveira <eduseiti@dca.fee.unicamp.br>
+
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2
+ of the License, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-->
+<com.paperclickers.CustomRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/overlay_start_screen_print"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:elevation="20sp"
+    android:background="#dd223823" >
+
+    <TextView
+        android:id="@+id/overlay_print_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/overlay_start_screen_print_txt"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/overlay_text_size"
+        android:gravity="end"
+        android:layout_marginTop="150sp"
+        android:layout_marginStart="20sp"
+        android:layout_marginEnd="20sp" />
+
+    <TextView
+        android:id="@+id/overlay_start_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/overlay_start_screen_start_txt"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/overlay_text_size"
+        android:gravity="center_horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="150sp"
+        android:layout_marginTop="60sp"
+        android:layout_marginStart="20sp"
+        android:layout_marginEnd="20sp" />
+
+</com.paperclickers.CustomRelativeLayout>

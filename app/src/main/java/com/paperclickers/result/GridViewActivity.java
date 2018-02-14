@@ -48,6 +48,7 @@ import com.paperclickers.AudienceResponses;
 import com.paperclickers.SettingsActivity;
 import com.paperclickers.camera.CameraEmulator;
 import com.paperclickers.fiducial.PaperclickersScanner;
+import com.paperclickers.overlay.OverlayManager;
 import com.paperclickers.result.GridViewAdapter;
 import com.paperclickers.R;
 import com.paperclickers.log;
@@ -69,6 +70,9 @@ public class GridViewActivity extends Activity {
 	private boolean mHasChangedAnswers = false;
 
 	private SharedPreferences mPreferenceManager = null;
+
+	private OverlayManager mOverlayManager = null;
+
 
 
 	private void checkChangesAndSaveAnswersLog() {
@@ -121,6 +125,8 @@ public class GridViewActivity extends Activity {
 		mAnswersLog.createAndWriteLog(mDetectedAnswers);
 
 		mAnalytics = new Analytics(getApplicationContext());
+
+		mOverlayManager = new OverlayManager(getApplicationContext(), getFragmentManager());
 
 		mPreferenceManager = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -216,6 +222,8 @@ public class GridViewActivity extends Activity {
 				finish();
 			}
 		});
+
+		mOverlayManager.checkAndTurnOnOverlayTimer(OverlayManager.ANSWERS_SCREEN);
 	}
 
 	
@@ -250,6 +258,8 @@ public class GridViewActivity extends Activity {
 
 			startActivity(i);			
 		}
+
+		mOverlayManager.removeOverlay();
 	}
 	
 	
@@ -262,5 +272,7 @@ public class GridViewActivity extends Activity {
 		log.d(TAG, "Resuming...");
 
 		mHasChangedAnswers = false;
+
+		mOverlayManager.checkAndTurnOnOverlayTimer(OverlayManager.ANSWERS_SCREEN);
 	}
 }

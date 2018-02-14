@@ -4,6 +4,17 @@
     <string name="app_name">paper\u200bclickers</string>
     <string name="app_title">paperclickers</string>
 
+    <string name="get_started">Iniciar paperclickers</string>
+    <string name="include_tips_in_settings">Siempre puede habilitar el uso guiado\nen la configuración</string>
+
+    <string name="start_button_with_tips">uso guiado</string>
+    <string name="start_button_no_tips">sin consejos de uso</string>
+
+    <string name="onboarding_page_1_description">Easy way to survey\nyour students</string>
+    <string name="onboarding_page_2_description">Print and distribute\nthe answering cards</string>
+    <string name="onboarding_page_3_description">Ask a question\nand collect the answers</string>
+    <string name="onboarding_page_4_description">Keep students performance history</string>
+
     <string name="start_button">inicio</string>
     <string name="save_question_title">Pregunta para la clase</string>
     <string name="done_button">nueva pregunta</string>
