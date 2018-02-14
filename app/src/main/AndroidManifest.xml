@@ -120,6 +120,7 @@
                 <action android:name="com.paperclickers.intent.action.PRINT_CODES" />
                 <action android:name="com.paperclickers.intent.action.DELETE_ANSWERS_LOG" />
                 <action android:name="com.paperclickers.intent.action.SHARE_ANSWERS_LOG" />
+                <action android:name="com.paperclickers.intent.action.RESET_GUIDED_USAGE" />
             </intent-filter>
             
         </activity>

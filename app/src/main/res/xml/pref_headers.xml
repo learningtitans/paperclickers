@@ -12,7 +12,7 @@
         android:fragment="com.paperclickers.SettingsActivity$PrintCodesPreferenceFragment"
         android:title="@string/pref_header_print_codes" />
     <header
-        android:fragment="com.paperclickers.SettingsActivity$UsageAnalyticsPreferenceFragment"
-        android:title="@string/pref_title_usage_analytics" />
+        android:fragment="com.paperclickers.SettingsActivity$GeneralBehaviorPreferenceFragment"
+        android:title="@string/pref_header_general_behavior" />
 
 </preference-headers>

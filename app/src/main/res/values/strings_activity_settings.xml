@@ -112,9 +112,9 @@
     <string name="development_mode_on">Development mode ON</string>
     <string name="development_mode_off">Development mode OFF</string>
 
-    <string name="pref_header_usage_analytics">Application analytics</string>
+    <string name="pref_header_general_behavior">Application general behavior</string>a
 
-    <string name="pref_title_usage_analytics">Usage data collection</string>
+    <string name="pref_title_usage_analytics">Usage data collection for development</string>
 
     <string-array name="pref_usage_analytics_sequence_titles">
         <item>Enabled</item>
@@ -124,6 +124,10 @@
         <item>0</item>
         <item>1</item>
     </string-array>
+
+    <string name="pref_title_reset_guide">Restart guided usage</string>
+
+    <string name="usage_guide_reset_message">Usage guide will be shown</string>
 
     <string name="pref_dont_show_help_title">Don\'t show help</string>
     <string name="pref_dont_show_help_summary">Don\'t show instructions overlay</string>

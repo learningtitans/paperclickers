@@ -55,7 +55,7 @@
 
     <string name="overlay_start_screen_share_txt">Access settings to share the answers log</string>
 
-    <string name="overlay_capture_screen_txt">The camera is too close!\n\nStudents\' answering codes are better detected at least from 2 meters distance</string>
+    <string name="overlay_capture_screen_txt">Remember to stay at least 2 meters distance from the answering cards!</string>
 
     <string name="overlay_answers_screen_return_txt">Return to the capture screen if there are missing answers</string>
     <string name="overlay_answers_screen_scroll_txt">Scroll vertically the list to check all the answers</string>
@@ -63,7 +63,5 @@
 
     <string name="overlay_chart_screen_return_txt">Return to the answers</string>
     <string name="overlay_chart_screen_new_txt">Start a new question</string>
-
-    <string name="start_overlay_dont_show_anymore">Thanks, don\'t show anymore</string>
 
 </resources>

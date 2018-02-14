@@ -23,7 +23,6 @@
 
 package com.paperclickers.result;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +31,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -48,16 +46,13 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.utils.ValueFormatter;
 
 import com.paperclickers.MainActivity;
+import com.paperclickers.overlay.OverlayManager;
 
 
 public class PieChartActivity extends Activity {
 
-	static String TAG          = "PieChartActivity";
+	static String TAG = "PieChartActivity";
 	
-	//Information about the saved logfile
-	static String LOG_FILENAME = "AnswersLog.csv";
-	static String LOG_FILEPATH = "/PaperClickers";
-
 	private HashMap<Integer, String> mDetectedAnswers;
 
 	private PieChart mChart;
@@ -68,7 +63,9 @@ public class PieChartActivity extends Activity {
 						   PaperclickersScanner.COLOR_C, 
 						   PaperclickersScanner.COLOR_D };
 
-    
+    private OverlayManager mOverlayManager = null;
+
+
     
     private int calculateTotal(int[] data_values) {
         int total = 0;
@@ -107,16 +104,15 @@ public class PieChartActivity extends Activity {
 
     
     
-    private void nextActivity() {
-        
-        Intent i = new Intent(getApplicationContext(), MainActivity.class);
-        
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        i.putExtra("restartingInternally", true);
-        
-        startActivity(i);
+    @Override
+    public void onBackPressed() {
+        mOverlayManager.markOverlayAsShown();
+
+        finish();
+
+        super.onBackPressed();
     }
-    
+
     
     
 	@SuppressWarnings("unchecked")
@@ -138,8 +134,8 @@ public class PieChartActivity extends Activity {
 			log.e(TAG, "PieChart activity called with no codes hashmap!!!");
 			
 			finish();
-		}				
-		
+		}
+
 		// pie chart parameters
 		final int data_values[] = countAnswers();
 		
@@ -149,13 +145,22 @@ public class PieChartActivity extends Activity {
 		
 		total.setText(Integer.toString(tt) + " " + getResources().getText(R.string.pie_chart_answers));
 
-		
-		Button finish = (Button) findViewById(R.id.button_finish);
+        mOverlayManager = new OverlayManager(getApplicationContext(), getFragmentManager());
+
+        Button finish = (Button) findViewById(R.id.button_finish);
 		finish.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				nextActivity();
+
+			    mOverlayManager.markOverlayAsShown();
+
+                Intent i = new Intent(getApplicationContext(), MainActivity.class);
+
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.putExtra("restartingInternally", true);
+
+                startActivity(i);
 			}
 		});
 
@@ -165,11 +170,15 @@ public class PieChartActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
+
+                mOverlayManager.markOverlayAsShown();
+
 				finish();
 			}
 		});
 		
-		
+
+
 		mChart = (PieChart) findViewById(R.id.chart1);
 		
 		mChart.setUsePercentValues(true);
@@ -187,18 +196,32 @@ public class PieChartActivity extends Activity {
 		Legend l = mChart.getLegend();
 
 		l.setEnabled(false);
+
+        mOverlayManager.checkAndTurnOnOverlayTimer(OverlayManager.CHART_SCREEN);
 	}
 
 
-	
-	@Override
-	public void onBackPressed() {
-		
-		finish();
-	}
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        mOverlayManager.removeOverlay();
+    }
 
 
-    
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        log.d(TAG, "Resuming...");
+
+        mOverlayManager.checkAndTurnOnOverlayTimer(OverlayManager.CHART_SCREEN);
+    }
+
+
+
     private void setData(int count, final int[] data_values) {
 
         ArrayList<Entry> yVals1 = new ArrayList<Entry>();

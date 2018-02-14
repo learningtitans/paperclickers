@@ -44,11 +44,11 @@
 	    <Preference 
 	        android:title="@string/pref_title_share_printed_codes" 
 	        android:key="share_printed_codes">
+
 	        <intent 
 		        android:action="com.paperclickers.intent.action.PRINT_CODES"
 		        android:targetPackage="com.paperclickers"
 		        android:targetClass="com.paperclickers.SettingsActivity" />
-	        
 	    </Preference>
 	        
     </PreferenceCategory>

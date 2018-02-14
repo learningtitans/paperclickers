@@ -38,6 +38,9 @@ import com.paperclickers.Analytics;
 import com.paperclickers.R;
 import com.paperclickers.log;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by eduseiti on 13/07/17.
  */
@@ -47,7 +50,9 @@ public class OverlayFragment extends Fragment {
     final static String TAG = "OverlayFragment";
 
     private Analytics mAnalytics = null;
+    private Timer mCloseOverlayTimer = null;
 
+    private int mWhichOverlay;
 
 
     void buildAnswersScreenOverlay(View whichView) {
@@ -67,31 +72,58 @@ public class OverlayFragment extends Fragment {
     }
 
 
-
     void buildCapturingScreenOverlay(View whichView) {
+        Typeface overlayTypeface = Typeface.createFromAsset(getActivity().getAssets(), "ArchitectsDaughter.ttf");
 
+        TextView line = (TextView) whichView.findViewById(R.id.overlay_too_close_text);
+
+        line.setTypeface(overlayTypeface);
     }
-
 
 
     void buildChartScreenOverlay(View whichView) {
-
-    }
-
-
-
-    void buildStartScreenOverlay(View whichView) {
         Typeface overlayTypeface = Typeface.createFromAsset(getActivity().getAssets(), "ArchitectsDaughter.ttf");
 
-        TextView line = (TextView) whichView.findViewById(R.id.overlay_print_text);
+        TextView line = (TextView) whichView.findViewById(R.id.overlay_return_answers_text);
 
         line.setTypeface(overlayTypeface);
 
-        line = (TextView) whichView.findViewById(R.id.overlay_start_text);
+        line = (TextView) whichView.findViewById(R.id.overlay_new_text);
 
         line.setTypeface(overlayTypeface);
     }
 
+
+    void buildStartScreenOverlay(View whichView, int whichLayoutId) {
+        Typeface overlayTypeface = Typeface.createFromAsset(getActivity().getAssets(), "ArchitectsDaughter.ttf");
+
+        TextView line = null;
+
+        if (whichLayoutId == R.layout.overlay_start_screen_print) {
+            line = (TextView) whichView.findViewById(R.id.overlay_print_text);
+
+            line.setTypeface(overlayTypeface);
+
+            line = (TextView) whichView.findViewById(R.id.overlay_start_text);
+
+            line.setTypeface(overlayTypeface);
+        } else {
+            mWhichOverlay = OverlayManager.INITIAL_SCREEN_SHARE;
+
+            line = (TextView) whichView.findViewById(R.id.overlay_share_text);
+
+            line.setTypeface(overlayTypeface);
+        }
+    }
+
+
+
+    void markOverlayAsShown() {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+
+        editor.putBoolean(OverlayManager.OVERLAY_ALREADY_SHOWN_PREFERENCES[mWhichOverlay], true);
+        editor.commit();
+    }
 
 
 
@@ -100,25 +132,26 @@ public class OverlayFragment extends Fragment {
 
         mAnalytics = new Analytics(getActivity().getApplicationContext());
 
-        int whichOverlay         = getArguments().getInt("overlay", 0);
-        int whichOverlayLayoutId = getArguments().getInt("layout_id", 0);
-        int whichOverlayViewId   = getArguments().getInt("view_id", 0);
+        mWhichOverlay = getArguments().getInt("overlay", 0);
 
-        log.d(TAG, String.format("whichOverlay: %d - whichOverlayViewId: %x", whichOverlay, whichOverlayViewId));
+        int whichOverlayLayoutId = getArguments().getInt("layout_id", 0);
+        int whichOverlayViewId = getArguments().getInt("view_id", 0);
+
+        log.d(TAG, String.format("whichOverlay: %d - whichOverlayViewId: %x", mWhichOverlay, whichOverlayViewId));
 
         // Inflate the layout for this fragment
 
         View fragmentView = inflater.inflate(whichOverlayLayoutId, container, false);
 
 
-        switch (whichOverlay) {
+        switch (mWhichOverlay) {
             case OverlayManager.INITIAL_SCREEN:
 
-                buildStartScreenOverlay(fragmentView);
+                buildStartScreenOverlay(fragmentView, whichOverlayLayoutId);
 
                 break;
 
-            case OverlayManager.CAPTURING_SCREEN:
+            case OverlayManager.CAPTURE_SCREEN:
 
                 buildCapturingScreenOverlay(fragmentView);
 
@@ -145,30 +178,46 @@ public class OverlayFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                if (mCloseOverlayTimer != null) {
+                    mCloseOverlayTimer.cancel();
+                    mCloseOverlayTimer = null;
+                }
+
+                markOverlayAsShown();
+
                 OverlayManager.removeFragment(getFragmentManager(), true);
             }
         });
 
 
-//        CheckBox dontShowOverlay = (CheckBox) fragmentView.findViewById(R.id.checkbox_dont_show_overlay);
-//
-//        dontShowOverlay.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                if (((CheckBox) v).isChecked()) {
-//                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
-//
-//                    editor.putBoolean("development_dont_show_help", true);
-//                    editor.commit();
-//
-//                    OverlayManager.removeFragment(getFragmentManager(), true);
-//
-//                    mAnalytics.send_disabledOverlay();
-//                }
-//            }
-//        });
+        /* Schedule the overlay close timer */
+
+        mCloseOverlayTimer = new Timer();
+
+        mCloseOverlayTimer.schedule(new TimerTask() {
+
+            public void run() {
+                mCloseOverlayTimer = null;
+
+                markOverlayAsShown();
+
+                OverlayManager.removeFragment(getFragmentManager(), true);
+            }
+        }, (long) OverlayManager.HIDE_OVERLAY_TIMER);
+
 
         return fragmentView;
+    }
+
+
+
+    @Override
+    public void onDestroyView() {
+        if (mCloseOverlayTimer != null) {
+            mCloseOverlayTimer.cancel();
+            mCloseOverlayTimer = null;
+        }
+
+        super.onDestroyView();
     }
 }

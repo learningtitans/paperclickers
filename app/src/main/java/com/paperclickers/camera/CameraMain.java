@@ -31,6 +31,7 @@ import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
 import com.paperclickers.log;
+import com.paperclickers.overlay.OverlayManager;
 
 /**
  * Real camera hardware Activity implementation - provides audience response with image frames from
@@ -46,9 +47,7 @@ public class CameraMain extends CameraAbstraction implements Camera.PreviewCallb
 	private Camera mCamera;
 	private CameraPreview mCameraPreview;
 
-	float[] mFocusDistances = new float[3];
-
-	boolean mUseDistanceEnabledMorpho = false;
+	private OverlayManager mOverlayManager = null;
 
 
 
@@ -71,11 +70,21 @@ public class CameraMain extends CameraAbstraction implements Camera.PreviewCallb
 
 
 	@Override
+	public void onBackPressed() {
+		mOverlayManager.markOverlayAsShown();
+
+		super.onBackPressed();
+	}
+
+
+
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mUseDistanceEnabledMorpho = mSharedPreferences.getBoolean("development_distance_enabled_morpho", false);
+		mOverlayManager = new OverlayManager(getApplicationContext(), getFragmentManager());
 	}
+
 
 
 	@Override
@@ -83,26 +92,19 @@ public class CameraMain extends CameraAbstraction implements Camera.PreviewCallb
 		super.onPause();
 
 		releaseCamera();
+
+		if (mUserRequestedEnd) {
+			mOverlayManager.markOverlayAsShown();
+		}
+
+		mOverlayManager.removeOverlay();
 	}
 
 	
 	
 	@Override
 	public void onPreviewFrame(byte[] data, Camera camera) {
-
-		boolean useMorpho = true;
-
-		if (mUseDistanceEnabledMorpho) {
-			mCamera.getParameters().getFocusDistances(mFocusDistances);
-
-			log.d(TAG, String.format("Focus distances: %f, %f, %f", mFocusDistances[0], mFocusDistances[1], mFocusDistances[2]));
-
-			if (mFocusDistances[1] > 1.0f) {
-				useMorpho = false;
-			}
-		}
-
-		onNewFrame(data, useMorpho);
+		onNewFrame(data, true);
 	}
 
 	
@@ -113,6 +115,8 @@ public class CameraMain extends CameraAbstraction implements Camera.PreviewCallb
 
 		setCamera();
 		setCameraPreview();
+
+		mOverlayManager.checkAndTurnOnOverlayTimer(OverlayManager.CAPTURE_SCREEN);
 	}
 	
 	
@@ -177,7 +181,8 @@ public class CameraMain extends CameraAbstraction implements Camera.PreviewCallb
                 } else {
                     cameraParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
                 }
-				
+
+
 				mCamera.setParameters(cameraParameters);
 				
 				int displayRotation = getWindowManager().getDefaultDisplay().getRotation();

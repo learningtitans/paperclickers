@@ -89,6 +89,15 @@ public class GridViewActivity extends Activity {
 
 
 	@Override
+	public void onBackPressed() {
+		mOverlayManager.markOverlayAsShown();
+
+		super.onBackPressed();
+	}
+
+
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    
 	    GridViewAdapter imageAdapter;
@@ -205,6 +214,8 @@ public class GridViewActivity extends Activity {
 
 				checkChangesAndSaveAnswersLog();
 
+				mOverlayManager.markOverlayAsShown();
+
 				Intent i = new Intent(getApplicationContext(), PieChartActivity.class);
 				i.putExtra("detectedAnswers", mDetectedAnswers);
 
@@ -218,6 +229,8 @@ public class GridViewActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
+
+				mOverlayManager.markOverlayAsShown();
 
 				finish();
 			}

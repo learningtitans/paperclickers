@@ -26,7 +26,7 @@
       android:valueTo="-1.0"
       android:valueType="floatType"
       android:propertyName="yFraction"
-      android:duration="@android:integer/config_longAnimTime" />
+      android:duration="@android:integer/config_mediumAnimTime" />
 
    <objectAnimator
       android:interpolator="@android:interpolator/accelerate_decelerate"
@@ -34,5 +34,5 @@
       android:valueTo="0.0"
       android:valueType="floatType"
       android:propertyName="alpha"
-      android:duration="@android:integer/config_longAnimTime" />
+      android:duration="@android:integer/config_mediumAnimTime" />
 </set>

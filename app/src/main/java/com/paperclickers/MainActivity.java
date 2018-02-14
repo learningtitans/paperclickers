@@ -65,6 +65,15 @@ public class MainActivity extends Activity {
 
 
 	@Override
+	public void onBackPressed() {
+		mOverlayManager.markOverlayAsShown();
+
+		super.onBackPressed();
+	}
+
+
+
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
@@ -127,10 +136,7 @@ public class MainActivity extends Activity {
 				if (!SettingsActivity.isDevelopmentMode()) {
 					// Disable help overlay, since has entered settings
 
-					SharedPreferences.Editor editor = mSharedPreferences.edit();
-
-					editor.putBoolean("development_dont_show_help", true);
-					editor.commit();
+					mOverlayManager.markOverlayAsShown();
 				}
 
 				Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
@@ -146,6 +152,8 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
+
+				mOverlayManager.markOverlayAsShown();
 
 			    Intent newActivity;
 			    

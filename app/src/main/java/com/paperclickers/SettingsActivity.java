@@ -53,7 +53,6 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
-import android.widget.CheckBox;
 import android.widget.Toast;
 import android.support.v4.app.NavUtils;
 
@@ -64,9 +63,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.paperclickers.R;
-import com.paperclickers.camera.CameraMain;
 import com.paperclickers.fiducial.TopCode;
+import com.paperclickers.overlay.OverlayManager;
 
 
 /**
@@ -102,6 +100,7 @@ public class SettingsActivity extends PreferenceActivity {
 	public static String PRINT_CODES_INTENT = "com.paperclickers.intent.action.PRINT_CODES";
 	public static String SHARE_ANSWERS_LOG  = "com.paperclickers.intent.action.SHARE_ANSWERS_LOG";
 	public static String DELETE_ANSWERS_LOG = "com.paperclickers.intent.action.DELETE_ANSWERS_LOG";
+	public static String RESET_GUIDED_USAGE = "com.paperclickers.intent.action.RESET_GUIDED_USAGE";
 	
 	
 	// Used TopCodes defined according to the list provided by Michael Horn in
@@ -214,7 +213,24 @@ public class SettingsActivity extends PreferenceActivity {
                 }
             }
         }
-    }	
+    }
+
+
+
+	public static class GeneralBehaviorPreferenceFragment extends PreferenceFragment {
+
+		@Override
+		public void onCreate(Bundle savedInstanceState) {
+
+			super.onCreate(savedInstanceState);
+
+			log.d(TAG, "----> GeneralBehaviorPreferenceFragment");
+
+			addPreferencesFromResource(R.xml.pref_general_behavior);
+
+			bindPreferenceSummaryToValue(findPreference("usage_analytics"));
+		}
+	}
 
     
 
@@ -255,23 +271,6 @@ public class SettingsActivity extends PreferenceActivity {
 			    findPreference("print_codes_per_page").setEnabled(false);
 			    findPreference("print_recto_verso_sequence").setEnabled(false);
 			}
-		}
-	}
-
-
-
-	public static class UsageAnalyticsPreferenceFragment extends PreferenceFragment {
-
-		@Override
-		public void onCreate(Bundle savedInstanceState) {
-
-			super.onCreate(savedInstanceState);
-
-			log.d(TAG, "----> UsageAnalyticsPreferenceFragment");
-
-			addPreferencesFromResource(R.xml.pref_analytics);
-
-			bindPreferenceSummaryToValue(findPreference("usage_analytics"));
 		}
 	}
 
@@ -440,7 +439,20 @@ public class SettingsActivity extends PreferenceActivity {
         	} else {
     			Toast.makeText(getApplicationContext(), getResources().getText(R.string.no_answers_log), Toast.LENGTH_LONG).show();
         	}        	
-        }
+        } else if (newIntent.getAction().equals(RESET_GUIDED_USAGE)) {
+
+        	SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+
+			editor.putBoolean(OverlayManager.OVERLAY_ALREADY_SHOWN_PREFERENCES[OverlayManager.INITIAL_SCREEN], false);
+			editor.putBoolean(OverlayManager.OVERLAY_ALREADY_SHOWN_PREFERENCES[OverlayManager.INITIAL_SCREEN_SHARE], false);
+			editor.putBoolean(OverlayManager.OVERLAY_ALREADY_SHOWN_PREFERENCES[OverlayManager.CAPTURE_SCREEN], false);
+			editor.putBoolean(OverlayManager.OVERLAY_ALREADY_SHOWN_PREFERENCES[OverlayManager.ANSWERS_SCREEN], false);
+			editor.putBoolean(OverlayManager.OVERLAY_ALREADY_SHOWN_PREFERENCES[OverlayManager.CHART_SCREEN], false);
+
+			editor.commit();
+
+			Toast.makeText(getApplicationContext(), getResources().getText(R.string.usage_guide_reset_message), Toast.LENGTH_LONG).show();
+		}
     }
 
 		
@@ -1208,7 +1220,7 @@ public class SettingsActivity extends PreferenceActivity {
 		addPreferencesFromResource(R.xml.pref_general);
 		addPreferencesFromResource(R.xml.pref_answers_log);
 		addPreferencesFromResource(R.xml.pref_print_codes);
-		addPreferencesFromResource(R.xml.pref_analytics);
+		addPreferencesFromResource(R.xml.pref_general_behavior);
 
 		// Bind the summaries of EditText/List/Dialog/Ringtone preferences to
 		// their values. When their values change, their summaries are updated
