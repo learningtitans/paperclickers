@@ -45,6 +45,6 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="80dp"
         android:layout_marginTop="95dp"
-        android:src="@drawable/short_arrow_left_up" />
+        android:src="@drawable/short_arrow_right_up" />
 
 </com.paperclickers.CustomRelativeLayout>
