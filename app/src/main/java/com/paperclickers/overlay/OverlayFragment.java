@@ -146,6 +146,7 @@ public class OverlayFragment extends Fragment {
 
         switch (mWhichOverlay) {
             case OverlayManager.INITIAL_SCREEN:
+            case OverlayManager.INITIAL_SCREEN_SHARE:
 
                 buildStartScreenOverlay(fragmentView, whichOverlayLayoutId);
 

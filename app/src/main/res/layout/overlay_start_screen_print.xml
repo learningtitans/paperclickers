@@ -53,4 +53,21 @@
         android:layout_marginStart="20sp"
         android:layout_marginEnd="20sp" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="80dp"
+        android:layout_marginTop="95dp"
+        android:src="@drawable/short_arrow_left_up" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="100dp"
+        android:src="@drawable/short_arrow_donw" />
+
+
 </com.paperclickers.CustomRelativeLayout>

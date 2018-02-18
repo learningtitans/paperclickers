@@ -42,7 +42,7 @@ import java.util.TimerTask;
 public class OverlayManager {
 
     static final int SHOW_OVERLAY_TIMER = 1500;
-    static final int HIDE_OVERLAY_TIMER = 5000;
+    static final int HIDE_OVERLAY_TIMER = 7000;
 
     public static final String OVERLAY_ALREADY_SHOWN_PREFERENCES[] = {
             "overlay_start_screen_print_already_shown",

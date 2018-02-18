@@ -51,8 +51,18 @@
 
     <string name="paperclickers_about">file:///android_asset/paperclickers_about_fr-fr.html</string>
 
-    <string name="start_overlay_settings_icon">Utiliser les paramètres\u2192</string>
-    <string name="start_overlay_settings_text">Pour imprimer les codes des élèves, exporter les réponses et plus\u2026</string>
-    <string name="start_overlay_dont_show_anymore">Merci, ne me montre plus</string>
+    <string name="overlay_start_screen_print_txt">Utiliser les paramètres pour imprimer les cartes de réponse</string>
+    <string name="overlay_start_screen_start_txt">Commencez la capture des réponses</string>
+
+    <string name="overlay_start_screen_share_txt">Utiliser les paramètres pour partager le journal des réponses</string>
+
+    <string name="overlay_capture_screen_txt">N\'oubliez pas de rester à au moins 2 mètres des cartes de réponses!</string>
+
+    <string name="overlay_answers_screen_return_txt">Retournez à la capture si vous manquez des réponses</string>
+    <string name="overlay_answers_screen_scroll_txt">Faites défiler verticalement la liste pour vérifier toutes les réponses</string>
+    <string name="overlay_answers_screen_chart_txt">Voir le graphique des réponses</string>
+
+    <string name="overlay_chart_screen_return_txt">Retournez aux réponses</string>
+    <string name="overlay_chart_screen_new_txt">Poser une nouvelle question</string>
 
 </resources>
