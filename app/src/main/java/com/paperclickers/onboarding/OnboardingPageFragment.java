@@ -65,7 +65,7 @@ public class OnboardingPageFragment extends Fragment {
 
         switch (position) {
             case 1:
-                imageToUse = getResources().getDrawable(R.drawable.icon_b);
+                imageToUse = getResources().getDrawable(R.drawable.topcode);
 
                 pageHeader.setVisibility(View.GONE);
                 pageDescriptionr.setText(R.string.onboarding_page_2_description);
@@ -73,7 +73,7 @@ public class OnboardingPageFragment extends Fragment {
                 break;
 
             case 2:
-                imageToUse = getResources().getDrawable(R.drawable.icon_c);
+                imageToUse = getResources().getDrawable(R.drawable.classroom);
 
                 pageHeader.setVisibility(View.GONE);
                 pageDescriptionr.setText(R.string.onboarding_page_3_description);
