@@ -86,21 +86,21 @@ public class MainActivity extends Activity {
 
 		setContentView(R.layout.start_activity);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		
-		Bundle intentExtras = getIntent().getExtras();
-		
-		boolean restartedInternally = false;
-		
-		if (intentExtras != null) {
-	        restartedInternally = intentExtras.getBoolean("restartingInternally");   
-		}
-		
-		log.d(TAG, "onCreate - Received restarted internally indication: " + restartedInternally);
-		
-		if (!restartedInternally) {
-		    AnswersLog.resetQuestionsSequenceNumber();
 
-		    log.d(TAG, ">>> New execution sequence; restart sequence number in answer log");
+		Bundle intentExtras = getIntent().getExtras();
+
+		boolean restartedInternally = false;
+
+		if (intentExtras != null) {
+			restartedInternally = intentExtras.getBoolean("restartingInternally");
+		}
+
+		log.d(TAG, "onCreate - Received restarted internally indication: " + restartedInternally);
+
+		if (!restartedInternally) {
+			AnswersLog.resetQuestionsSequenceNumber();
+
+			log.d(TAG, ">>> New execution sequence; restart sequence number in answer log");
 
 			mOverlayManager.checkAndTurnOnOverlayTimer(OverlayManager.INITIAL_SCREEN);
 		}
@@ -108,24 +108,22 @@ public class MainActivity extends Activity {
 
 		// Reset previously opened log entry, allowing new question to be registered in the answers' log.
 
-        AnswersLog.resetOpenLogEntry();
+		AnswersLog.resetOpenLogEntry();
 
 
-        // Adding listener for "about" button
+		// Adding listener for "about" button
 		Button about = (Button) findViewById(R.id.appIcon);
 		about.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-//				Intent i = new Intent(getApplicationContext(), AboutActivity.class);
-
-				Intent i = new Intent(getApplicationContext(), OnboardingActivity.class);
+				Intent i = new Intent(getApplicationContext(), AboutActivity.class);
 
 				startActivity(i);
 			}
 		});
 
-		
+
 		// Adding listener for "settings" button
 		Button settingsButton = (Button) findViewById(R.id.settingsIcon);
 		settingsButton.setOnClickListener(new View.OnClickListener() {
@@ -144,8 +142,8 @@ public class MainActivity extends Activity {
 				startActivity(i);
 			}
 		});
-		
-		
+
+
 		// Adding listener for "start" button
 		Button startButton = (Button) findViewById(R.id.button_start);
 		startButton.setOnClickListener(new View.OnClickListener() {
@@ -155,74 +153,73 @@ public class MainActivity extends Activity {
 
 				mOverlayManager.markOverlayAsShown();
 
-			    Intent newActivity;
-			    
-			    if (mManualQuestionsTagging) {
-	                newActivity = new Intent(getApplicationContext(), SaveQuestionActivity.class);
+				Intent newActivity;
+
+				if (mManualQuestionsTagging) {
+					newActivity = new Intent(getApplicationContext(), SaveQuestionActivity.class);
 
 					newActivity.putExtra("useRegularCamera", mUseRegularCamera);
-			    } else {
+				} else {
 					if (mUseRegularCamera) {
 						newActivity = new Intent(getApplicationContext(), CameraMain.class);
 					} else {
 						newActivity = new Intent(getApplicationContext(), CameraEmulator.class);
 					}
-			    }
-				
+				}
+
 				startActivity(newActivity);
 			}
 		});
-		
-		
-        
+
+
 		if (SettingsActivity.DEVELOPMENT_OPTIONS) {
-		    
-    		// Adding listener for Debug mode activation
-		    
-    		TextView appNameText = (TextView) findViewById(R.id.appNameText);
-    		
-    		appNameText.setOnClickListener(new View.OnClickListener() {
-    
-                @Override
-                public void onClick(View v) {
-    
-                    long currentTime = System.currentTimeMillis();
-                    
-                    if (currentTime - mDebugOptionsActivationLastTapTime < DEVELOPMENT_OPTIONS_ACTIVATION_INTERVAL) {
-                        mDebugOptionsActivationTapCounter++;
-                        
-                        if (mDebugOptionsActivationTapCounter >= DEVELOPMENT_OPTIONS_ACTIVATION_THRESHOLD) {
-                            
-                            CharSequence activationText; 
-                            boolean newDevelopmentModeStatus;
-                            
-                            if (SettingsActivity.isDevelopmentMode()) {
-                                activationText = getResources().getText(R.string.development_mode_off);
-                                
-                                newDevelopmentModeStatus = false;
-                            } else {
-                                activationText = getResources().getText(R.string.development_mode_on);
-                                
-                                newDevelopmentModeStatus = true;
-                            }
-                            
-                            Toast.makeText(getApplicationContext(), activationText, Toast.LENGTH_SHORT).show();
-                            
-                            SettingsActivity.setDevelopmentMode(newDevelopmentModeStatus);
-                            
-                            mDebugOptionsActivationTapCounter = 0;
+
+			// Adding listener for Debug mode activation
+
+			TextView appNameText = (TextView) findViewById(R.id.appNameText);
+
+			appNameText.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+
+					long currentTime = System.currentTimeMillis();
+
+					if (currentTime - mDebugOptionsActivationLastTapTime < DEVELOPMENT_OPTIONS_ACTIVATION_INTERVAL) {
+						mDebugOptionsActivationTapCounter++;
+
+						if (mDebugOptionsActivationTapCounter >= DEVELOPMENT_OPTIONS_ACTIVATION_THRESHOLD) {
+
+							CharSequence activationText;
+							boolean newDevelopmentModeStatus;
+
+							if (SettingsActivity.isDevelopmentMode()) {
+								activationText = getResources().getText(R.string.development_mode_off);
+
+								newDevelopmentModeStatus = false;
+							} else {
+								activationText = getResources().getText(R.string.development_mode_on);
+
+								newDevelopmentModeStatus = true;
+							}
+
+							Toast.makeText(getApplicationContext(), activationText, Toast.LENGTH_SHORT).show();
+
+							SettingsActivity.setDevelopmentMode(newDevelopmentModeStatus);
+
+							mDebugOptionsActivationTapCounter = 0;
 
 							mAnalytics.send_debugMode(newDevelopmentModeStatus);
 
 							updateRegularCameraUsage();
-                        }
-                    } else {
-                        mDebugOptionsActivationTapCounter = 1;
-                    }
-                    
-                    mDebugOptionsActivationLastTapTime = currentTime;
-                }
-            });
+						}
+					} else {
+						mDebugOptionsActivationTapCounter = 1;
+					}
+
+					mDebugOptionsActivationLastTapTime = currentTime;
+				}
+			});
 		}
 	}
 	
@@ -241,24 +238,30 @@ public class MainActivity extends Activity {
 	
     @Override
     protected void onResume() {
-        super.onResume();
+		super.onResume();
 
 		// Reset previously opened log entry: it can be returning from completed detection before this activity has died.
 
 		AnswersLog.resetOpenLogEntry();
 
 
-		mDebugOptionsActivationTapCounter  = 0;
-        mDebugOptionsActivationLastTapTime = 0;
+		mDebugOptionsActivationTapCounter = 0;
+		mDebugOptionsActivationLastTapTime = 0;
 
-		mOverlayManager.checkAndTurnOnOverlayTimer(OverlayManager.INITIAL_SCREEN);
+		String questionsTaggingStr = mSharedPreferences.getString("questions_tagging", "0");
 
-        String questionsTaggingStr = mSharedPreferences.getString("questions_tagging", "0");
-
-        mManualQuestionsTagging = questionsTaggingStr.equals("1");
+		mManualQuestionsTagging = questionsTaggingStr.equals("1");
 
 		updateRegularCameraUsage();
-    }
+
+		if (mSharedPreferences.getBoolean(OnboardingActivity.ONBOARDING_ACTIVE, true)) {
+			Intent i = new Intent(getApplicationContext(), OnboardingActivity.class);
+
+			startActivity(i);
+		} else {
+			mOverlayManager.checkAndTurnOnOverlayTimer(OverlayManager.INITIAL_SCREEN);
+		}
+	}
 
 
 

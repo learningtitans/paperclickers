@@ -22,7 +22,9 @@
 
 package com.paperclickers.onboarding;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -30,11 +32,15 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.paperclickers.Analytics;
 import com.paperclickers.R;
 import com.paperclickers.log;
+import com.paperclickers.overlay.OverlayManager;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -53,6 +59,8 @@ public class OnboardingActivity extends FragmentActivity {
     private static final int ONBOARDING_SHOW_TIMER = 3000;
 
     final static String TAG = "OnboardingActivity";
+
+    public final static String ONBOARDING_ACTIVE = "onboarding_active";
 
 
     /**
@@ -74,6 +82,8 @@ public class OnboardingActivity extends FragmentActivity {
     private Timer mOnboardingPageSwitcherTimer = null;
 
     private boolean mTimerRunning = false;
+
+    private Analytics mAnalytics = null;
 
 
 
@@ -138,6 +148,51 @@ public class OnboardingActivity extends FragmentActivity {
 
             mOnboarding_indicators.addView(mOnboarding_page_indicators[page], params);
         }
+
+
+        Button buttonToProgram = (Button) findViewById(R.id.button_start_with_tips);
+
+        buttonToProgram.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+
+                editor.putBoolean(OverlayManager.OVERLAY_ALREADY_SHOWN_PREFERENCES[OverlayManager.INITIAL_SCREEN], false);
+                editor.putBoolean(OverlayManager.OVERLAY_ALREADY_SHOWN_PREFERENCES[OverlayManager.INITIAL_SCREEN_SHARE], false);
+                editor.putBoolean(OverlayManager.OVERLAY_ALREADY_SHOWN_PREFERENCES[OverlayManager.CAPTURE_SCREEN], false);
+                editor.putBoolean(OverlayManager.OVERLAY_ALREADY_SHOWN_PREFERENCES[OverlayManager.ANSWERS_SCREEN], false);
+                editor.putBoolean(OverlayManager.OVERLAY_ALREADY_SHOWN_PREFERENCES[OverlayManager.CHART_SCREEN], false);
+                editor.putBoolean(ONBOARDING_ACTIVE, false);
+
+                editor.commit();
+
+                finish();
+            }
+        });
+
+        buttonToProgram = (Button) findViewById(R.id.button_start_no_tips);
+
+        buttonToProgram.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+
+                editor.putBoolean(OverlayManager.OVERLAY_ALREADY_SHOWN_PREFERENCES[OverlayManager.INITIAL_SCREEN], true);
+                editor.putBoolean(OverlayManager.OVERLAY_ALREADY_SHOWN_PREFERENCES[OverlayManager.INITIAL_SCREEN_SHARE], true);
+                editor.putBoolean(OverlayManager.OVERLAY_ALREADY_SHOWN_PREFERENCES[OverlayManager.CAPTURE_SCREEN], true);
+                editor.putBoolean(OverlayManager.OVERLAY_ALREADY_SHOWN_PREFERENCES[OverlayManager.ANSWERS_SCREEN], true);
+                editor.putBoolean(OverlayManager.OVERLAY_ALREADY_SHOWN_PREFERENCES[OverlayManager.CHART_SCREEN], true);
+                editor.putBoolean(ONBOARDING_ACTIVE, false);
+
+                editor.commit();
+
+                finish();
+            }
+        });
+
     }
 
 
@@ -148,6 +203,12 @@ public class OnboardingActivity extends FragmentActivity {
             // If the user is currently looking at the first step, allow the system to handle the
             // Back button. This calls finish() on this activity and pops the back stack.
             super.onBackPressed();
+
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+
+            editor.putBoolean(ONBOARDING_ACTIVE, false);
+
+            editor.commit();
         } else {
             // Otherwise, select the previous step.
             mPager.setCurrentItem(mPager.getCurrentItem() - 1);
