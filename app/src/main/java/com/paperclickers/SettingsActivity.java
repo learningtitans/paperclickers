@@ -64,6 +64,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.paperclickers.fiducial.TopCode;
+import com.paperclickers.onboarding.OnboardingActivity;
 import com.paperclickers.overlay.OverlayManager;
 
 
@@ -101,6 +102,7 @@ public class SettingsActivity extends PreferenceActivity {
 	public static String SHARE_ANSWERS_LOG  = "com.paperclickers.intent.action.SHARE_ANSWERS_LOG";
 	public static String DELETE_ANSWERS_LOG = "com.paperclickers.intent.action.DELETE_ANSWERS_LOG";
 	public static String RESET_GUIDED_USAGE = "com.paperclickers.intent.action.RESET_GUIDED_USAGE";
+	public static String RESET_ONBOARDING   = "com.paperclickers.intent.action.RESET_ONBOARDING";
 	
 	
 	// Used TopCodes defined according to the list provided by Michael Horn in
@@ -451,7 +453,16 @@ public class SettingsActivity extends PreferenceActivity {
 
 			editor.commit();
 
-			Toast.makeText(getApplicationContext(), getResources().getText(R.string.usage_guide_reset_message), Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), getResources().getText(R.string.usage_guide_reset_message), Toast.LENGTH_SHORT).show();
+		} else if (newIntent.getAction().equals(RESET_ONBOARDING)) {
+
+			SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+
+			editor.putBoolean(OnboardingActivity.ONBOARDING_ACTIVE, true);
+
+			editor.commit();
+
+			Toast.makeText(getApplicationContext(), getResources().getText(R.string.onboarding_reset_message), Toast.LENGTH_SHORT).show();
 		}
     }
 

@@ -122,6 +122,10 @@
         <item>1</item>
     </string-array>
 
-    <string name="pref_dont_show_help_title">No presentar ayuda</string>
-    <string name="pref_dont_show_help_summary">No presentar una capa de instrucciones</string>
+    <string name="pref_title_reset_guide">Reactivar uso guiado</string>
+    <string name="usage_guide_reset_message">Uso guiado de nuevo activo</string>
+
+    <string name="pref_title_reset_onboarding">Reactivar onboarding</string>
+    <string name="onboarding_reset_message">Onboarding se mostrará de nuevo</string>
+
 </resources>

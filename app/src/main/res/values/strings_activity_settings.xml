@@ -126,10 +126,9 @@
     </string-array>
 
     <string name="pref_title_reset_guide">Restart guided usage</string>
-
     <string name="usage_guide_reset_message">Usage guide will be shown</string>
 
-    <string name="pref_dont_show_help_title">Don\'t show help</string>
-    <string name="pref_dont_show_help_summary">Don\'t show instructions overlay</string>
+    <string name="pref_title_reset_onboarding">Reset onboarding</string>
+    <string name="onboarding_reset_message">Onboarding will be shown</string>
 
 </resources>

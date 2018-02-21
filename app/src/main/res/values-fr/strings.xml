@@ -31,13 +31,13 @@
     <string name="no">Non</string>
 
     <string name="saved_answers_log">Réponses enregistrées dans le journal</string>
-    <string name="error_saving_pdf">Erreur lors de la sauvegarde du pdf des codes de l\'élève</string>
+    <string name="error_saving_pdf">Erreur lors de la sauvegarde du pdf des cartes de réponse</string>
     <string name="error_saving_log">Erreur lors de l\'enregistrement des réponses</string>
     <string name="file_saved">enregistré</string>
 
     <string name="pie_chart_answers">réponses</string>
     
-    <string name="cannot_generate_PDF">Ne peut pas générer de codes</string>
+    <string name="cannot_generate_PDF">Ne peut pas générer des cartes de réponse</string>
     <string name="visit_project_page_for_topcodes">La génération de TopCodes nécessite Android 4.4 ou plus.\n\nVisitez le projet GitHub pour obtenir les codes des étudiants</string>
     <string name="go_github">Aller à GitHub</string>
 

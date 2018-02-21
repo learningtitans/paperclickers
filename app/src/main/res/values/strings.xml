@@ -30,13 +30,13 @@
     <string name="no">No</string>
 
     <string name="saved_answers_log">Answers saved in log</string>
-    <string name="error_saving_pdf">Error saving students\' codes pdf</string>
+    <string name="error_saving_pdf">Error saving answering cards pdf</string>
     <string name="error_saving_log">Error saving answers log</string>
     <string name="file_saved">saved</string>
     
     <string name="pie_chart_answers">answers</string>
     
-    <string name="cannot_generate_PDF">Can\'t generate codes</string>
+    <string name="cannot_generate_PDF">Can\'t generate answering cards</string>
     <string name="visit_project_page_for_topcodes">TopCodes generation requires Android version 4.4 or above.\n\nVisit project\'s GitHub to get students\' codes</string>
     <string name="go_github">Go to GitHub</string>
     

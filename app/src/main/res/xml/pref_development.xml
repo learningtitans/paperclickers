@@ -71,6 +71,15 @@
 			android:singleLine="true"
 			android:title="@string/pref_title_morpho_element_size" />
 
+		<Preference
+			android:title="@string/pref_title_reset_onboarding"
+			android:key="reset_usage_guide">
+
+			<intent
+				android:action="com.paperclickers.intent.action.RESET_ONBOARDING"
+				android:targetPackage="com.paperclickers"
+				android:targetClass="com.paperclickers.SettingsActivity" />
+		</Preference>
 	</PreferenceCategory>
 
 </PreferenceScreen>

@@ -10,10 +10,10 @@
     <string name="start_button_with_tips">uso guiado</string>
     <string name="start_button_no_tips">sin consejos de uso</string>
 
-    <string name="onboarding_page_1_description">Easy way to survey\nyour students</string>
-    <string name="onboarding_page_2_description">Print and distribute\nthe answering cards</string>
-    <string name="onboarding_page_3_description">Ask a question\nand collect the answers</string>
-    <string name="onboarding_page_4_description">Keep students performance history</string>
+    <string name="onboarding_page_1_description">La manera fácil de evaluar\na sus alumnas y alumnos</string>
+    <string name="onboarding_page_2_description">Imprima y distribuya\nlas tarjetas de respuesta</string>
+    <string name="onboarding_page_3_description">Haz una pregunta y\n recoge las respuestas</string>
+    <string name="onboarding_page_4_description">Mantenga el historial\nde sus alumnas y alumnos</string>
 
     <string name="start_button">inicio</string>
     <string name="save_question_title">Pregunta para la clase</string>
@@ -31,13 +31,13 @@
     <string name="no">No</string>
 
     <string name="saved_answers_log">Respuestas grabadas en el registro</string>
-    <string name="error_saving_pdf">Error grabando pdf de los códigos de los estudiantes</string>
+    <string name="error_saving_pdf">Error grabando pdf de los códigos de las tarjetas de respuesta</string>
     <string name="error_saving_log">Error grabando el registro de respuestas</string>
     <string name="file_saved">salvo</string>
 
     <string name="pie_chart_answers">respuestas</string>
     
-    <string name="cannot_generate_PDF">No se pueden generar códigos</string>
+    <string name="cannot_generate_PDF">No se pueden generar las tarjetas de respuesta</string>
     <string name="visit_project_page_for_topcodes">Generación de los TopCodes requiere versión Android 4.4 o superior.\n\nVisite el GitHub del proyecto para obtener los códigos de los alumnos</string>
     <string name="go_github">Ir a GitHub</string>
 

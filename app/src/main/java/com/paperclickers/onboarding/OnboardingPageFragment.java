@@ -81,7 +81,7 @@ public class OnboardingPageFragment extends Fragment {
                 break;
 
             case 3:
-                imageToUse = getResources().getDrawable(R.drawable.icon_d);
+                imageToUse = getResources().getDrawable(R.drawable.share_log);
 
                 pageHeader.setVisibility(View.GONE);
                 pageDescriptionr.setText(R.string.onboarding_page_4_description);
