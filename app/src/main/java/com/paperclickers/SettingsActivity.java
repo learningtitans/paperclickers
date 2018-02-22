@@ -454,6 +454,9 @@ public class SettingsActivity extends PreferenceActivity {
 			editor.commit();
 
 			Toast.makeText(getApplicationContext(), getResources().getText(R.string.usage_guide_reset_message), Toast.LENGTH_SHORT).show();
+
+			mAnalytics.send_guidedUsageReactivated();
+
 		} else if (newIntent.getAction().equals(RESET_ONBOARDING)) {
 
 			SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();

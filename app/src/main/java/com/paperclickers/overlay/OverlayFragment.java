@@ -187,6 +187,8 @@ public class OverlayFragment extends Fragment {
                 markOverlayAsShown();
 
                 OverlayManager.removeFragment(getFragmentManager(), true);
+
+                mAnalytics.send_overlayDismissed();
             }
         });
 
@@ -203,6 +205,8 @@ public class OverlayFragment extends Fragment {
                 markOverlayAsShown();
 
                 OverlayManager.removeFragment(getFragmentManager(), true);
+
+                mAnalytics.send_overlayTimedout();
             }
         }, (long) OverlayManager.HIDE_OVERLAY_TIMER);
 

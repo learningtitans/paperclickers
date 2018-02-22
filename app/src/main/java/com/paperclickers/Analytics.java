@@ -55,6 +55,13 @@ public class Analytics {
 
     final static String ANALYTICS_DEBUG_MODE_EVENT = "pce_debug_mode";
 
+    final static String ANALYTICS_GUIDED_USAGE_ACCEPTED    = "pce_guided_usage_accepted";
+    final static String ANALYTICS_GUIDED_USAGE_DISMISSED   = "pce_guided_usage_dismissed";
+    final static String ANALYTICS_OVERLAY_DISMISSED        = "pce_overlay_dismissed";
+    final static String ANALYTICS_OVERLAY_TIMEDOUT         = "pce_overlay_timeout";
+    final static String ANALYTICS_GUIDED_USAGE_REACTIVATED = "pce_overlay_reactivated";
+
+
 
     final static String ANALYTICS_TOTAL_TIME_PARAM      = "pcp_total_time";
     final static String ANALYTICS_STUDENTS_NUMBER_PARAM = "pcp_students_num";
@@ -128,15 +135,6 @@ public class Analytics {
 
 
 
-    public void send_disabledOverlay() {
-
-        if (mAnalyticsEnabled) {
-            mFirebaseAnalytics.logEvent(ANALYTICS_DISABLED_OVERLAY_EVENT, null);
-        }
-    }
-
-
-
     public void send_enteredAnswers(int answersCount) {
 
         if (mAnalyticsEnabled) {
@@ -145,6 +143,51 @@ public class Analytics {
             bundle.putLong(ANALYTICS_ANSWERS_COUNT_PARAM, answersCount);
 
             mFirebaseAnalytics.logEvent(ANALYTICS_CHANGED_ANSWERS_EVENT, bundle);
+        }
+    }
+
+
+
+    public void send_guidedUsageAccepted() {
+
+        if (mAnalyticsEnabled) {
+            mFirebaseAnalytics.logEvent(ANALYTICS_GUIDED_USAGE_ACCEPTED, null);
+        }
+    }
+
+
+
+    public void send_guidedUsageDismissed() {
+
+        if (mAnalyticsEnabled) {
+            mFirebaseAnalytics.logEvent(ANALYTICS_GUIDED_USAGE_DISMISSED, null);
+        }
+    }
+
+
+
+    public void send_guidedUsageReactivated() {
+
+        if (mAnalyticsEnabled) {
+            mFirebaseAnalytics.logEvent(ANALYTICS_GUIDED_USAGE_REACTIVATED, null);
+        }
+    }
+
+
+
+    public void send_overlayDismissed() {
+
+        if (mAnalyticsEnabled) {
+            mFirebaseAnalytics.logEvent(ANALYTICS_OVERLAY_DISMISSED, null);
+        }
+    }
+
+
+
+    public void send_overlayTimedout() {
+
+        if (mAnalyticsEnabled) {
+            mFirebaseAnalytics.logEvent(ANALYTICS_OVERLAY_TIMEDOUT, null);
         }
     }
 

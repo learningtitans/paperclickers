@@ -92,6 +92,8 @@ public class OnboardingActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.onboarding_activity);
 
+        mAnalytics = new Analytics(getApplicationContext());
+
         // Instantiate a ViewPager and a PagerAdapter.
 
         mOnboarding_indicators = (LinearLayout) findViewById(R.id.onboarding_page_indicators);
@@ -167,6 +169,8 @@ public class OnboardingActivity extends FragmentActivity {
 
                 editor.commit();
 
+                mAnalytics.send_guidedUsageAccepted();
+
                 finish();
             }
         });
@@ -188,6 +192,8 @@ public class OnboardingActivity extends FragmentActivity {
                 editor.putBoolean(ONBOARDING_ACTIVE, false);
 
                 editor.commit();
+
+                mAnalytics.send_guidedUsageDismissed();
 
                 finish();
             }

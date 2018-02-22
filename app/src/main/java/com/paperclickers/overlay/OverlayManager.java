@@ -60,8 +60,6 @@ public class OverlayManager {
     public static final int CHART_SCREEN         = 4;
 
 
-    private Analytics mAnalytics = null;
-
     private Context mContext = null;
     private FragmentManager mFragmentManager = null;
 
