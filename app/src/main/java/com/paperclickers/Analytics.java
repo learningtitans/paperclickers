@@ -44,8 +44,6 @@ public class Analytics {
 
     final static String ANALYTICS_PRINTED_CODES_EVENT = "pce_printed_codes";
 
-    final static String ANALYTICS_DISABLED_OVERLAY_EVENT = "pce_disabled_overlay";
-
     final static String ANALYTICS_SCAN_CYCLE_EVENT                = "pce_scan_cycle";
     final static String ANALYTICS_SCAN_CYCLE_ALL_STUDENTS_EVENT   = "pce_scan_cycle_all";
     final static String ANALYTICS_RESCAN_CYCLE_EVENT              = "pce_rescan_cycle";

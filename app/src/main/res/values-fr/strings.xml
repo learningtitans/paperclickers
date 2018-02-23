@@ -65,4 +65,9 @@
     <string name="overlay_chart_screen_return_txt">Retournez aux réponses</string>
     <string name="overlay_chart_screen_new_txt">Poser une nouvelle question</string>
 
+    <string name="topcodes_pdf_recto_file_name">paperclickers_topCodes_recto.pdf</string>
+    <string name="answerslog_file_name">paperclickers_EnregistrementsDesReponses.csv</string>
+    <string name="answerslog_timestamp_header">HORODATAGE</string>
+    <string name="answerslog_timestamp_tag">PROBLÈME</string>
+
 </resources>

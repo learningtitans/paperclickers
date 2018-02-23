@@ -66,11 +66,15 @@ public class PaperclickersScanner extends Scanner {
 
 	public static final boolean USE_RENDERSCRIPT = true;
 
+	//
 	// The median filter has been implemented as an option for dealing with corrupted TopCodes; however, morphological
 	// operations ended up with better performance.
+	//
+	// To test the median filter make sure USE_RENDERSCRIPT is TRUE and the "development_use_morpho"
+	// preference is FALSE
+	//
 
 	public static final boolean APPLY_MEDIAN_FILTER = false;
-
 
 
 	public static final float INVALID_TOPCODE_ORIENTATION = Float.NaN;
@@ -119,7 +123,7 @@ public class PaperclickersScanner extends Scanner {
 	public static final int PIXEL_COLOR_MASK = 0x01000000;
 	
 
-	boolean mUseMorphoOperations = true;
+	boolean mUseMorphoOperations = false;
 	int mMorphoElementSize = MORPHO_DILATION_STRUCT_SIZE;
 
 
@@ -515,7 +519,7 @@ public class PaperclickersScanner extends Scanner {
 
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-		mUseMorphoOperations = preferences.getBoolean("development_use_morpho", true);
+		mUseMorphoOperations = preferences.getBoolean("development_use_morpho", false);
 
 		if (mUseMorphoOperations) {
 			String elementSize = preferences.getString("development_morpho_element_size", String.valueOf(MORPHO_DILATION_STRUCT_SIZE));

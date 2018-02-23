@@ -64,4 +64,11 @@
     <string name="overlay_chart_screen_return_txt">Return to the answers</string>
     <string name="overlay_chart_screen_new_txt">Start a new question</string>
 
+    <string name="topcodes_pdf_single_file_name">paperclickers_topCodes.pdf</string>
+    <string name="topcodes_pdf_recto_file_name">paperclickers_topCodes_recto.pdf</string>
+    <string name="topcodes_pdf_verso_file_name">paperclickers_topCodes_verso.pdf</string>
+    <string name="answerslog_file_name">paperclickers_AnswersLog.csv</string>
+    <string name="answerslog_timestamp_header">TIMESTAMP</string>
+    <string name="answerslog_timestamp_tag">QUESTION</string>
+
 </resources>

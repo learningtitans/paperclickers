@@ -4,7 +4,7 @@
 
 static uint32_t const PIXEL_COLOR_MASK = 0x01000000;
 
-static uint32_t const MEDIAN_FILTER_MAX_ELEMENT_SIZE = 7;
+static uint32_t const MEDIAN_FILTER_MAX_ELEMENT_SIZE = 5;
 
 uint32_t width;
 uint32_t height;
