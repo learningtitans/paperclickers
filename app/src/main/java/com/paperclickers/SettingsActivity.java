@@ -164,12 +164,7 @@ public class SettingsActivity extends PreferenceActivity {
     static float PROMOTION_TEXT_SIZE_PROPORTION = 0.8f;
     
 	static String TOPCODES_FILE_PATH       = "/Download";
-	
-	static String TOPCODES_SINGLE_FILENAME = "paperclickers_topCodes.pdf";
-	
-	static String TOPCODES_RECTO_FILENAME  = "paperclickers_topCodes_recto.pdf";
-	static String TOPCODES_VERSO_FILENAME  = "paperclickers_topCodes_verso.pdf";
-	
+
 	static String PAPERCLICKERS_GITHUB_TOPCODES = "https://github.com/learningtitans/paperclickers/tree/master/topcodes";
 	
 	/**
@@ -407,12 +402,12 @@ public class SettingsActivity extends PreferenceActivity {
         	
         } else if (newIntent.getAction().equals(SHARE_ANSWERS_LOG)) {
         	
-        	if (com.paperclickers.result.AnswersLog.checkIfAnswersLogExists()) {
+        	if (com.paperclickers.result.AnswersLog.checkIfAnswersLogExists(getResources().getText(R.string.answerslog_file_name).toString())) {
         		
         		Intent shareIntent = new Intent();
         		
         		shareIntent.setAction(Intent.ACTION_SEND);
-        		shareIntent.putExtra(Intent.EXTRA_STREAM, com.paperclickers.result.AnswersLog.getAnswersLogUri());
+        		shareIntent.putExtra(Intent.EXTRA_STREAM, com.paperclickers.result.AnswersLog.getAnswersLogUri(getResources().getText(R.string.answerslog_file_name).toString()));
         		shareIntent.setType("text/csv");
         		
         		startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.share_answers_log_using)));
@@ -423,7 +418,7 @@ public class SettingsActivity extends PreferenceActivity {
         	}
         } else if (newIntent.getAction().equals(DELETE_ANSWERS_LOG)) {
         	
-        	if (com.paperclickers.result.AnswersLog.checkIfAnswersLogExists()) {
+        	if (com.paperclickers.result.AnswersLog.checkIfAnswersLogExists(getResources().getText(R.string.answerslog_file_name).toString())) {
         		
         		new AlertDialog.Builder(this)
 	    			.setTitle(R.string.delete_answers_log_dialog_title)
@@ -433,7 +428,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 		    				@Override
 		    				public void onClick(DialogInterface dialog, int which) {
-		    					if (com.paperclickers.result.AnswersLog.deleteAnswersLog()) {
+		    					if (com.paperclickers.result.AnswersLog.deleteAnswersLog(getResources().getText(R.string.answerslog_file_name).toString())) {
 									mAnalytics.send_clearedAnswersLog();
 								}
 		    				}
@@ -604,7 +599,7 @@ public class SettingsActivity extends PreferenceActivity {
     		Intent shareIntent = new Intent();
     		
     		if (verso == null) {
-    			savedFileUri = saveTopCodesFile(document, TOPCODES_SINGLE_FILENAME);
+    			savedFileUri = saveTopCodesFile(document, getResources().getText(R.string.topcodes_pdf_single_file_name).toString());
     			
     			if (savedFileUri != null) {
     				shareIntent.setAction(Intent.ACTION_SEND);
@@ -613,7 +608,7 @@ public class SettingsActivity extends PreferenceActivity {
                     shareIntent.setType("application/pdf");
     			}
     		} else {
-    			savedFileUri = saveTopCodesFile(document, TOPCODES_RECTO_FILENAME);
+    			savedFileUri = saveTopCodesFile(document, getResources().getText(R.string.topcodes_pdf_recto_file_name).toString());
     			
     			if (savedFileUri != null) {
     				ArrayList<Uri> files = new ArrayList<Uri>();
@@ -622,7 +617,7 @@ public class SettingsActivity extends PreferenceActivity {
     				
     				files.add(savedFileUri);
     				
-    				savedFileUri = saveTopCodesFile(verso, TOPCODES_VERSO_FILENAME);
+    				savedFileUri = saveTopCodesFile(verso, getResources().getText(R.string.topcodes_pdf_verso_file_name).toString());
     				
     				if (savedFileUri != null) {
     					files.add(savedFileUri);

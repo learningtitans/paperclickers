@@ -108,7 +108,7 @@ public class MainActivity extends Activity {
 
 		// Reset previously opened log entry, allowing new question to be registered in the answers' log.
 
-		AnswersLog.resetOpenLogEntry();
+		AnswersLog.resetOpenLogEntry(getResources().getText(R.string.answerslog_file_name).toString());
 
 
 		// Adding listener for "about" button
@@ -242,7 +242,7 @@ public class MainActivity extends Activity {
 
 		// Reset previously opened log entry: it can be returning from completed detection before this activity has died.
 
-		AnswersLog.resetOpenLogEntry();
+		AnswersLog.resetOpenLogEntry(getResources().getText(R.string.answerslog_file_name).toString());
 
 
 		mDebugOptionsActivationTapCounter = 0;

@@ -48,9 +48,10 @@ public class AnswersLog {
 	static int mSessionQuestionsSeqNum = 0;
 
 	static long mOpenLogEntryOffset = NO_OPEN_LOG_ENTRY;
+
+	static String mAnswersLogCurrentFilename = null;
 	
 	static String TAG          = "AnswersLog";
-	static String LOG_FILENAME = "AnswersLog.csv";
 	static String LOG_FILEPATH = "/PaperClickers";
 
 	private Context mActivityContext = null;
@@ -63,8 +64,9 @@ public class AnswersLog {
 	
 	
 	
-	public static boolean checkIfAnswersLogExists() {
-		File answersLog = new File(Environment.getExternalStorageDirectory() + LOG_FILEPATH, LOG_FILENAME);
+	public static boolean checkIfAnswersLogExists(String answersLogFilename) {
+
+		File answersLog = new File(Environment.getExternalStorageDirectory() + LOG_FILEPATH, answersLogFilename);
 		
 		return answersLog.exists();
 	}
@@ -82,6 +84,12 @@ public class AnswersLog {
 			// Just increment the sequence number if there isn't an open log entry...
 
 			mSessionQuestionsSeqNum++;
+		} else if (!mAnswersLogCurrentFilename.equals(mActivityContext.getResources().getText(R.string.answerslog_file_name).toString())) {
+
+			// Since the answers log filename has changed since last reset (due to language changing), reset the
+			// sequence number counter
+
+			mSessionQuestionsSeqNum = 1;
 		}
         
         answersLog = new StringBuilder();
@@ -122,8 +130,11 @@ public class AnswersLog {
 
         answersLogHeader = new StringBuilder();
         
-        answersLogHeader.append("SEQ,TIMESTAMP,TAG");
-        
+        answersLogHeader.append("SEQ,");
+		answersLogHeader.append(mActivityContext.getText(R.string.answerslog_timestamp_header));
+		answersLogHeader.append(",");
+		answersLogHeader.append(mActivityContext.getText(R.string.answerslog_tag_header));
+
         for (int i = 0; i < com.paperclickers.SettingsActivity.validTopCodes.length; i++) {
             answersLogHeader.append("," + (i + 1));
         }
@@ -135,18 +146,18 @@ public class AnswersLog {
 	
 
     
-	public static boolean deleteAnswersLog() {
+	public static boolean deleteAnswersLog(String answersLogFilename) {
 
-		File answersLog = new File(Environment.getExternalStorageDirectory() + LOG_FILEPATH, LOG_FILENAME);
+		File answersLog = new File(Environment.getExternalStorageDirectory() + LOG_FILEPATH, answersLogFilename);
 
 		return answersLog.delete();
 	}
 	
 	
 	
-	public static Uri getAnswersLogUri() {
+	public static Uri getAnswersLogUri(String answersLogFilename) {
 
-		File answersLog = new File(Environment.getExternalStorageDirectory() + LOG_FILEPATH, LOG_FILENAME);
+		File answersLog = new File(Environment.getExternalStorageDirectory() + LOG_FILEPATH, answersLogFilename);
 		
 		return Uri.fromFile(answersLog);
 	}
@@ -171,9 +182,10 @@ public class AnswersLog {
 
 
 
-	public static void resetOpenLogEntry() {
+	public static void resetOpenLogEntry(String answersLogFilename) {
 
-		mOpenLogEntryOffset = NO_OPEN_LOG_ENTRY;
+		mOpenLogEntryOffset        = NO_OPEN_LOG_ENTRY;
+		mAnswersLogCurrentFilename = answersLogFilename;
 	}
 
 
@@ -192,11 +204,12 @@ public class AnswersLog {
 
 		boolean needToWriteHeader = true;
 
+		String answersLogFilename = mActivityContext.getResources().getText(R.string.answerslog_file_name).toString();
 
 		if (!directory.exists()) {
 			directory.mkdirs();
 		} else {
-			File logFile = new File(Environment.getExternalStorageDirectory() + LOG_FILEPATH, LOG_FILENAME);
+			File logFile = new File(Environment.getExternalStorageDirectory() + LOG_FILEPATH, answersLogFilename);
 
 			if (logFile.exists()) {
 				needToWriteHeader = false;
@@ -205,7 +218,7 @@ public class AnswersLog {
 
 		try {
 			// Create the stream pointing at the file location
-			fOut = new RandomAccessFile(new File(directory, LOG_FILENAME), "rwd");
+			fOut = new RandomAccessFile(new File(directory, answersLogFilename), "rwd");
 
 			if (needToWriteHeader) {
 				fOut.writeBytes(createLogFileHeader().toString());
@@ -213,8 +226,10 @@ public class AnswersLog {
 				log.d(TAG, "Writing the logfile header: " + mOpenLogEntryOffset);
 			}
 
-			if (mOpenLogEntryOffset < 0) {
+			if ((mOpenLogEntryOffset < 0) || !mAnswersLogCurrentFilename.equals(answersLogFilename)){
 				mOpenLogEntryOffset = fOut.length();
+
+				mAnswersLogCurrentFilename = answersLogFilename;
 
 				log.d(TAG, "Going to the end of file: " + mOpenLogEntryOffset);
 			}

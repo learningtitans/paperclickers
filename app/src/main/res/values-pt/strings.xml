@@ -68,6 +68,6 @@
     <string name="topcodes_pdf_recto_file_name">paperclickers_topCodes_frente.pdf</string>
     <string name="answerslog_file_name">paperclickers_RegistroDeRespostas.csv</string>
     <string name="answerslog_timestamp_header">DATA E HORA</string>
-    <string name="answerslog_timestamp_tag">QUESTÃO</string>
+    <string name="answerslog_tag_header">QUESTÃO</string>
 
 </resources>
