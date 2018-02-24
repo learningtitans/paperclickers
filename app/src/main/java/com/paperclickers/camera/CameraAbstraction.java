@@ -72,6 +72,8 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
 
     final static int SCAN_DISMISS_TIMEOUT = 1000;
 
+    final static boolean LOG_TOTAL_PROCESSING_TIME = false;
+
     protected DrawView mDraw;
     protected FrameLayout mPreview;
 
@@ -396,9 +398,19 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         List<TopCode> recognizedValidTopCodes = new ArrayList<TopCode>();
         List<TopCode> topCodes = new ArrayList<TopCode>();
 
+        long frameProcessingStartTime;
+
+        if (LOG_TOTAL_PROCESSING_TIME) {
+            frameProcessingStartTime = System.currentTimeMillis();
+        }
+
         int cycleResult = mAudienceResponses.onNewFrame(data, mHasRotated, recognizedValidTopCodes, topCodes, mShowingValidation, useMorpho);
 
         processNewFrameResult(cycleResult, recognizedValidTopCodes, topCodes);
+
+        if (LOG_TOTAL_PROCESSING_TIME) {
+            log.d(TAG, String.format("Frame processing total time(ms): %d", System.currentTimeMillis() - frameProcessingStartTime));
+        }
     }
 
 
@@ -408,9 +420,19 @@ public class CameraAbstraction extends Activity implements OrientationManager.Or
         List<TopCode> recognizedValidTopCodes = new ArrayList<TopCode>();
         List<TopCode> topCodes = new ArrayList<TopCode>();
 
+        long frameProcessingStartTime;
+
+        if (LOG_TOTAL_PROCESSING_TIME) {
+            frameProcessingStartTime = System.currentTimeMillis();
+        }
+
         int cycleResult = mAudienceResponses.onNewFrame(data, mHasRotated, recognizedValidTopCodes, topCodes, mShowingValidation, useMorpho);
 
         processNewFrameResult(cycleResult, recognizedValidTopCodes, topCodes);
+
+        if (LOG_TOTAL_PROCESSING_TIME) {
+            log.d(TAG, String.format("Frame processing total time(ms): %d", System.currentTimeMillis() - frameProcessingStartTime));
+        }
     }
 
 

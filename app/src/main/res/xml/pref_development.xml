@@ -59,7 +59,7 @@
 			android:key="development_use_morpho"
 			android:title="@string/pref_use_morpho_title"
 			android:summary="@string/pref_use_morpho_summary"
-			android:defaultValue="true"/>
+			android:defaultValue="false"/>
 
 		<EditTextPreference
 			android:key="development_morpho_element_size"
