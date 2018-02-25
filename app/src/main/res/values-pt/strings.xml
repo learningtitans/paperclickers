@@ -65,7 +65,9 @@
     <string name="overlay_chart_screen_return_txt">Volte para as respostas</string>
     <string name="overlay_chart_screen_new_txt">Faça uma nova pergunta</string>
 
+    <string name="topcodes_pdf_single_file_name">paperclickers_topCodes.pdf</string>
     <string name="topcodes_pdf_recto_file_name">paperclickers_topCodes_frente.pdf</string>
+    <string name="topcodes_pdf_verso_file_name">paperclickers_topCodes_verso.pdf</string>
     <string name="answerslog_file_name">paperclickers_RegistroDeRespostas.csv</string>
     <string name="answerslog_timestamp_header">DATA E HORA</string>
     <string name="answerslog_tag_header">QUESTÃO</string>

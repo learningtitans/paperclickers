@@ -109,7 +109,7 @@
     <string name="development_mode_on">Modo de desarrollo ACTIVO</string>
     <string name="development_mode_off">Modo de desarrollo DESACTIVADO</string>
 
-    <string name="pref_header_usage_analytics">Análisis de la aplicación</string>
+    <string name="pref_header_general_behavior">Análisis de la aplicación</string>
 
     <string name="pref_title_usage_analytics">Recolección de datos de uso</string>
 

@@ -109,7 +109,7 @@
     <string name="development_mode_on">Modo desenvolvimento LIGADO</string>
     <string name="development_mode_off">Modo desenvolvimento DESLIGADO</string>
 
-    <string name="pref_header_usage_analytics">Análise da aplicação</string>
+    <string name="pref_header_general_behavior">Análise da aplicação</string>
 
     <string name="pref_title_usage_analytics">Coleta de dados de uso</string>
 
